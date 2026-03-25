@@ -4,7 +4,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programmatica PDF Compressor</title>
+<title>PDF Compressor</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,24 +32,10 @@
     padding: 40px 20px 60px;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  header h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-
+  header { text-align: center; margin-bottom: 40px; }
+  header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
   header h1 span { color: var(--accent); }
-
-  header p {
-    color: var(--muted);
-    margin-top: 8px;
-    font-size: 0.95rem;
-  }
+  header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
 
   .card {
     background: var(--card);
@@ -60,7 +46,6 @@
     max-width: 560px;
   }
 
-  /* Drop zone */
   #drop-zone {
     border: 2px dashed var(--border);
     border-radius: 10px;
@@ -70,40 +55,12 @@
     transition: border-color 0.2s, background 0.2s;
     position: relative;
   }
+  #drop-zone.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.06); }
+  #drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  #drop-zone .icon { font-size: 2.4rem; margin-bottom: 10px; display: block; }
+  #drop-zone .label { font-size: 1rem; font-weight: 600; color: var(--fg); }
+  #drop-zone .sublabel { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
 
-  #drop-zone.drag-over {
-    border-color: var(--accent);
-    background: rgba(108,99,255,0.06);
-  }
-
-  #drop-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
-
-  #drop-zone .icon {
-    font-size: 2.4rem;
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  #drop-zone .label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--fg);
-  }
-
-  #drop-zone .sublabel {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  /* File info */
   #file-info {
     display: none;
     align-items: center;
@@ -114,57 +71,17 @@
     padding: 12px 14px;
     margin-top: 16px;
   }
-
   #file-info .file-icon { font-size: 1.6rem; }
-
   #file-info .file-meta { flex: 1; min-width: 0; }
-
-  #file-info .file-name {
-    font-weight: 600;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  #file-info .file-size {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  #file-info .clear-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 4px;
-    border-radius: 4px;
-    transition: color 0.15s;
-  }
+  #file-info .file-name { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #file-info .file-size { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  #file-info .clear-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; padding: 4px; border-radius: 4px; transition: color 0.15s; }
   #file-info .clear-btn:hover { color: var(--red); }
 
-  /* Settings */
-  .settings {
-    margin-top: 20px;
-  }
+  .settings { margin-top: 20px; }
+  .settings label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
 
-  .settings label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-  }
-
-  .quality-btns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
+  .quality-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
   .quality-btn {
     border: 1px solid var(--border);
@@ -176,162 +93,54 @@
     text-align: center;
     transition: all 0.15s;
   }
-
-  .quality-btn .q-name {
-    font-size: 0.88rem;
-    font-weight: 600;
-    display: block;
-  }
-
-  .quality-btn .q-desc {
-    font-size: 0.72rem;
-    color: var(--muted);
-    display: block;
-    margin-top: 2px;
-  }
-
-  .quality-btn.active {
-    border-color: var(--accent);
-    background: rgba(108,99,255,0.12);
-    color: var(--fg);
-  }
-
+  .quality-btn .q-name { font-size: 0.88rem; font-weight: 600; display: block; }
+  .quality-btn .q-desc { font-size: 0.72rem; color: var(--muted); display: block; margin-top: 3px; line-height: 1.4; }
+  .quality-btn.active { border-color: var(--accent); background: rgba(108,99,255,0.12); color: var(--fg); }
   .quality-btn.active .q-desc { color: rgba(108,99,255,0.8); }
+  .quality-btn:hover:not(.active) { border-color: #444; background: rgba(255,255,255,0.03); }
 
-  .quality-btn:hover:not(.active) {
-    border-color: #444;
-    background: rgba(255,255,255,0.03);
-  }
-
-  /* Compress button */
   #compress-btn {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 13px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 9px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, opacity 0.15s;
+    display: block; width: 100%; margin-top: 20px; padding: 13px;
+    background: var(--accent); color: #fff; border: none; border-radius: 9px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s;
   }
-
   #compress-btn:hover:not(:disabled) { background: var(--accent-hover); }
   #compress-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  /* Progress */
-  #progress-wrap {
-    display: none;
-    margin-top: 20px;
-  }
+  #progress-wrap { display: none; margin-top: 20px; }
+  #progress-bar-bg { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+  #progress-bar { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; width: 0%; }
+  #progress-label { font-size: 0.8rem; color: var(--muted); margin-top: 7px; text-align: center; }
 
-  #progress-bar-bg {
-    background: var(--border);
-    border-radius: 99px;
-    height: 6px;
-    overflow: hidden;
-  }
+  #result { display: none; margin-top: 20px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 
-  #progress-bar {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 99px;
-    transition: width 0.3s;
-    width: 0%;
-  }
-
-  #progress-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 7px;
-    text-align: center;
-  }
-
-  /* Result */
-  #result {
-    display: none;
-    margin-top: 20px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .result-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .stat {
-    padding: 14px 12px;
-    text-align: center;
-    border-right: 1px solid var(--border);
-  }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--border); }
+  .stat { padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
   .stat:last-child { border-right: none; }
-
-  .stat .s-label {
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .stat .s-value {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-top: 4px;
-  }
-
+  .stat .s-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat .s-value { font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
   .stat .s-value.green { color: var(--green); }
   .stat .s-value.red { color: var(--red); }
 
   #download-btn {
-    display: block;
-    width: 100%;
-    padding: 13px;
-    background: var(--green);
-    color: #fff;
-    border: none;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
+    display: block; width: 100%; padding: 13px; background: var(--green);
+    color: #fff; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
   }
   #download-btn:hover { background: #16a34a; }
 
-  /* Footer */
-  footer {
-    margin-top: 32px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    text-align: center;
-  }
-
+  footer { margin-top: 32px; font-size: 0.78rem; color: var(--muted); text-align: center; }
   footer a { color: var(--muted); }
-
-  .privacy-note {
-    margin-top: 12px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
+  .privacy-note { margin-top: 12px; font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 5px; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>PDF <span>Compressor</span></h1>
+  <h1>Programmatica PDF <span>Compressor</span></h1>
   <p>Reduce PDF file size</p>
 </header>
 
 <div class="card">
-  <!-- Drop zone -->
   <div id="drop-zone">
     <input type="file" id="file-input" accept=".pdf,application/pdf">
     <span class="icon">📄</span>
@@ -339,7 +148,6 @@
     <div class="sublabel">or click to browse</div>
   </div>
 
-  <!-- File info -->
   <div id="file-info">
     <span class="file-icon">📄</span>
     <div class="file-meta">
@@ -349,35 +157,31 @@
     <button class="clear-btn" onclick="clearFile()" title="Remove file">✕</button>
   </div>
 
-  <!-- Quality setting -->
   <div class="settings">
     <label>Compression Level</label>
     <div class="quality-btns">
-      <button class="quality-btn" data-quality="72" onclick="setQuality(this)">
+      <button class="quality-btn" data-quality="92" data-scale="4.17" onclick="setQuality(this)">
         <span class="q-name">Low</span>
-        <span class="q-desc">Smaller file<br>Some quality loss</span>
+        <span class="q-desc">300 DPI<br>Best quality</span>
       </button>
-      <button class="quality-btn active" data-quality="60" onclick="setQuality(this)">
+      <button class="quality-btn active" data-quality="72" data-scale="1.5" onclick="setQuality(this)">
         <span class="q-name">Medium</span>
         <span class="q-desc">Balanced<br>Recommended</span>
       </button>
-      <button class="quality-btn" data-quality="40" onclick="setQuality(this)">
+      <button class="quality-btn" data-quality="40" data-scale="1.0" onclick="setQuality(this)">
         <span class="q-name">High</span>
         <span class="q-desc">Smallest file<br>More quality loss</span>
       </button>
     </div>
   </div>
 
-  <!-- Compress -->
   <button id="compress-btn" disabled onclick="compress()">Select a PDF to compress</button>
 
-  <!-- Progress -->
   <div id="progress-wrap">
     <div id="progress-bar-bg"><div id="progress-bar"></div></div>
     <div id="progress-label">Processing...</div>
   </div>
 
-  <!-- Result -->
   <div id="result">
     <div class="result-stats">
       <div class="stat">
@@ -400,20 +204,21 @@
 <div class="privacy-note">🔒 Your files never leave your device — all processing is done locally in your browser</div>
 
 <footer>
-  Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling
+  Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling.
 </footer>
 
-<!-- pdf-lib -->
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
 <script>
 let selectedFile = null;
 let compressedBytes = null;
-let selectedQuality = 60; // JPEG quality 0-100
+
+// Current quality (JPEG 0–100) and render scale
+let selectedQuality = 72;
+let selectedScale = 1.5;
 
 // ── Drag & drop ──
 const dropZone = document.getElementById('drop-zone');
-
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => {
@@ -456,7 +261,8 @@ function clearFile() {
 function setQuality(el) {
   document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  selectedQuality = parseInt(el.dataset.quality);
+  selectedQuality = parseFloat(el.dataset.quality);
+  selectedScale   = parseFloat(el.dataset.scale);
 }
 
 function setProgress(pct, label) {
@@ -482,11 +288,8 @@ async function compress() {
     const { PDFDocument } = PDFLib;
     const srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
     const outDoc = await PDFDocument.create();
-
     const pageCount = srcDoc.getPageCount();
 
-    // Re-render each page to a canvas and re-embed as a compressed JPEG image
-    // This is the main size reduction path — it replaces embedded images + vectors with compressed rasters
     for (let i = 0; i < pageCount; i++) {
       setProgress(15 + Math.round((i / pageCount) * 70), `Compressing page ${i + 1} of ${pageCount}…`);
       await compressPage(srcDoc, outDoc, i);
@@ -495,7 +298,6 @@ async function compress() {
     setProgress(90, 'Saving…');
     compressedBytes = await outDoc.save();
     setProgress(100, 'Done!');
-
     showResult(selectedFile.size, compressedBytes.byteLength);
 
   } catch (err) {
@@ -511,58 +313,33 @@ async function compress() {
 async function compressPage(srcDoc, outDoc, pageIndex) {
   const { PDFDocument } = PDFLib;
 
-  // Copy the page into a temporary doc so we can render it via an iframe trick
-  // We'll use the canvas approach: render each page to canvas → JPEG → embed
+  // Copy page into a temp doc for rendering
   const tempDoc = await PDFDocument.create();
   const [copiedPage] = await tempDoc.copyPages(srcDoc, [pageIndex]);
   tempDoc.addPage(copiedPage);
   const tempBytes = await tempDoc.save();
 
-  // Use pdf.js-free approach: draw on canvas using the URL
   const blob = new Blob([tempBytes], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
-
-  const jpegBytes = await renderPageToJpeg(url, selectedQuality);
+  const jpegBytes = await renderPageToJpeg(url, selectedQuality, selectedScale);
   URL.revokeObjectURL(url);
 
   const srcPage = srcDoc.getPage(pageIndex);
   const { width, height } = srcPage.getSize();
-
-  // Scale up canvas resolution for quality
-  const scale = getScale();
-  const canvasW = Math.round(width * scale);
-  const canvasH = Math.round(height * scale);
 
   const jpegImage = await outDoc.embedJpg(jpegBytes);
   const newPage = outDoc.addPage([width, height]);
   newPage.drawImage(jpegImage, { x: 0, y: 0, width, height });
 }
 
-function getScale() {
-  // Higher quality = higher render resolution
-  if (selectedQuality >= 70) return 1.5;
-  if (selectedQuality >= 55) return 1.2;
-  return 1.0;
-}
-
-function renderPageToJpeg(pdfUrl, quality) {
+function renderPageToJpeg(pdfUrl, quality, scale) {
   return new Promise((resolve, reject) => {
-    // We use an iframe with a canvas message bridge via pdf.js CDN
-    // Simpler: use fetch + manual canvas rendering via pdf.js
-    // Since we don't have pdf.js loaded, we use the img/canvas trick:
-    // embed PDF in an <object> element and screenshot...
-    // Actually, the most reliable client-side approach without pdf.js is:
-    // render using an offscreen iframe + html2canvas — but that's also complex.
-    //
-    // Instead, we use the pure pdf-lib image extraction + canvas re-encoding approach.
-    // For pages without raster images (vector/text only), we do a simpler optimisation.
-
-    // Load pdf.js on demand
     if (!window.pdfjsLib) {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
       script.onload = () => {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         doRender();
       };
       script.onerror = reject;
@@ -572,21 +349,21 @@ function renderPageToJpeg(pdfUrl, quality) {
     }
 
     function doRender() {
-      pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-        return pdf.getPage(1);
-      }).then(page => {
-        const scale = getScale();
-        const viewport = page.getViewport({ scale });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d');
-        return page.render({ canvasContext: ctx, viewport }).promise.then(() => {
-          canvas.toBlob(blob => {
-            blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf)));
-          }, 'image/jpeg', quality / 100);
-        });
-      }).catch(reject);
+      pdfjsLib.getDocument(pdfUrl).promise
+        .then(pdf => pdf.getPage(1))
+        .then(page => {
+          const viewport = page.getViewport({ scale });
+          const canvas = document.createElement('canvas');
+          canvas.width  = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          return page.render({ canvasContext: ctx, viewport }).promise.then(() => {
+            canvas.toBlob(blob => {
+              blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf)));
+            }, 'image/jpeg', quality / 100);
+          });
+        })
+        .catch(reject);
     }
   });
 }
@@ -595,7 +372,7 @@ function showResult(originalSize, compressedSize) {
   const saved = originalSize - compressedSize;
   const pct = ((saved / originalSize) * 100).toFixed(1);
 
-  document.getElementById('r-original').textContent = fmtBytes(originalSize);
+  document.getElementById('r-original').textContent   = fmtBytes(originalSize);
   document.getElementById('r-compressed').textContent = fmtBytes(compressedSize);
 
   const savedEl = document.getElementById('r-saved');
@@ -614,11 +391,10 @@ function showResult(originalSize, compressedSize) {
 function downloadResult() {
   if (!compressedBytes) return;
   const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const orig = selectedFile.name.replace(/\.pdf$/i, '');
-  a.download = orig + '-compressed.pdf';
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = selectedFile.name.replace(/\.pdf$/i, '') + '-compressed.pdf';
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
