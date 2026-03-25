@@ -2,396 +2,716 @@
 <html lang="en">
 <head>
   <link rel="icon" type="image/png" href="favicon.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Compressor</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programmatica Tools</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --card: #1a1d27; --border: #2a2d3e;
+      --accent: #6c63ff; --accent-hover: #7d75ff;
+      --fg: #e8e9f0; --muted: #888ba0;
+      --green: #22c55e; --red: #ef4444; --radius: 12px;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--fg);
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px 60px;
+    }
+    header { text-align: center; margin-bottom: 28px; }
+    header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+    header h1 span { color: var(--accent); }
+    header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
 
-  :root {
-    --bg: #0f1117;
-    --card: #1a1d27;
-    --border: #2a2d3e;
-    --accent: #6c63ff;
-    --accent-hover: #7d75ff;
-    --fg: #e8e9f0;
-    --muted: #888ba0;
-    --green: #22c55e;
-    --red: #ef4444;
-    --radius: 12px;
-  }
+    /* ── Tab nav ── */
+    .tab-nav-wrap { width: 100%; max-width: 700px; overflow-x: auto; margin-bottom: 16px; -webkit-overflow-scrolling: touch; }
+    .tab-nav { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 5px; min-width: max-content; }
+    .tab-btn { padding: 8px 15px; border: none; background: none; color: var(--muted); font-size: 0.84rem; font-weight: 600; border-radius: 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .tab-btn:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
+    .tab-btn.active { background: var(--accent); color: #fff; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--fg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 60px;
-  }
+    /* ── Card ── */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 700px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-  header { text-align: center; margin-bottom: 40px; }
-  header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
-  header h1 span { color: var(--accent); }
-  header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
+    /* ── Drop zone ── */
+    .drop-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 40px 20px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; }
+    .drop-zone.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.06); }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-zone .dz-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+    .drop-zone .dz-label { font-size: 1rem; font-weight: 600; }
+    .drop-zone .dz-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px;
-    width: 100%;
-    max-width: 560px;
-  }
+    /* ── File info row ── */
+    .file-row { display: none; align-items: center; gap: 12px; background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.25); border-radius: 8px; padding: 11px 14px; margin-top: 14px; }
+    .file-row .fr-icon { font-size: 1.5rem; }
+    .file-row .fr-meta { flex: 1; min-width: 0; }
+    .file-row .fr-name { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-row .fr-size { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .fr-clear { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 4px; transition: color 0.15s; }
+    .fr-clear:hover { color: var(--red); }
 
-  #drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: 10px;
-    padding: 44px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    position: relative;
-  }
-  #drop-zone.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.06); }
-  #drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-  #drop-zone .icon { font-size: 2.4rem; margin-bottom: 10px; display: block; }
-  #drop-zone .label { font-size: 1rem; font-weight: 600; color: var(--fg); }
-  #drop-zone .sublabel { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+    /* ── Quality buttons ── */
+    .settings { margin-top: 18px; }
+    .s-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 9px; }
+    .q-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .q-btn { border: 1px solid var(--border); background: var(--bg); color: var(--fg); border-radius: 8px; padding: 10px 8px; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .q-btn .qn { font-size: 0.88rem; font-weight: 600; display: block; }
+    .q-btn .qd { font-size: 0.71rem; color: var(--muted); display: block; margin-top: 3px; line-height: 1.4; }
+    .q-btn.active { border-color: var(--accent); background: rgba(108,99,255,0.12); }
+    .q-btn.active .qd { color: rgba(108,99,255,0.8); }
+    .q-btn:hover:not(.active) { border-color: #444; background: rgba(255,255,255,0.03); }
 
-  #file-info {
-    display: none;
-    align-items: center;
-    gap: 12px;
-    background: rgba(108,99,255,0.08);
-    border: 1px solid rgba(108,99,255,0.25);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-top: 16px;
-  }
-  #file-info .file-icon { font-size: 1.6rem; }
-  #file-info .file-meta { flex: 1; min-width: 0; }
-  #file-info .file-name { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #file-info .file-size { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-  #file-info .clear-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; padding: 4px; border-radius: 4px; transition: color 0.15s; }
-  #file-info .clear-btn:hover { color: var(--red); }
+    /* ── Action button ── */
+    .action-btn { display: block; width: 100%; margin-top: 18px; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: 9px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
+    .action-btn:hover:not(:disabled) { background: var(--accent-hover); }
+    .action-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .settings { margin-top: 20px; }
-  .settings label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    /* ── Progress ── */
+    .prog-wrap { display: none; margin-top: 18px; }
+    .prog-bg { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+    .prog-bar { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; width: 0%; }
+    .prog-lbl { font-size: 0.78rem; color: var(--muted); margin-top: 6px; text-align: center; }
 
-  .quality-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    /* ── Result box ── */
+    .result-box { display: none; margin-top: 18px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .r-stats { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--border); }
+    .r-stat { padding: 13px 10px; text-align: center; border-right: 1px solid var(--border); }
+    .r-stat:last-child { border-right: none; }
+    .r-stat .rl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .r-stat .rv { font-size: 1rem; font-weight: 700; margin-top: 4px; }
+    .rv.green { color: var(--green); }
+    .rv.red { color: var(--red); }
+    .dl-btn { display: block; width: 100%; padding: 13px; background: var(--green); color: #fff; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .dl-btn:hover { background: #16a34a; }
 
-  .quality-btn {
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--fg);
-    border-radius: 8px;
-    padding: 10px 8px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
-  }
-  .quality-btn .q-name { font-size: 0.88rem; font-weight: 600; display: block; }
-  .quality-btn .q-desc { font-size: 0.72rem; color: var(--muted); display: block; margin-top: 3px; line-height: 1.4; }
-  .quality-btn.active { border-color: var(--accent); background: rgba(108,99,255,0.12); color: var(--fg); }
-  .quality-btn.active .q-desc { color: rgba(108,99,255,0.8); }
-  .quality-btn:hover:not(.active) { border-color: #444; background: rgba(255,255,255,0.03); }
+    /* ── PDF Merge list ── */
+    .merge-list { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+    .merge-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; }
+    .mi-num { font-size: 0.74rem; color: var(--muted); font-weight: 700; min-width: 18px; }
+    .mi-name { flex: 1; font-size: 0.84rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mi-size { font-size: 0.74rem; color: var(--muted); white-space: nowrap; }
+    .mi-rm { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.95rem; padding: 2px 5px; border-radius: 4px; transition: color 0.15s; }
+    .mi-rm:hover { color: var(--red); }
+    .add-more { position: relative; display: block; width: 100%; margin-top: 8px; padding: 9px; background: none; border: 1px dashed var(--border); color: var(--muted); border-radius: 8px; font-size: 0.84rem; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .add-more:hover { border-color: var(--accent); color: var(--accent); }
+    .add-more input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 
-  #compress-btn {
-    display: block; width: 100%; margin-top: 20px; padding: 13px;
-    background: var(--accent); color: #fff; border: none; border-radius: 9px;
-    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s;
-  }
-  #compress-btn:hover:not(:disabled) { background: var(--accent-hover); }
-  #compress-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    /* ── Ad Copy Counter ── */
+    .ad-ta { width: 100%; min-height: 180px; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; color: var(--fg); font-family: inherit; font-size: 0.9rem; padding: 14px; resize: vertical; transition: border-color 0.15s; line-height: 1.5; }
+    .ad-ta:focus { outline: none; border-color: var(--accent); }
+    .ad-ta::placeholder { color: var(--muted); }
+    .count-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+    .count-card { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 16px; text-align: center; }
+    .count-card .cn { font-size: 2.2rem; font-weight: 700; color: var(--accent); line-height: 1; }
+    .count-card .cl { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }
+    .ghost-btn { display: block; width: 100%; margin-top: 12px; padding: 9px; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-size: 0.84rem; cursor: pointer; transition: all 0.15s; }
+    .ghost-btn:hover { border-color: var(--red); color: var(--red); }
 
-  #progress-wrap { display: none; margin-top: 20px; }
-  #progress-bar-bg { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
-  #progress-bar { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; width: 0%; }
-  #progress-label { font-size: 0.8rem; color: var(--muted); margin-top: 7px; text-align: center; }
+    /* ── Image Checker ── */
+    .checker-wrap { margin-top: 16px; overflow-x: auto; }
+    .checker-tbl { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .checker-tbl th { background: var(--bg); border: 1px solid var(--border); padding: 9px 12px; text-align: left; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+    .checker-tbl td { border: 1px solid var(--border); padding: 9px 12px; white-space: nowrap; font-family: 'SF Mono','Fira Code',monospace; }
+    .checker-tbl .td-name { font-family: inherit; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+    .checker-tbl tr:hover td { background: rgba(255,255,255,0.02); }
 
-  #result { display: none; margin-top: 20px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--border); }
-  .stat { padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
-  .stat:last-child { border-right: none; }
-  .stat .s-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-  .stat .s-value { font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
-  .stat .s-value.green { color: var(--green); }
-  .stat .s-value.red { color: var(--red); }
-
-  #download-btn {
-    display: block; width: 100%; padding: 13px; background: var(--green);
-    color: #fff; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
-  }
-  #download-btn:hover { background: #16a34a; }
-
-  footer { margin-top: 32px; font-size: 0.78rem; color: var(--muted); text-align: center; }
-  footer a { color: var(--muted); }
-  .privacy-note { margin-top: 12px; font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 5px; }
-</style>
+    /* ── Footer ── */
+    .privacy-note { margin-top: 20px; font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 5px; }
+    footer { margin-top: 14px; font-size: 0.78rem; color: var(--muted); text-align: center; }
+    footer a { color: var(--muted); }
+    .hint { font-size: 0.76rem; color: var(--muted); margin-top: 10px; }
+  </style>
 </head>
 <body>
 
 <header>
-  <h1>Programmatica PDF <span>Compressor</span></h1>
-  <p>Reduce PDF file size</p>
+  <h1>Programmatica <span>Tools</span></h1>
+  <p>Internal tools for the team</p>
 </header>
 
-<div class="card">
-  <div id="drop-zone">
-    <input type="file" id="file-input" accept=".pdf,application/pdf">
-    <span class="icon">📄</span>
-    <div class="label">Drop your PDF here</div>
-    <div class="sublabel">or click to browse</div>
-  </div>
-
-  <div id="file-info">
-    <span class="file-icon">📄</span>
-    <div class="file-meta">
-      <div class="file-name" id="file-name-label">—</div>
-      <div class="file-size" id="file-size-label">—</div>
-    </div>
-    <button class="clear-btn" onclick="clearFile()" title="Remove file">✕</button>
-  </div>
-
-  <div class="settings">
-    <label>Compression Level</label>
-    <div class="quality-btns">
-      <!-- Low: scale 2.0 (~144 DPI) + quality 88 — good quality, always smaller than original -->
-      <button class="quality-btn" data-quality="88" data-scale="2.0" onclick="setQuality(this)">
-        <span class="q-name">Low</span>
-        <span class="q-desc">~144 DPI<br>High quality</span>
-      </button>
-      <!-- Medium: scale 1.5 (~108 DPI) + quality 72 — balanced sweet spot -->
-      <button class="quality-btn active" data-quality="72" data-scale="1.5" onclick="setQuality(this)">
-        <span class="q-name">Medium</span>
-        <span class="q-desc">~108 DPI<br>Recommended</span>
-      </button>
-      <!-- High: scale 1.0 (~72 DPI) + quality 40 — maximum compression -->
-      <button class="quality-btn" data-quality="40" data-scale="1.0" onclick="setQuality(this)">
-        <span class="q-name">High</span>
-        <span class="q-desc">~72 DPI<br>Smallest file</span>
-      </button>
-    </div>
-  </div>
-
-  <button id="compress-btn" disabled onclick="compress()">Select a PDF to compress</button>
-
-  <div id="progress-wrap">
-    <div id="progress-bar-bg"><div id="progress-bar"></div></div>
-    <div id="progress-label">Processing...</div>
-  </div>
-
-  <div id="result">
-    <div class="result-stats">
-      <div class="stat">
-        <div class="s-label">Original</div>
-        <div class="s-value" id="r-original">—</div>
-      </div>
-      <div class="stat">
-        <div class="s-label">Compressed</div>
-        <div class="s-value" id="r-compressed">—</div>
-      </div>
-      <div class="stat">
-        <div class="s-label">Saved</div>
-        <div class="s-value green" id="r-saved">—</div>
-      </div>
-    </div>
-    <button id="download-btn" onclick="downloadResult()">⬇ Download Compressed PDF</button>
+<div class="tab-nav-wrap">
+  <div class="tab-nav">
+    <button class="tab-btn active"  onclick="showTab('pdf-compress',this)">📄 PDF Compress</button>
+    <button class="tab-btn"         onclick="showTab('img-compress',this)">🖼 Image Compress</button>
+    <button class="tab-btn"         onclick="showTab('pdf-merge',this)">🔗 PDF Merge</button>
+    <button class="tab-btn"         onclick="showTab('ad-copy',this)">✍️ Ad Copy Counter</button>
+    <button class="tab-btn"         onclick="showTab('img-check',this)">📐 Image Checker</button>
   </div>
 </div>
 
-<div class="privacy-note">🔒 Your files never leave your device — all processing is done locally in your browser</div>
+<div class="card">
 
-<footer>
-  Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling.
-</footer>
+  <!-- ══════════════════════════════════
+       TAB 1 · PDF COMPRESS
+  ══════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-pdf-compress">
+    <div class="drop-zone" id="pc-dz">
+      <input type="file" id="pc-input" accept=".pdf,application/pdf">
+      <span class="dz-icon">📄</span>
+      <div class="dz-label">Drop your PDF here</div>
+      <div class="dz-sub">or click to browse</div>
+    </div>
+    <div class="file-row" id="pc-row">
+      <span class="fr-icon">📄</span>
+      <div class="fr-meta">
+        <div class="fr-name" id="pc-name">—</div>
+        <div class="fr-size" id="pc-size">—</div>
+      </div>
+      <button class="fr-clear" onclick="pcClear()">✕</button>
+    </div>
+    <div class="settings">
+      <span class="s-label">Compression Level</span>
+      <div class="q-grid">
+        <button class="q-btn" data-q="88" data-s="2.0" onclick="pcSetQ(this)">
+          <span class="qn">Low</span><span class="qd">~144 DPI<br>High quality</span>
+        </button>
+        <button class="q-btn active" data-q="72" data-s="1.5" onclick="pcSetQ(this)">
+          <span class="qn">Medium</span><span class="qd">~108 DPI<br>Recommended</span>
+        </button>
+        <button class="q-btn" data-q="40" data-s="1.0" onclick="pcSetQ(this)">
+          <span class="qn">High</span><span class="qd">~72 DPI<br>Smallest file</span>
+        </button>
+      </div>
+    </div>
+    <button class="action-btn" id="pc-btn" disabled onclick="pcCompress()">Select a PDF to compress</button>
+    <div class="prog-wrap" id="pc-prog">
+      <div class="prog-bg"><div class="prog-bar" id="pc-bar"></div></div>
+      <div class="prog-lbl" id="pc-lbl">Processing…</div>
+    </div>
+    <div class="result-box" id="pc-result">
+      <div class="r-stats">
+        <div class="r-stat"><div class="rl">Original</div><div class="rv" id="pc-r1">—</div></div>
+        <div class="r-stat"><div class="rl">Compressed</div><div class="rv" id="pc-r2">—</div></div>
+        <div class="r-stat"><div class="rl">Saved</div><div class="rv green" id="pc-r3">—</div></div>
+      </div>
+      <button class="dl-btn" onclick="pcDownload()">⬇ Download Compressed PDF</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 2 · IMAGE COMPRESS
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-img-compress">
+    <div class="drop-zone" id="ic-dz">
+      <input type="file" id="ic-input" accept="image/jpeg,image/png,image/webp">
+      <span class="dz-icon">🖼</span>
+      <div class="dz-label">Drop your image here</div>
+      <div class="dz-sub">JPEG, PNG or WebP · or click to browse</div>
+    </div>
+    <div class="file-row" id="ic-row">
+      <span class="fr-icon">🖼</span>
+      <div class="fr-meta">
+        <div class="fr-name" id="ic-name">—</div>
+        <div class="fr-size" id="ic-size">—</div>
+      </div>
+      <button class="fr-clear" onclick="icClear()">✕</button>
+    </div>
+    <div class="settings">
+      <span class="s-label">Compression Level</span>
+      <div class="q-grid">
+        <button class="q-btn" data-q="88" onclick="icSetQ(this)">
+          <span class="qn">Low</span><span class="qd">High quality<br>Mild compression</span>
+        </button>
+        <button class="q-btn active" data-q="72" onclick="icSetQ(this)">
+          <span class="qn">Medium</span><span class="qd">Balanced<br>Recommended</span>
+        </button>
+        <button class="q-btn" data-q="40" onclick="icSetQ(this)">
+          <span class="qn">High</span><span class="qd">Smallest file<br>More quality loss</span>
+        </button>
+      </div>
+    </div>
+    <p class="hint">Output format: JPEG — PNG transparency will be replaced with a white background</p>
+    <button class="action-btn" id="ic-btn" disabled onclick="icCompress()">Select an image to compress</button>
+    <div class="prog-wrap" id="ic-prog">
+      <div class="prog-bg"><div class="prog-bar" id="ic-bar"></div></div>
+      <div class="prog-lbl" id="ic-lbl">Processing…</div>
+    </div>
+    <div class="result-box" id="ic-result">
+      <div class="r-stats">
+        <div class="r-stat"><div class="rl">Original</div><div class="rv" id="ic-r1">—</div></div>
+        <div class="r-stat"><div class="rl">Compressed</div><div class="rv" id="ic-r2">—</div></div>
+        <div class="r-stat"><div class="rl">Saved</div><div class="rv green" id="ic-r3">—</div></div>
+      </div>
+      <button class="dl-btn" onclick="icDownload()">⬇ Download Compressed Image</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 3 · PDF MERGE
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-pdf-merge">
+    <div class="drop-zone" id="pm-dz">
+      <input type="file" id="pm-input" accept=".pdf,application/pdf" multiple>
+      <span class="dz-icon">🔗</span>
+      <div class="dz-label">Drop PDFs here</div>
+      <div class="dz-sub">Select multiple files · or click to browse</div>
+    </div>
+    <div class="merge-list" id="pm-list"></div>
+    <div id="pm-add-wrap" style="display:none">
+      <div class="add-more">
+        <input type="file" id="pm-add" accept=".pdf,application/pdf" multiple onchange="pmAddFiles(this.files);this.value=''">
+        + Add more PDFs
+      </div>
+    </div>
+    <button class="action-btn" id="pm-btn" disabled onclick="pmMerge()">Add at least 2 PDFs to merge</button>
+    <div class="prog-wrap" id="pm-prog">
+      <div class="prog-bg"><div class="prog-bar" id="pm-bar"></div></div>
+      <div class="prog-lbl" id="pm-lbl">Merging…</div>
+    </div>
+    <div class="result-box" id="pm-result">
+      <div class="r-stats">
+        <div class="r-stat"><div class="rl">Files Merged</div><div class="rv green" id="pm-r1">—</div></div>
+        <div class="r-stat"><div class="rl">Total Pages</div><div class="rv" id="pm-r2">—</div></div>
+        <div class="r-stat"><div class="rl">File Size</div><div class="rv" id="pm-r3">—</div></div>
+      </div>
+      <button class="dl-btn" onclick="pmDownload()">⬇ Download Merged PDF</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 4 · AD COPY COUNTER
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-ad-copy">
+    <textarea class="ad-ta" id="ad-ta" placeholder="Paste or type your ad copy here…" oninput="adUpdate()"></textarea>
+    <div class="count-grid">
+      <div class="count-card"><div class="cn" id="ad-ch">0</div><div class="cl">Characters</div></div>
+      <div class="count-card"><div class="cn" id="ad-ns">0</div><div class="cl">Characters (no spaces)</div></div>
+      <div class="count-card"><div class="cn" id="ad-wd">0</div><div class="cl">Words</div></div>
+      <div class="count-card"><div class="cn" id="ad-ln">0</div><div class="cl">Lines</div></div>
+    </div>
+    <button class="ghost-btn" onclick="adClear()">Clear</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 5 · IMAGE CHECKER
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-img-check">
+    <div class="drop-zone" id="chk-dz">
+      <input type="file" id="chk-input" accept="image/*" multiple>
+      <span class="dz-icon">📐</span>
+      <div class="dz-label">Drop images here</div>
+      <div class="dz-sub">Multiple files supported · JPEG, PNG, WebP, GIF</div>
+    </div>
+    <div id="chk-wrap" style="display:none">
+      <div class="checker-wrap">
+        <table class="checker-tbl">
+          <thead><tr>
+            <th>Filename</th>
+            <th>Dimensions</th>
+            <th>Aspect Ratio</th>
+            <th>File Size</th>
+            <th>Format</th>
+          </tr></thead>
+          <tbody id="chk-tbody"></tbody>
+        </table>
+      </div>
+      <button class="ghost-btn" style="margin-top:10px;width:auto;padding:7px 16px;display:inline-block" onclick="chkClear()">Clear</button>
+    </div>
+  </div>
+
+</div><!-- /.card -->
+
+<div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
+<footer>Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling.</footer>
 
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
 <script>
-let selectedFile = null;
-let compressedBytes = null;
-let selectedQuality = 72;
-let selectedScale   = 1.5;
 
-const dropZone = document.getElementById('drop-zone');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type === 'application/pdf') setFile(file);
-  else alert('Please drop a PDF file.');
-});
-document.getElementById('file-input').addEventListener('change', e => {
-  if (e.target.files[0]) setFile(e.target.files[0]);
-});
+// ─────────────────────────────────────
+// SHARED HELPERS
+// ─────────────────────────────────────
 
-function setFile(file) {
-  selectedFile = file;
-  compressedBytes = null;
-  document.getElementById('file-name-label').textContent = file.name;
-  document.getElementById('file-size-label').textContent = fmtBytes(file.size);
-  document.getElementById('file-info').style.display = 'flex';
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('progress-wrap').style.display = 'none';
-  const btn = document.getElementById('compress-btn');
-  btn.disabled = false;
-  btn.textContent = 'Compress PDF';
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
 }
 
-function clearFile() {
-  selectedFile = null;
-  compressedBytes = null;
-  document.getElementById('file-info').style.display = 'none';
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('progress-wrap').style.display = 'none';
-  document.getElementById('file-input').value = '';
-  const btn = document.getElementById('compress-btn');
-  btn.disabled = true;
-  btn.textContent = 'Select a PDF to compress';
+function fmtB(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+  return (b/1048576).toFixed(2) + ' MB';
 }
 
-function setQuality(el) {
-  document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  selectedQuality = parseFloat(el.dataset.quality);
-  selectedScale   = parseFloat(el.dataset.scale);
+function setProg(barId, lblId, pct, txt) {
+  document.getElementById(barId).style.width = pct + '%';
+  document.getElementById(lblId).textContent = txt;
 }
 
-function setProgress(pct, label) {
-  document.getElementById('progress-bar').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = label;
+function showSaved(origSz, newSz, r1, r2, r3) {
+  const saved = origSz - newSz;
+  const pct = ((saved / origSz) * 100).toFixed(1);
+  document.getElementById(r1).textContent = fmtB(origSz);
+  document.getElementById(r2).textContent = fmtB(newSz);
+  const el = document.getElementById(r3);
+  if (saved > 0) { el.textContent = pct + '%'; el.className = 'rv green'; }
+  else           { el.textContent = '+' + fmtB(Math.abs(saved)); el.className = 'rv red'; }
 }
 
-async function compress() {
-  if (!selectedFile) return;
-  const btn = document.getElementById('compress-btn');
-  btn.disabled = true;
-  btn.textContent = 'Compressing…';
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('progress-wrap').style.display = 'block';
-  setProgress(5, 'Reading PDF…');
-
-  try {
-    const arrayBuffer = await selectedFile.arrayBuffer();
-    setProgress(15, 'Parsing pages…');
-    const { PDFDocument } = PDFLib;
-    const srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-    const outDoc = await PDFDocument.create();
-    const pageCount = srcDoc.getPageCount();
-
-    for (let i = 0; i < pageCount; i++) {
-      setProgress(15 + Math.round((i / pageCount) * 70), `Compressing page ${i + 1} of ${pageCount}…`);
-      await compressPage(srcDoc, outDoc, i);
-    }
-
-    setProgress(90, 'Saving…');
-    compressedBytes = await outDoc.save();
-    setProgress(100, 'Done!');
-    showResult(selectedFile.size, compressedBytes.byteLength);
-  } catch (err) {
-    console.error(err);
-    alert('Something went wrong: ' + err.message);
-    document.getElementById('progress-wrap').style.display = 'none';
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Compress Again';
-}
-
-async function compressPage(srcDoc, outDoc, pageIndex) {
-  const { PDFDocument } = PDFLib;
-  const tempDoc = await PDFDocument.create();
-  const [copiedPage] = await tempDoc.copyPages(srcDoc, [pageIndex]);
-  tempDoc.addPage(copiedPage);
-  const tempBytes = await tempDoc.save();
-
-  const blob = new Blob([tempBytes], { type: 'application/pdf' });
-  const url  = URL.createObjectURL(blob);
-  const jpegBytes = await renderPageToJpeg(url, selectedQuality, selectedScale);
-  URL.revokeObjectURL(url);
-
-  const srcPage = srcDoc.getPage(pageIndex);
-  const { width, height } = srcPage.getSize();
-  const jpegImage = await outDoc.embedJpg(jpegBytes);
-  const newPage   = outDoc.addPage([width, height]);
-  newPage.drawImage(jpegImage, { x: 0, y: 0, width, height });
-}
-
-function renderPageToJpeg(pdfUrl, quality, scale) {
-  return new Promise((resolve, reject) => {
-    if (!window.pdfjsLib) {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-      script.onload = () => {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        doRender();
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
-    } else {
-      doRender();
-    }
-
-    function doRender() {
-      pdfjsLib.getDocument(pdfUrl).promise
-        .then(pdf => pdf.getPage(1))
-        .then(page => {
-          const viewport = page.getViewport({ scale });
-          const canvas   = document.createElement('canvas');
-          canvas.width   = viewport.width;
-          canvas.height  = viewport.height;
-          const ctx = canvas.getContext('2d');
-          return page.render({ canvasContext: ctx, viewport }).promise.then(() => {
-            canvas.toBlob(blob => {
-              blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf)));
-            }, 'image/jpeg', quality / 100);
-          });
-        })
-        .catch(reject);
-    }
+function loadPdfJs() {
+  return new Promise((res, rej) => {
+    if (window.pdfjsLib) { res(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = () => {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      res();
+    };
+    s.onerror = rej;
+    document.head.appendChild(s);
   });
 }
 
-function showResult(originalSize, compressedSize) {
-  const saved = originalSize - compressedSize;
-  const pct   = ((saved / originalSize) * 100).toFixed(1);
-  document.getElementById('r-original').textContent   = fmtBytes(originalSize);
-  document.getElementById('r-compressed').textContent = fmtBytes(compressedSize);
-  const savedEl = document.getElementById('r-saved');
-  if (saved > 0) {
-    savedEl.textContent = pct + '%';
-    savedEl.className = 's-value green';
-  } else {
-    savedEl.textContent = '+' + fmtBytes(Math.abs(saved));
-    savedEl.className = 's-value red';
-  }
-  document.getElementById('progress-wrap').style.display = 'none';
-  document.getElementById('result').style.display = 'block';
-}
-
-function downloadResult() {
-  if (!compressedBytes) return;
-  const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = selectedFile.name.replace(/\.pdf$/i, '') + '-compressed.pdf';
-  a.click();
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
-function fmtBytes(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+// ─────────────────────────────────────
+// TAB 1 · PDF COMPRESS
+// ─────────────────────────────────────
+
+let pcFile = null, pcBytes = null, pcQ = 72, pcS = 1.5;
+
+(function () {
+  const dz = document.getElementById('pc-dz');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type === 'application/pdf') pcSet(f);
+    else alert('Please drop a PDF file.');
+  });
+  document.getElementById('pc-input').addEventListener('change', e => { if (e.target.files[0]) pcSet(e.target.files[0]); });
+})();
+
+function pcSet(f) {
+  pcFile = f; pcBytes = null;
+  document.getElementById('pc-name').textContent = f.name;
+  document.getElementById('pc-size').textContent = fmtB(f.size);
+  document.getElementById('pc-row').style.display = 'flex';
+  document.getElementById('pc-result').style.display = 'none';
+  document.getElementById('pc-prog').style.display = 'none';
+  const b = document.getElementById('pc-btn');
+  b.disabled = false; b.textContent = 'Compress PDF';
 }
+
+function pcClear() {
+  pcFile = null; pcBytes = null;
+  document.getElementById('pc-row').style.display = 'none';
+  document.getElementById('pc-result').style.display = 'none';
+  document.getElementById('pc-prog').style.display = 'none';
+  document.getElementById('pc-input').value = '';
+  const b = document.getElementById('pc-btn');
+  b.disabled = true; b.textContent = 'Select a PDF to compress';
+}
+
+function pcSetQ(el) {
+  document.querySelectorAll('#tab-pdf-compress .q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  pcQ = parseFloat(el.dataset.q);
+  pcS = parseFloat(el.dataset.s);
+}
+
+async function pcCompress() {
+  if (!pcFile) return;
+  const btn = document.getElementById('pc-btn');
+  btn.disabled = true; btn.textContent = 'Compressing…';
+  document.getElementById('pc-result').style.display = 'none';
+  document.getElementById('pc-prog').style.display = 'block';
+  setProg('pc-bar','pc-lbl', 5, 'Reading PDF…');
+  try {
+    await loadPdfJs();
+    const buf = await pcFile.arrayBuffer();
+    setProg('pc-bar','pc-lbl', 15, 'Parsing pages…');
+    const { PDFDocument } = PDFLib;
+    const src = await PDFDocument.load(buf, { ignoreEncryption: true });
+    const out = await PDFDocument.create();
+    const n = src.getPageCount();
+    for (let i = 0; i < n; i++) {
+      setProg('pc-bar','pc-lbl', 15 + Math.round(i/n*72), `Page ${i+1} of ${n}…`);
+      await pcCompressPage(src, out, i);
+    }
+    setProg('pc-bar','pc-lbl', 92, 'Saving…');
+    pcBytes = await out.save();
+    setProg('pc-bar','pc-lbl', 100, 'Done!');
+    showSaved(pcFile.size, pcBytes.byteLength, 'pc-r1','pc-r2','pc-r3');
+    document.getElementById('pc-prog').style.display = 'none';
+    document.getElementById('pc-result').style.display = 'block';
+  } catch(e) {
+    console.error(e); alert('Error: ' + e.message);
+    document.getElementById('pc-prog').style.display = 'none';
+  }
+  btn.disabled = false; btn.textContent = 'Compress Again';
+}
+
+async function pcCompressPage(src, out, idx) {
+  const { PDFDocument } = PDFLib;
+  const tmp = await PDFDocument.create();
+  const [pg] = await tmp.copyPages(src, [idx]);
+  tmp.addPage(pg);
+  const blob = new Blob([await tmp.save()], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const jpgBytes = await renderPdfToJpeg(url, pcQ, pcS);
+  URL.revokeObjectURL(url);
+  const { width, height } = src.getPage(idx).getSize();
+  const img = await out.embedJpg(jpgBytes);
+  out.addPage([width, height]).drawImage(img, { x:0, y:0, width, height });
+}
+
+function renderPdfToJpeg(url, quality, scale) {
+  return new Promise((res, rej) => {
+    pdfjsLib.getDocument(url).promise
+      .then(pdf => pdf.getPage(1))
+      .then(pg => {
+        const vp = pg.getViewport({ scale });
+        const c = document.createElement('canvas');
+        c.width = vp.width; c.height = vp.height;
+        return pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise
+          .then(() => c.toBlob(b => b.arrayBuffer().then(ab => res(new Uint8Array(ab))), 'image/jpeg', quality/100));
+      }).catch(rej);
+  });
+}
+
+function pcDownload() {
+  if (pcBytes) triggerDownload(new Blob([pcBytes],{type:'application/pdf'}), pcFile.name.replace(/\.pdf$/i,'')+'-compressed.pdf');
+}
+
+// ─────────────────────────────────────
+// TAB 2 · IMAGE COMPRESS
+// ─────────────────────────────────────
+
+let icFile = null, icBlob = null, icQ = 72;
+
+(function () {
+  const dz = document.getElementById('ic-dz');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) icSet(f);
+    else alert('Please drop an image file.');
+  });
+  document.getElementById('ic-input').addEventListener('change', e => { if (e.target.files[0]) icSet(e.target.files[0]); });
+})();
+
+function icSet(f) {
+  icFile = f; icBlob = null;
+  document.getElementById('ic-name').textContent = f.name;
+  document.getElementById('ic-size').textContent = fmtB(f.size);
+  document.getElementById('ic-row').style.display = 'flex';
+  document.getElementById('ic-result').style.display = 'none';
+  document.getElementById('ic-prog').style.display = 'none';
+  const b = document.getElementById('ic-btn');
+  b.disabled = false; b.textContent = 'Compress Image';
+}
+
+function icClear() {
+  icFile = null; icBlob = null;
+  document.getElementById('ic-row').style.display = 'none';
+  document.getElementById('ic-result').style.display = 'none';
+  document.getElementById('ic-prog').style.display = 'none';
+  document.getElementById('ic-input').value = '';
+  const b = document.getElementById('ic-btn');
+  b.disabled = true; b.textContent = 'Select an image to compress';
+}
+
+function icSetQ(el) {
+  document.querySelectorAll('#tab-img-compress .q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  icQ = parseFloat(el.dataset.q);
+}
+
+async function icCompress() {
+  if (!icFile) return;
+  const btn = document.getElementById('ic-btn');
+  btn.disabled = true; btn.textContent = 'Compressing…';
+  document.getElementById('ic-result').style.display = 'none';
+  document.getElementById('ic-prog').style.display = 'block';
+  setProg('ic-bar','ic-lbl', 20, 'Loading image…');
+  try {
+    icBlob = await new Promise((res, rej) => {
+      const img = new Image();
+      const url = URL.createObjectURL(icFile);
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,c.width,c.height);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        c.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), 'image/jpeg', icQ/100);
+      };
+      img.onerror = rej; img.src = url;
+    });
+    setProg('ic-bar','ic-lbl', 100, 'Done!');
+    showSaved(icFile.size, icBlob.size, 'ic-r1','ic-r2','ic-r3');
+    document.getElementById('ic-prog').style.display = 'none';
+    document.getElementById('ic-result').style.display = 'block';
+  } catch(e) {
+    console.error(e); alert('Error: ' + e.message);
+    document.getElementById('ic-prog').style.display = 'none';
+  }
+  btn.disabled = false; btn.textContent = 'Compress Again';
+}
+
+function icDownload() {
+  if (icBlob) triggerDownload(icBlob, icFile.name.replace(/\.(jpe?g|png|webp)$/i,'')+'-compressed.jpg');
+}
+
+// ─────────────────────────────────────
+// TAB 3 · PDF MERGE
+// ─────────────────────────────────────
+
+let pmFiles = [], pmBytes = null;
+
+(function () {
+  const dz = document.getElementById('pm-dz');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const files = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf');
+    if (files.length) pmAddFiles(files); else alert('Please drop PDF files.');
+  });
+  document.getElementById('pm-input').addEventListener('change', e => {
+    if (e.target.files.length) { pmAddFiles(e.target.files); e.target.value = ''; }
+  });
+})();
+
+function pmAddFiles(files) {
+  [...files].forEach(f => pmFiles.push(f));
+  pmRender();
+}
+
+function pmRemove(i) { pmFiles.splice(i,1); pmRender(); }
+
+function pmRender() {
+  const list = document.getElementById('pm-list');
+  list.innerHTML = pmFiles.map((f,i) => `
+    <div class="merge-item">
+      <span class="mi-num">${i+1}</span>
+      <span class="mi-name" title="${f.name}">${f.name}</span>
+      <span class="mi-size">${fmtB(f.size)}</span>
+      <button class="mi-rm" onclick="pmRemove(${i})">✕</button>
+    </div>`).join('');
+  document.getElementById('pm-add-wrap').style.display = pmFiles.length ? 'block' : 'none';
+  document.getElementById('pm-result').style.display = 'none';
+  const btn = document.getElementById('pm-btn');
+  if (pmFiles.length >= 2) { btn.disabled = false; btn.textContent = `Merge ${pmFiles.length} PDFs`; }
+  else if (pmFiles.length === 1) { btn.disabled = true; btn.textContent = 'Add at least 1 more PDF'; }
+  else { btn.disabled = true; btn.textContent = 'Add at least 2 PDFs to merge'; }
+}
+
+async function pmMerge() {
+  if (pmFiles.length < 2) return;
+  const btn = document.getElementById('pm-btn');
+  btn.disabled = true; btn.textContent = 'Merging…';
+  document.getElementById('pm-result').style.display = 'none';
+  document.getElementById('pm-prog').style.display = 'block';
+  setProg('pm-bar','pm-lbl', 5, 'Starting…');
+  try {
+    const { PDFDocument } = PDFLib;
+    const merged = await PDFDocument.create();
+    let pages = 0;
+    for (let i = 0; i < pmFiles.length; i++) {
+      setProg('pm-bar','pm-lbl', 5 + Math.round(i/pmFiles.length*88), `Adding ${pmFiles[i].name}…`);
+      const doc = await PDFDocument.load(await pmFiles[i].arrayBuffer(), { ignoreEncryption: true });
+      const copied = await merged.copyPages(doc, doc.getPageIndices());
+      copied.forEach(p => { merged.addPage(p); pages++; });
+    }
+    setProg('pm-bar','pm-lbl', 96, 'Saving…');
+    pmBytes = await merged.save();
+    setProg('pm-bar','pm-lbl', 100, 'Done!');
+    document.getElementById('pm-r1').textContent = pmFiles.length;
+    document.getElementById('pm-r2').textContent = pages;
+    document.getElementById('pm-r3').textContent = fmtB(pmBytes.byteLength);
+    document.getElementById('pm-prog').style.display = 'none';
+    document.getElementById('pm-result').style.display = 'block';
+  } catch(e) {
+    console.error(e); alert('Error: ' + e.message);
+    document.getElementById('pm-prog').style.display = 'none';
+  }
+  btn.disabled = false; btn.textContent = `Merge ${pmFiles.length} PDFs`;
+}
+
+function pmDownload() {
+  if (pmBytes) triggerDownload(new Blob([pmBytes],{type:'application/pdf'}), 'merged.pdf');
+}
+
+// ─────────────────────────────────────
+// TAB 4 · AD COPY COUNTER
+// ─────────────────────────────────────
+
+function adUpdate() {
+  const v = document.getElementById('ad-ta').value;
+  document.getElementById('ad-ch').textContent = v.length;
+  document.getElementById('ad-ns').textContent = v.replace(/\s/g,'').length;
+  document.getElementById('ad-wd').textContent = v.trim() === '' ? 0 : v.trim().split(/\s+/).length;
+  document.getElementById('ad-ln').textContent = v === '' ? 0 : v.split(/\n/).length;
+}
+
+function adClear() { document.getElementById('ad-ta').value = ''; adUpdate(); }
+
+// ─────────────────────────────────────
+// TAB 5 · IMAGE CHECKER
+// ─────────────────────────────────────
+
+(function () {
+  const dz = document.getElementById('chk-dz');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+    if (files.length) chkAdd(files); else alert('Please drop image files.');
+  });
+  document.getElementById('chk-input').addEventListener('change', e => {
+    if (e.target.files.length) chkAdd(e.target.files);
+  });
+})();
+
+function gcd(a,b) { return b === 0 ? a : gcd(b, a%b); }
+
+function chkAdd(files) {
+  document.getElementById('chk-wrap').style.display = 'block';
+  const tbody = document.getElementById('chk-tbody');
+  [...files].forEach(file => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const g = gcd(w, h);
+      const ext = (file.type.split('/')[1] || '').toUpperCase().replace('JPEG','JPG');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-name" title="${file.name}">${file.name}</td>
+        <td>${w} × ${h} px</td>
+        <td>${w/g}:${h/g}</td>
+        <td>${fmtB(file.size)}</td>
+        <td>${ext}</td>`;
+      tbody.appendChild(tr);
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  });
+}
+
+function chkClear() {
+  document.getElementById('chk-tbody').innerHTML = '';
+  document.getElementById('chk-wrap').style.display = 'none';
+  document.getElementById('chk-input').value = '';
+}
+
 </script>
 </body>
 </html>
