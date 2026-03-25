@@ -113,7 +113,6 @@
   #progress-label { font-size: 0.8rem; color: var(--muted); margin-top: 7px; text-align: center; }
 
   #result { display: none; margin-top: 20px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-
   .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--border); }
   .stat { padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
   .stat:last-child { border-right: none; }
@@ -160,17 +159,20 @@
   <div class="settings">
     <label>Compression Level</label>
     <div class="quality-btns">
-      <button class="quality-btn" data-quality="92" data-scale="4.17" onclick="setQuality(this)">
+      <!-- Low: scale 2.0 (~144 DPI) + quality 88 — good quality, always smaller than original -->
+      <button class="quality-btn" data-quality="88" data-scale="2.0" onclick="setQuality(this)">
         <span class="q-name">Low</span>
-        <span class="q-desc">300 DPI<br>Best quality</span>
+        <span class="q-desc">~144 DPI<br>High quality</span>
       </button>
+      <!-- Medium: scale 1.5 (~108 DPI) + quality 72 — balanced sweet spot -->
       <button class="quality-btn active" data-quality="72" data-scale="1.5" onclick="setQuality(this)">
         <span class="q-name">Medium</span>
-        <span class="q-desc">Balanced<br>Recommended</span>
+        <span class="q-desc">~108 DPI<br>Recommended</span>
       </button>
+      <!-- High: scale 1.0 (~72 DPI) + quality 40 — maximum compression -->
       <button class="quality-btn" data-quality="40" data-scale="1.0" onclick="setQuality(this)">
         <span class="q-name">High</span>
-        <span class="q-desc">Smallest file<br>More quality loss</span>
+        <span class="q-desc">~72 DPI<br>Smallest file</span>
       </button>
     </div>
   </div>
@@ -212,12 +214,9 @@
 <script>
 let selectedFile = null;
 let compressedBytes = null;
-
-// Current quality (JPEG 0–100) and render scale
 let selectedQuality = 72;
-let selectedScale = 1.5;
+let selectedScale   = 1.5;
 
-// ── Drag & drop ──
 const dropZone = document.getElementById('drop-zone');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
@@ -228,7 +227,6 @@ dropZone.addEventListener('drop', e => {
   if (file && file.type === 'application/pdf') setFile(file);
   else alert('Please drop a PDF file.');
 });
-
 document.getElementById('file-input').addEventListener('change', e => {
   if (e.target.files[0]) setFile(e.target.files[0]);
 });
@@ -270,10 +268,8 @@ function setProgress(pct, label) {
   document.getElementById('progress-label').textContent = label;
 }
 
-// ── Core compression ──
 async function compress() {
   if (!selectedFile) return;
-
   const btn = document.getElementById('compress-btn');
   btn.disabled = true;
   btn.textContent = 'Compressing…';
@@ -284,7 +280,6 @@ async function compress() {
   try {
     const arrayBuffer = await selectedFile.arrayBuffer();
     setProgress(15, 'Parsing pages…');
-
     const { PDFDocument } = PDFLib;
     const srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
     const outDoc = await PDFDocument.create();
@@ -299,7 +294,6 @@ async function compress() {
     compressedBytes = await outDoc.save();
     setProgress(100, 'Done!');
     showResult(selectedFile.size, compressedBytes.byteLength);
-
   } catch (err) {
     console.error(err);
     alert('Something went wrong: ' + err.message);
@@ -312,23 +306,20 @@ async function compress() {
 
 async function compressPage(srcDoc, outDoc, pageIndex) {
   const { PDFDocument } = PDFLib;
-
-  // Copy page into a temp doc for rendering
   const tempDoc = await PDFDocument.create();
   const [copiedPage] = await tempDoc.copyPages(srcDoc, [pageIndex]);
   tempDoc.addPage(copiedPage);
   const tempBytes = await tempDoc.save();
 
   const blob = new Blob([tempBytes], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
+  const url  = URL.createObjectURL(blob);
   const jpegBytes = await renderPageToJpeg(url, selectedQuality, selectedScale);
   URL.revokeObjectURL(url);
 
   const srcPage = srcDoc.getPage(pageIndex);
   const { width, height } = srcPage.getSize();
-
   const jpegImage = await outDoc.embedJpg(jpegBytes);
-  const newPage = outDoc.addPage([width, height]);
+  const newPage   = outDoc.addPage([width, height]);
   newPage.drawImage(jpegImage, { x: 0, y: 0, width, height });
 }
 
@@ -353,9 +344,9 @@ function renderPageToJpeg(pdfUrl, quality, scale) {
         .then(pdf => pdf.getPage(1))
         .then(page => {
           const viewport = page.getViewport({ scale });
-          const canvas = document.createElement('canvas');
-          canvas.width  = viewport.width;
-          canvas.height = viewport.height;
+          const canvas   = document.createElement('canvas');
+          canvas.width   = viewport.width;
+          canvas.height  = viewport.height;
           const ctx = canvas.getContext('2d');
           return page.render({ canvasContext: ctx, viewport }).promise.then(() => {
             canvas.toBlob(blob => {
@@ -370,11 +361,9 @@ function renderPageToJpeg(pdfUrl, quality, scale) {
 
 function showResult(originalSize, compressedSize) {
   const saved = originalSize - compressedSize;
-  const pct = ((saved / originalSize) * 100).toFixed(1);
-
+  const pct   = ((saved / originalSize) * 100).toFixed(1);
   document.getElementById('r-original').textContent   = fmtBytes(originalSize);
   document.getElementById('r-compressed').textContent = fmtBytes(compressedSize);
-
   const savedEl = document.getElementById('r-saved');
   if (saved > 0) {
     savedEl.textContent = pct + '%';
@@ -383,7 +372,6 @@ function showResult(originalSize, compressedSize) {
     savedEl.textContent = '+' + fmtBytes(Math.abs(saved));
     savedEl.className = 's-value red';
   }
-
   document.getElementById('progress-wrap').style.display = 'none';
   document.getElementById('result').style.display = 'block';
 }
