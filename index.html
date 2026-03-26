@@ -25,8 +25,8 @@
     header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
 
     /* ── Tab nav ── */
-    .tab-nav-wrap { width: 100%; max-width: 700px; overflow-x: auto; margin-bottom: 16px; -webkit-overflow-scrolling: touch; }
-    .tab-nav { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 5px; min-width: max-content; }
+    .tab-nav-wrap { width: 100%; max-width: 700px; margin-bottom: 16px; }
+    .tab-nav { display: flex; flex-wrap: wrap; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 5px; }
     .tab-btn { padding: 8px 15px; border: none; background: none; color: var(--muted); font-size: 0.84rem; font-weight: 600; border-radius: 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
     .tab-btn:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
     .tab-btn.active { background: var(--accent); color: #fff; }
@@ -129,7 +129,7 @@
 
 <header>
   <h1>Programmatica <span>Tools</span></h1>
-  <p>Internal tools for the team</p>
+  <p>Internal tools</p>
 </header>
 
 <div class="tab-nav-wrap">
