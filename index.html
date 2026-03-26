@@ -118,6 +118,22 @@
     .checker-tbl .td-name { font-family: inherit; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
     .checker-tbl tr:hover td { background: rgba(255,255,255,0.02); }
 
+    /* ── Percentage Calculator ── */
+    .pct-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+    .pct-label { font-size: 0.84rem; color: var(--muted); margin-bottom: 12px; }
+    .pct-accent { color: var(--fg); font-weight: 600; }
+    .pct-row { display: flex; align-items: center; gap: 10px; }
+    .pct-in { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); font-family: inherit; font-size: 0.9rem; padding: 9px 12px; outline: none; transition: border-color 0.15s; min-width: 0; }
+    .pct-in:focus { border-color: var(--accent); }
+    .pct-sep { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+    .pct-result { margin-top: 12px; font-size: 1.7rem; font-weight: 700; color: var(--accent); min-height: 2rem; }
+    .pct-result.neg { color: var(--red); }
+    .pct-result.pos { color: var(--green); }
+
+    /* ── UTM Builder ── */
+    .utm-in { display: block; width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); font-family: inherit; font-size: 0.88rem; padding: 9px 12px; outline: none; transition: border-color 0.15s; appearance: none; }
+    .utm-in:focus { border-color: var(--accent); }
+
     /* ── Footer ── */
     .privacy-note { margin-top: 20px; font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 5px; }
     footer { margin-top: 14px; font-size: 0.78rem; color: var(--muted); text-align: center; }
@@ -139,6 +155,9 @@
     <button class="tab-btn"         onclick="showTab('pdf-merge',this)">🔗 PDF Merge</button>
     <button class="tab-btn"         onclick="showTab('ad-copy',this)">✍️ Ad Copy Counter</button>
     <button class="tab-btn"         onclick="showTab('img-check',this)">📐 Image Checker</button>
+    <button class="tab-btn"         onclick="showTab('qr-gen',this)">🔳 QR Code</button>
+    <button class="tab-btn"         onclick="showTab('pct-calc',this)">% Percentage</button>
+    <button class="tab-btn"         onclick="showTab('utm-gen',this)">🔗 UTM Builder</button>
   </div>
 </div>
 
@@ -312,12 +331,137 @@
     </div>
   </div>
 
+
+  <!-- ══════════════════════════════════
+       TAB 6 · QR CODE GENERATOR
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-qr-gen">
+    <div style="margin-bottom:16px">
+      <span class="s-label">URL or Text</span>
+      <input id="qr-input" type="text" placeholder="https://programmatica.co.nz" oninput="qrUpdate()"
+        style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--fg);font-family:inherit;font-size:0.9rem;padding:12px 14px;transition:border-color 0.15s;outline:none"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div style="margin-bottom:16px">
+      <span class="s-label">Size</span>
+      <div class="q-grid">
+        <button class="q-btn" data-sz="128" onclick="qrSetSize(this)"><span class="qn">Small</span><span class="qd">128 × 128 px</span></button>
+        <button class="q-btn active" data-sz="256" onclick="qrSetSize(this)"><span class="qn">Medium</span><span class="qd">256 × 256 px</span></button>
+        <button class="q-btn" data-sz="512" onclick="qrSetSize(this)"><span class="qn">Large</span><span class="qd">512 × 512 px</span></button>
+      </div>
+    </div>
+    <div id="qr-preview" style="display:none;text-align:center;margin-top:4px">
+      <div id="qr-canvas-wrap" style="display:inline-block;padding:16px;background:#fff;border-radius:10px;margin-bottom:14px"></div>
+      <br>
+      <button class="dl-btn" style="max-width:280px;display:inline-block;border-radius:9px" onclick="qrDownload()">⬇ Download QR Code PNG</button>
+    </div>
+    <p id="qr-empty" class="hint" style="text-align:center;margin-top:20px">Enter a URL above to generate a QR code</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 7 · PERCENTAGE CALCULATOR
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-pct-calc">
+    <div style="display:flex;flex-direction:column;gap:14px">
+
+      <!-- Mode A: X is what % of Y -->
+      <div class="pct-card">
+        <div class="pct-label">What percentage is <span class="pct-accent">X</span> of <span class="pct-accent">Y</span>?</div>
+        <div class="pct-row">
+          <input class="pct-in" id="pa-x" type="number" placeholder="X" oninput="calcA()">
+          <span class="pct-sep">is what % of</span>
+          <input class="pct-in" id="pa-y" type="number" placeholder="Y" oninput="calcA()">
+        </div>
+        <div class="pct-result" id="pa-r">—</div>
+      </div>
+
+      <!-- Mode B: What is X% of Y -->
+      <div class="pct-card">
+        <div class="pct-label">What is <span class="pct-accent">X%</span> of <span class="pct-accent">Y</span>?</div>
+        <div class="pct-row">
+          <input class="pct-in" id="pb-x" type="number" placeholder="X %">
+          <span class="pct-sep">% of</span>
+          <input class="pct-in" id="pb-y" type="number" placeholder="Y" oninput="calcB()">
+        </div>
+        <div class="pct-result" id="pb-r">—</div>
+      </div>
+
+      <!-- Mode C: % change from X to Y -->
+      <div class="pct-card">
+        <div class="pct-label">Percentage change from <span class="pct-accent">X</span> to <span class="pct-accent">Y</span></div>
+        <div class="pct-row">
+          <input class="pct-in" id="pc-x" type="number" placeholder="From">
+          <span class="pct-sep">→</span>
+          <input class="pct-in" id="pc-y" type="number" placeholder="To" oninput="calcC()">
+        </div>
+        <div class="pct-result" id="pc-r">—</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 8 · UTM BUILDER
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-utm-gen">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <span class="s-label">Base URL *</span>
+        <input class="utm-in" id="utm-url" type="text" placeholder="https://example.com/landing-page" oninput="utmBuild()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <span class="s-label">Source *</span>
+          <input class="utm-in" id="utm-src" type="text" value="programmatica" oninput="utmBuild()">
+        </div>
+        <div>
+          <span class="s-label">Medium *</span>
+          <select class="utm-in" id="utm-med" onchange="utmBuild()" style="cursor:pointer">
+            <option value="">— select —</option>
+            <option value="cpc">cpc</option>
+            <option value="display">display</option>
+            <option value="email">email</option>
+            <option value="social">social</option>
+            <option value="video">video</option>
+            <option value="organic">organic</option>
+            <option value="referral">referral</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <span class="s-label">Campaign *</span>
+        <input class="utm-in" id="utm-cmp" type="text" placeholder="e.g. summer_sale_2025" oninput="utmBuild()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <span class="s-label">Content <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></span>
+          <input class="utm-in" id="utm-cnt" type="text" placeholder="e.g. banner_v1" oninput="utmBuild()">
+        </div>
+        <div>
+          <span class="s-label">Term <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></span>
+          <input class="utm-in" id="utm-trm" type="text" placeholder="e.g. keyword" oninput="utmBuild()">
+        </div>
+      </div>
+    </div>
+    <div id="utm-out-wrap" style="display:none;margin-top:18px">
+      <span class="s-label">Generated URL</span>
+      <div style="display:flex;gap:8px;align-items:stretch">
+        <div id="utm-out" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;font-size:0.78rem;font-family:'SF Mono','Fira Code',monospace;color:var(--fg);word-break:break-all;line-height:1.5"></div>
+        <button onclick="utmCopy()" id="utm-copy-btn"
+          style="background:var(--accent);color:#fff;border:none;border-radius:9px;padding:0 16px;font-size:0.84rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.15s"
+          onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">Copy</button>
+      </div>
+    </div>
+    <p id="utm-hint" class="hint" style="margin-top:14px">Fill in Base URL, Medium and Campaign to generate your UTM link</p>
+  </div>
+
 </div><!-- /.card -->
 
 <div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
 <footer>Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling.</footer>
 
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 
 // ─────────────────────────────────────
@@ -710,6 +854,135 @@ function chkClear() {
   document.getElementById('chk-tbody').innerHTML = '';
   document.getElementById('chk-wrap').style.display = 'none';
   document.getElementById('chk-input').value = '';
+}
+
+// ─────────────────────────────────────
+// TAB 6 · QR CODE GENERATOR
+// ─────────────────────────────────────
+
+let qrInstance = null, qrSize = 256;
+
+function qrSetSize(el) {
+  document.querySelectorAll('#tab-qr-gen .q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  qrSize = parseInt(el.dataset.sz);
+  qrUpdate();
+}
+
+function qrUpdate() {
+  const val = document.getElementById('qr-input').value.trim();
+  const preview = document.getElementById('qr-preview');
+  const empty   = document.getElementById('qr-empty');
+  if (!val) { preview.style.display = 'none'; empty.style.display = 'block'; return; }
+  preview.style.display = 'block';
+  empty.style.display   = 'none';
+  const wrap = document.getElementById('qr-canvas-wrap');
+  wrap.innerHTML = '';
+  qrInstance = new QRCode(wrap, { text: val, width: qrSize, height: qrSize, correctLevel: QRCode.CorrectLevel.H });
+}
+
+function qrDownload() {
+  const img = document.querySelector('#qr-canvas-wrap img');
+  const canvas = document.querySelector('#qr-canvas-wrap canvas');
+  let src = img ? img.src : (canvas ? canvas.toDataURL('image/png') : null);
+  if (!src) return;
+  const a = document.createElement('a');
+  a.href = src;
+  a.download = 'qrcode.png';
+  a.click();
+}
+
+// ─────────────────────────────────────
+// TAB 7 · PERCENTAGE CALCULATOR
+// ─────────────────────────────────────
+
+function fmtN(n) {
+  return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
+
+function calcA() {
+  const x = parseFloat(document.getElementById('pa-x').value);
+  const y = parseFloat(document.getElementById('pa-y').value);
+  const el = document.getElementById('pa-r');
+  if (isNaN(x) || isNaN(y) || y === 0) { el.textContent = '—'; el.className = 'pct-result'; return; }
+  const r = (x / y) * 100;
+  el.textContent = fmtN(parseFloat(r.toFixed(4))) + '%';
+  el.className = 'pct-result';
+}
+
+function calcB() {
+  const x = parseFloat(document.getElementById('pb-x').value);
+  const y = parseFloat(document.getElementById('pb-y').value);
+  const el = document.getElementById('pb-r');
+  if (isNaN(x) || isNaN(y)) { el.textContent = '—'; el.className = 'pct-result'; return; }
+  const r = (x / 100) * y;
+  el.textContent = fmtN(parseFloat(r.toFixed(4)));
+  el.className = 'pct-result';
+}
+
+// wire up pb-x input too
+document.getElementById('pb-x').addEventListener('input', calcB);
+document.getElementById('pc-x').addEventListener('input', calcC);
+
+function calcC() {
+  const x = parseFloat(document.getElementById('pc-x').value);
+  const y = parseFloat(document.getElementById('pc-y').value);
+  const el = document.getElementById('pc-r');
+  if (isNaN(x) || isNaN(y) || x === 0) { el.textContent = '—'; el.className = 'pct-result'; return; }
+  const r = ((y - x) / Math.abs(x)) * 100;
+  const sign = r >= 0 ? '+' : '';
+  el.textContent = sign + fmtN(parseFloat(r.toFixed(2))) + '%';
+  el.className = 'pct-result ' + (r >= 0 ? 'pos' : 'neg');
+}
+
+// ─────────────────────────────────────
+// TAB 8 · UTM BUILDER
+// ─────────────────────────────────────
+
+function utmBuild() {
+  const base = document.getElementById('utm-url').value.trim();
+  const src  = document.getElementById('utm-src').value.trim();
+  const med  = document.getElementById('utm-med').value.trim();
+  const cmp  = document.getElementById('utm-cmp').value.trim();
+  const cnt  = document.getElementById('utm-cnt').value.trim();
+  const trm  = document.getElementById('utm-trm').value.trim();
+
+  const outWrap = document.getElementById('utm-out-wrap');
+  const hint    = document.getElementById('utm-hint');
+
+  if (!base || !med || !cmp) {
+    outWrap.style.display = 'none';
+    hint.style.display = 'block';
+    return;
+  }
+
+  const params = new URLSearchParams();
+  if (src) params.set('utm_source', src);
+  if (med) params.set('utm_medium', med);
+  if (cmp) params.set('utm_campaign', cmp);
+  if (cnt) params.set('utm_content', cnt);
+  if (trm) params.set('utm_term', trm);
+
+  const sep = base.includes('?') ? '&' : '?';
+  const url = base + sep + params.toString();
+
+  document.getElementById('utm-out').textContent = url;
+  outWrap.style.display = 'block';
+  hint.style.display = 'none';
+
+  const copyBtn = document.getElementById('utm-copy-btn');
+  copyBtn.textContent = 'Copy';
+  copyBtn.style.background = 'var(--accent)';
+}
+
+function utmCopy() {
+  const url = document.getElementById('utm-out').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('utm-copy-btn');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = 'var(--accent)'; }, 2000);
+  });
 }
 
 </script>
