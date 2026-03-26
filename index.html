@@ -158,6 +158,7 @@
     <button class="tab-btn"         onclick="showTab('qr-gen',this)">🔳 QR Code</button>
     <button class="tab-btn"         onclick="showTab('pct-calc',this)">% Percentage</button>
     <button class="tab-btn"         onclick="showTab('utm-gen',this)">🔗 UTM Builder</button>
+    <button class="tab-btn"         onclick="showTab('email-extract',this)">📧 Email Extractor</button>
   </div>
 </div>
 
@@ -455,6 +456,41 @@
     <p id="utm-hint" class="hint" style="margin-top:14px">Fill in Base URL, Medium and Campaign to generate your UTM link</p>
   </div>
 
+  <!-- ══════════════════════════════════
+       TAB 9 · EMAIL EXTRACTOR
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-email-extract">
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px">Drop one or more Excel files — every "Email" column across all sheets will be extracted, deduplicated, and downloaded as a CSV.</p>
+    <div class="drop-zone" id="ee-dz" style="position:relative">
+      <input type="file" id="ee-input" accept=".xlsx,.xls" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+      <span class="dz-icon">📧</span>
+      <div class="dz-label">Drop Excel files here</div>
+      <div class="dz-sub">or click to browse · multiple files supported</div>
+    </div>
+
+    <div id="ee-filelist" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div>
+
+    <div class="settings" style="margin-top:16px">
+      <span class="s-label">Output filename</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="ee-fname" type="text" value="emails" placeholder="emails"
+          style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:inherit;font-size:0.88rem;padding:9px 12px;outline:none;transition:border-color 0.15s"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <span style="font-size:0.85rem;color:var(--muted);white-space:nowrap">.csv</span>
+      </div>
+    </div>
+
+    <button class="action-btn" id="ee-btn" onclick="eeExtract()" disabled>Extract &amp; Download CSV</button>
+    <div id="ee-status" style="display:none;margin-top:14px;text-align:center">
+      <div class="prog-bg" style="margin-bottom:8px"><div class="prog-bar" id="ee-bar" style="width:0%"></div></div>
+      <span id="ee-lbl" style="font-size:0.82rem;color:var(--muted)"></span>
+    </div>
+    <div id="ee-result" style="display:none;margin-top:14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:14px 18px;text-align:center">
+      <div style="font-size:1.6rem;font-weight:700;color:var(--green)" id="ee-count">0</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">unique emails extracted</div>
+    </div>
+  </div>
+
 </div><!-- /.card -->
 
 <div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
@@ -462,6 +498,7 @@
 
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 
 // ─────────────────────────────────────
@@ -983,6 +1020,121 @@ function utmCopy() {
     btn.style.background = 'var(--green)';
     setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = 'var(--accent)'; }, 2000);
   });
+}
+
+// ─────────────────────────────────────
+// TAB 9 · EMAIL EXTRACTOR
+// ─────────────────────────────────────
+
+let eeFiles = [];
+
+(function () {
+  const dz = document.getElementById('ee-dz');
+  const input = document.getElementById('ee-input');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    eeAddFiles(Array.from(e.dataTransfer.files));
+  });
+  input.addEventListener('change', e => {
+    eeAddFiles(Array.from(e.target.files));
+    input.value = '';
+  });
+})();
+
+function eeAddFiles(newFiles) {
+  newFiles.forEach(f => {
+    if (f.name.match(/\.xlsx?$/i) && !eeFiles.find(x => x.name === f.name && x.size === f.size)) {
+      eeFiles.push(f);
+    }
+  });
+  eeRenderList();
+  document.getElementById('ee-btn').disabled = eeFiles.length === 0;
+  document.getElementById('ee-result').style.display = 'none';
+  document.getElementById('ee-status').style.display = 'none';
+}
+
+function eeRemove(idx) {
+  eeFiles.splice(idx, 1);
+  eeRenderList();
+  document.getElementById('ee-btn').disabled = eeFiles.length === 0;
+}
+
+function eeRenderList() {
+  const list = document.getElementById('ee-filelist');
+  list.innerHTML = eeFiles.map((f, i) => `
+    <div class="merge-item">
+      <span class="mi-num">${i + 1}</span>
+      <span class="mi-name">📊 ${f.name}</span>
+      <span class="mi-size">${(f.size / 1024).toFixed(0)} KB</span>
+      <button class="mi-rm" onclick="eeRemove(${i})">✕</button>
+    </div>`).join('');
+}
+
+async function eeExtract() {
+  if (!eeFiles.length) return;
+  const btn = document.getElementById('ee-btn');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+  const statusWrap = document.getElementById('ee-status');
+  const bar = document.getElementById('ee-bar');
+  const lbl = document.getElementById('ee-lbl');
+  statusWrap.style.display = 'block';
+  document.getElementById('ee-result').style.display = 'none';
+
+  const allEmails = [];
+
+  for (let i = 0; i < eeFiles.length; i++) {
+    const f = eeFiles[i];
+    lbl.textContent = `Reading ${f.name}… (${i + 1}/${eeFiles.length})`;
+    bar.style.width = Math.round((i / eeFiles.length) * 100) + '%';
+
+    try {
+      const ab = await f.arrayBuffer();
+      const wb = XLSX.read(ab, { type: 'array' });
+      wb.SheetNames.forEach(name => {
+        const ws = wb.Sheets[name];
+        const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+        rows.forEach(row => {
+          // look for any key that contains "email" (case-insensitive)
+          Object.keys(row).forEach(k => {
+            if (k.toLowerCase().trim().includes('email')) {
+              const val = String(row[k]).trim();
+              if (val && val !== '' && !val.toLowerCase().includes('email')) {
+                allEmails.push(val.toLowerCase());
+              }
+            }
+          });
+        });
+      });
+    } catch(e) {
+      console.warn('Could not read ' + f.name, e);
+    }
+  }
+
+  bar.style.width = '100%';
+  lbl.textContent = 'Deduplicating…';
+
+  // Deduplicate preserving first-seen order
+  const seen = new Set();
+  const unique = allEmails.filter(e => {
+    if (seen.has(e)) return false;
+    seen.add(e);
+    return true;
+  });
+
+  // Build CSV
+  const csv = 'Email\n' + unique.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const fname = (document.getElementById('ee-fname').value.trim() || 'emails') + '.csv';
+  triggerDownload(blob, fname);
+
+  statusWrap.style.display = 'none';
+  document.getElementById('ee-count').textContent = unique.length.toLocaleString();
+  document.getElementById('ee-result').style.display = 'block';
+  btn.disabled = false;
+  btn.textContent = 'Extract & Download CSV';
 }
 
 </script>
