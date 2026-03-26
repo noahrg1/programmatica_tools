@@ -159,6 +159,7 @@
     <button class="tab-btn"         onclick="showTab('pct-calc',this)">% Percentage</button>
     <button class="tab-btn"         onclick="showTab('utm-gen',this)">🔗 UTM Builder</button>
     <button class="tab-btn"         onclick="showTab('email-extract',this)">📧 Email Extractor</button>
+    <button class="tab-btn"         onclick="showTab('csv-join',this)">📋 List to CSV</button>
   </div>
 </div>
 
@@ -488,6 +489,28 @@
     <div id="ee-result" style="display:none;margin-top:14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:14px 18px;text-align:center">
       <div style="font-size:1.6rem;font-weight:700;color:var(--green)" id="ee-count">0</div>
       <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">unique emails extracted</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 10 · LIST TO CSV
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-csv-join">
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px">Paste a column of IDs or values — one per line — and get a comma-separated list ready to copy into ad platforms.</p>
+    <textarea class="ad-ta" id="cj-input" placeholder="123456&#10;789012&#10;345678&#10;..." oninput="cjBuild()" style="min-height:160px;font-family:'SF Mono','Fira Code',monospace;font-size:0.85rem"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <span id="cj-count" style="font-size:0.78rem;color:var(--muted)">0 items</span>
+      <button class="ghost-btn" onclick="document.getElementById('cj-input').value='';cjBuild()" style="width:auto;padding:6px 14px;margin-top:0">Clear</button>
+    </div>
+
+    <div id="cj-out-wrap" style="display:none;margin-top:16px">
+      <span class="s-label">CSV Output</span>
+      <div style="display:flex;gap:8px;align-items:stretch">
+        <div id="cj-out" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;font-size:0.78rem;font-family:'SF Mono','Fira Code',monospace;color:var(--fg);word-break:break-all;line-height:1.6;max-height:160px;overflow-y:auto"></div>
+        <button id="cj-copy-btn" onclick="cjCopy()"
+          style="background:var(--accent);color:#fff;border:none;border-radius:9px;padding:0 16px;font-size:0.84rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.15s;align-self:flex-start;margin-top:0"
+          onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">Copy</button>
+      </div>
     </div>
   </div>
 
@@ -1135,6 +1158,36 @@ async function eeExtract() {
   document.getElementById('ee-result').style.display = 'block';
   btn.disabled = false;
   btn.textContent = 'Extract & Download CSV';
+}
+
+// ─────────────────────────────────────
+// TAB 10 · LIST TO CSV
+// ─────────────────────────────────────
+
+function cjBuild() {
+  const raw = document.getElementById('cj-input').value;
+  const items = raw.split('\n')
+    .map(l => l.trim())
+    .filter(l => l !== '');
+  const count = document.getElementById('cj-count');
+  const outWrap = document.getElementById('cj-out-wrap');
+  count.textContent = items.length + (items.length === 1 ? ' item' : ' items');
+  if (items.length === 0) { outWrap.style.display = 'none'; return; }
+  document.getElementById('cj-out').textContent = items.join(',');
+  outWrap.style.display = 'block';
+  const btn = document.getElementById('cj-copy-btn');
+  btn.textContent = 'Copy';
+  btn.style.background = 'var(--accent)';
+}
+
+function cjCopy() {
+  const text = document.getElementById('cj-out').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('cj-copy-btn');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = 'var(--accent)'; }, 2000);
+  });
 }
 
 </script>
