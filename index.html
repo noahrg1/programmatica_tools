@@ -27,9 +27,10 @@
     /* ── Tab nav ── */
     .tab-nav-wrap { width: 100%; max-width: 700px; margin-bottom: 16px; }
     .tab-nav { display: flex; flex-wrap: wrap; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 5px; }
-    .tab-btn { padding: 8px 15px; border: none; background: none; color: var(--muted); font-size: 0.84rem; font-weight: 600; border-radius: 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .tab-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 15px; border: none; background: none; color: var(--muted); font-size: 0.84rem; font-weight: 600; border-radius: 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
     .tab-btn:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
     .tab-btn.active { background: var(--accent); color: #fff; }
+    .tab-btn i { width: 14px; height: 14px; flex-shrink: 0; }
 
     /* ── Card ── */
     .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 700px; }
@@ -150,16 +151,16 @@
 
 <div class="tab-nav-wrap">
   <div class="tab-nav">
-    <button class="tab-btn active"  onclick="showTab('pdf-compress',this)">📄 PDF Compress</button>
-    <button class="tab-btn"         onclick="showTab('img-compress',this)">🖼 Image Compress</button>
-    <button class="tab-btn"         onclick="showTab('pdf-merge',this)">🔗 PDF Merge</button>
-    <button class="tab-btn"         onclick="showTab('ad-copy',this)">✍️ Ad Copy Counter</button>
-    <button class="tab-btn"         onclick="showTab('img-check',this)">📐 Image Checker</button>
-    <button class="tab-btn"         onclick="showTab('qr-gen',this)">🔳 QR Code</button>
-    <button class="tab-btn"         onclick="showTab('pct-calc',this)">% Percentage</button>
-    <button class="tab-btn"         onclick="showTab('utm-gen',this)">🔗 UTM Builder</button>
-    <button class="tab-btn"         onclick="showTab('email-extract',this)">📧 Email Extractor</button>
-    <button class="tab-btn"         onclick="showTab('csv-join',this)">📋 List to CSV</button>
+    <button class="tab-btn active"  onclick="showTab('pdf-compress',this)"><i data-lucide="file-down"></i> PDF Compress</button>
+    <button class="tab-btn"         onclick="showTab('img-compress',this)"><i data-lucide="image"></i> Image Compress</button>
+    <button class="tab-btn"         onclick="showTab('pdf-merge',this)"><i data-lucide="layers"></i> PDF Merge</button>
+    <button class="tab-btn"         onclick="showTab('ad-copy',this)"><i data-lucide="type"></i> Ad Copy Counter</button>
+    <button class="tab-btn"         onclick="showTab('img-check',this)"><i data-lucide="scan-search"></i> Image Checker</button>
+    <button class="tab-btn"         onclick="showTab('qr-gen',this)"><i data-lucide="qr-code"></i> QR Code</button>
+    <button class="tab-btn"         onclick="showTab('pct-calc',this)"><i data-lucide="percent"></i> Percentage</button>
+    <button class="tab-btn"         onclick="showTab('utm-gen',this)"><i data-lucide="link-2"></i> UTM Builder</button>
+    <button class="tab-btn"         onclick="showTab('email-extract',this)"><i data-lucide="mail-open"></i> Email Extractor</button>
+    <button class="tab-btn"         onclick="showTab('csv-join',this)"><i data-lucide="list"></i> List to CSV</button>
   </div>
 </div>
 
@@ -512,11 +513,15 @@
 <div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
 <footer>Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling.</footer>
 
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
+
+// Init Lucide icons
+lucide.createIcons();
 
 // ─────────────────────────────────────
 // SHARED HELPERS
