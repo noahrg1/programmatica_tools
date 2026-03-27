@@ -565,6 +565,16 @@
       </div>
       <p class="hint" style="margin-top:8px">Scroll to zoom · drag to pan</p>
 
+      <div id="cr-quality-wrap" style="margin-top:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="s-label" style="margin-bottom:0">JPEG Quality <span style="font-weight:400;text-transform:none;letter-spacing:0">(PNG ignores this)</span></span>
+          <span id="cr-q-val" style="font-size:0.85rem;font-weight:700;color:var(--accent)">92%</span>
+        </div>
+        <input type="range" id="cr-quality" min="50" max="100" value="92" oninput="document.getElementById('cr-q-val').textContent=this.value+'%'"
+          style="width:100%;accent-color:var(--accent);cursor:pointer">
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);margin-top:3px"><span>Smaller file</span><span>Larger file</span></div>
+      </div>
+
       <button class="action-btn" onclick="crDownload()" style="margin-top:14px">⬇ Download Cropped Image</button>
     </div>
   </div>
@@ -1439,7 +1449,7 @@ function crDownload() {
   ctx.fillRect(0, 0, crW, crH);
   ctx.drawImage(crImg, crOffX, crOffY, crImg.naturalWidth * crScale, crImg.naturalHeight * crScale);
   const ext = crMime === 'image/png' ? 'png' : 'jpg';
-  const q = crMime === 'image/jpeg' ? 1.0 : undefined;
+  const q = crMime === 'image/jpeg' ? parseInt(document.getElementById('cr-quality').value) / 100 : undefined;
   out.toBlob(blob => triggerDownload(blob, `crop-${crW}x${crH}.${ext}`), crMime, q);
 }
 
