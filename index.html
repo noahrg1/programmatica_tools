@@ -217,19 +217,12 @@
   ══════════════════════════════════ -->
   <div class="tab-panel" id="tab-img-compress">
     <div class="drop-zone" id="ic-dz">
-      <input type="file" id="ic-input" accept="image/jpeg,image/png,image/webp">
+      <input type="file" id="ic-input" accept="image/jpeg,image/png,image/webp" multiple>
       <span class="dz-icon">🖼</span>
-      <div class="dz-label">Drop your image here</div>
-      <div class="dz-sub">JPEG, PNG or WebP · or click to browse</div>
+      <div class="dz-label">Drop images here</div>
+      <div class="dz-sub">JPEG, PNG or WebP · multiple files supported</div>
     </div>
-    <div class="file-row" id="ic-row">
-      <span class="fr-icon">🖼</span>
-      <div class="fr-meta">
-        <div class="fr-name" id="ic-name">—</div>
-        <div class="fr-size" id="ic-size">—</div>
-      </div>
-      <button class="fr-clear" onclick="icClear()">✕</button>
-    </div>
+    <div id="ic-list" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div>
     <div class="settings">
       <span class="s-label">Compression Level</span>
       <div class="q-grid">
@@ -244,8 +237,8 @@
         </button>
       </div>
     </div>
-    <p class="hint">Output format: JPEG — PNG transparency will be replaced with a white background</p>
-    <button class="action-btn" id="ic-btn" disabled onclick="icCompress()">Select an image to compress</button>
+    <p class="hint">Output format: JPEG — PNG transparency replaced with white · multiple files downloaded as a zip</p>
+    <button class="action-btn" id="ic-btn" disabled onclick="icCompress()">Select images to compress</button>
     <div class="prog-wrap" id="ic-prog">
       <div class="prog-bg"><div class="prog-bar" id="ic-bar"></div></div>
       <div class="prog-lbl" id="ic-lbl">Processing…</div>
@@ -256,7 +249,7 @@
         <div class="r-stat"><div class="rl">Compressed</div><div class="rv" id="ic-r2">—</div></div>
         <div class="r-stat"><div class="rl">Saved</div><div class="rv green" id="ic-r3">—</div></div>
       </div>
-      <button class="dl-btn" onclick="icDownload()">⬇ Download Compressed Image</button>
+      <button class="dl-btn" id="ic-dl-btn" onclick="icDownload()">⬇ Download</button>
     </div>
   </div>
 
@@ -522,6 +515,7 @@
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 
 // ─────────────────────────────────────
@@ -693,7 +687,7 @@ function pcDownload() {
 // TAB 2 · IMAGE COMPRESS
 // ─────────────────────────────────────
 
-let icFile = null, icBlob = null, icQ = 72;
+let icFiles = [], icBlobs = [], icQ = 72;
 
 (function () {
   const dz = document.getElementById('ic-dz');
@@ -701,32 +695,46 @@ let icFile = null, icBlob = null, icQ = 72;
   dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
   dz.addEventListener('drop', e => {
     e.preventDefault(); dz.classList.remove('drag-over');
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) icSet(f);
-    else alert('Please drop an image file.');
+    const valid = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    if (valid.length) icAddFiles(valid);
+    else alert('Please drop image files (JPEG, PNG, WebP).');
   });
-  document.getElementById('ic-input').addEventListener('change', e => { if (e.target.files[0]) icSet(e.target.files[0]); });
+  document.getElementById('ic-input').addEventListener('change', e => {
+    icAddFiles(Array.from(e.target.files));
+    e.target.value = '';
+  });
 })();
 
-function icSet(f) {
-  icFile = f; icBlob = null;
-  document.getElementById('ic-name').textContent = f.name;
-  document.getElementById('ic-size').textContent = fmtB(f.size);
-  document.getElementById('ic-row').style.display = 'flex';
+function icAddFiles(newFiles) {
+  newFiles.forEach(f => {
+    if (!icFiles.find(x => x.name === f.name && x.size === f.size)) icFiles.push(f);
+  });
+  icBlobs = [];
+  icRenderList();
   document.getElementById('ic-result').style.display = 'none';
   document.getElementById('ic-prog').style.display = 'none';
   const b = document.getElementById('ic-btn');
-  b.disabled = false; b.textContent = 'Compress Image';
+  b.disabled = icFiles.length === 0;
+  b.textContent = icFiles.length ? 'Compress ' + icFiles.length + ' Image' + (icFiles.length > 1 ? 's' : '') : 'Select images to compress';
 }
 
-function icClear() {
-  icFile = null; icBlob = null;
-  document.getElementById('ic-row').style.display = 'none';
+function icRemove(idx) {
+  icFiles.splice(idx, 1); icBlobs = [];
+  icRenderList();
   document.getElementById('ic-result').style.display = 'none';
-  document.getElementById('ic-prog').style.display = 'none';
-  document.getElementById('ic-input').value = '';
   const b = document.getElementById('ic-btn');
-  b.disabled = true; b.textContent = 'Select an image to compress';
+  b.disabled = icFiles.length === 0;
+  b.textContent = icFiles.length ? 'Compress ' + icFiles.length + ' Image' + (icFiles.length > 1 ? 's' : '') : 'Select images to compress';
+}
+
+function icRenderList() {
+  document.getElementById('ic-list').innerHTML = icFiles.map((f, i) => `
+    <div class="merge-item">
+      <span class="mi-num">${i + 1}</span>
+      <span class="mi-name">🖼 ${f.name}</span>
+      <span class="mi-size">${fmtB(f.size)}</span>
+      <button class="mi-rm" onclick="icRemove(${i})">✕</button>
+    </div>`).join('');
 }
 
 function icSetQ(el) {
@@ -735,41 +743,70 @@ function icSetQ(el) {
   icQ = parseFloat(el.dataset.q);
 }
 
+function icCompressOne(file) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), 'image/jpeg', icQ / 100);
+    };
+    img.onerror = rej; img.src = url;
+  });
+}
+
 async function icCompress() {
-  if (!icFile) return;
+  if (!icFiles.length) return;
   const btn = document.getElementById('ic-btn');
   btn.disabled = true; btn.textContent = 'Compressing…';
   document.getElementById('ic-result').style.display = 'none';
   document.getElementById('ic-prog').style.display = 'block';
-  setProg('ic-bar','ic-lbl', 20, 'Loading image…');
+  icBlobs = [];
+  let totalOrig = 0, totalComp = 0;
   try {
-    icBlob = await new Promise((res, rej) => {
-      const img = new Image();
-      const url = URL.createObjectURL(icFile);
-      img.onload = () => {
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth; c.height = img.naturalHeight;
-        const ctx = c.getContext('2d');
-        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,c.width,c.height);
-        ctx.drawImage(img, 0, 0);
-        URL.revokeObjectURL(url);
-        c.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), 'image/jpeg', icQ/100);
-      };
-      img.onerror = rej; img.src = url;
-    });
-    setProg('ic-bar','ic-lbl', 100, 'Done!');
-    showSaved(icFile.size, icBlob.size, 'ic-r1','ic-r2','ic-r3');
+    for (let i = 0; i < icFiles.length; i++) {
+      setProg('ic-bar', 'ic-lbl', Math.round((i / icFiles.length) * 90), `Compressing ${i + 1} of ${icFiles.length}: ${icFiles[i].name}`);
+      const blob = await icCompressOne(icFiles[i]);
+      icBlobs.push(blob);
+      totalOrig += icFiles[i].size;
+      totalComp += blob.size;
+    }
+    setProg('ic-bar', 'ic-lbl', 100, 'Done!');
+    const saved = totalOrig - totalComp;
+    const pct = totalOrig > 0 ? (saved / totalOrig * 100).toFixed(1) : 0;
+    document.getElementById('ic-r1').textContent = fmtB(totalOrig);
+    document.getElementById('ic-r2').textContent = fmtB(totalComp);
+    document.getElementById('ic-r3').textContent = (saved >= 0 ? '-' : '+') + fmtB(Math.abs(saved)) + ' (' + pct + '%)';
+    document.getElementById('ic-r3').className = 'rv ' + (saved >= 0 ? 'green' : 'red');
+    document.getElementById('ic-dl-btn').textContent = icFiles.length > 1 ? '⬇ Download ZIP (' + icFiles.length + ' images)' : '⬇ Download Compressed Image';
     document.getElementById('ic-prog').style.display = 'none';
     document.getElementById('ic-result').style.display = 'block';
   } catch(e) {
     console.error(e); alert('Error: ' + e.message);
     document.getElementById('ic-prog').style.display = 'none';
   }
-  btn.disabled = false; btn.textContent = 'Compress Again';
+  btn.disabled = false;
+  btn.textContent = 'Compress ' + icFiles.length + ' Image' + (icFiles.length > 1 ? 's' : '') + ' Again';
 }
 
-function icDownload() {
-  if (icBlob) triggerDownload(icBlob, icFile.name.replace(/\.(jpe?g|png|webp)$/i,'')+'-compressed.jpg');
+async function icDownload() {
+  if (!icBlobs.length) return;
+  if (icBlobs.length === 1) {
+    triggerDownload(icBlobs[0], icFiles[0].name.replace(/\.(jpe?g|png|webp)$/i, '') + '-compressed.jpg');
+    return;
+  }
+  const zip = new JSZip();
+  icBlobs.forEach((blob, i) => {
+    const name = icFiles[i].name.replace(/\.(jpe?g|png|webp)$/i, '') + '-compressed.jpg';
+    zip.file(name, blob);
+  });
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  triggerDownload(zipBlob, 'compressed-images.zip');
 }
 
 // ─────────────────────────────────────
