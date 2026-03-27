@@ -22,7 +22,7 @@
       padding: 40px 20px 60px;
     }
     header { text-align: center; margin-bottom: 28px; }
-    header h1 { font-family: "rl-aqva", sans-serif; font-size: 2.4rem; font-weight: 900; font-style: normal; letter-spacing: 0.025em; }
+    header h1 { font-family: "rl-aqva", sans-serif; font-size: 2.4rem; font-weight: 900; font-style: normal; letter-spacing: 0.08em; }
     header h1 span { color: var(--accent); }
     header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
 
@@ -163,6 +163,7 @@
     <button class="tab-btn"         onclick="showTab('utm-gen',this)"><i data-lucide="link-2"></i> UTM Builder</button>
     <button class="tab-btn"         onclick="showTab('email-extract',this)"><i data-lucide="mail-open"></i> Email Extractor</button>
     <button class="tab-btn"         onclick="showTab('csv-join',this)"><i data-lucide="list"></i> List to CSV</button>
+    <button class="tab-btn"         onclick="showTab('img-crop',this)"><i data-lucide="crop"></i> Image Cropper</button>
   </div>
 </div>
 
@@ -513,12 +514,48 @@
     </div>
   </div>
 
+  <!-- ══════════════════════════════════
+       TAB 11 · IMAGE CROPPER
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-img-crop">
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px">Upload an image, choose a canvas size, drag to position your crop, then download.</p>
+
+    <div class="drop-zone" id="cr-dz">
+      <input type="file" id="cr-input" accept="image/jpeg,image/png,image/webp" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+      <span class="dz-icon">✂️</span>
+      <div class="dz-label">Drop an image here</div>
+      <div class="dz-sub">JPEG, PNG or WebP</div>
+    </div>
+
+    <div id="cr-controls" style="display:none;margin-top:16px">
+      <span class="s-label">Canvas Size</span>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px" id="cr-sizes">
+        <button class="q-btn active" data-w="1080" data-h="1080" onclick="crSetSize(this)"><span class="qn">1080×1080</span><span class="qd">Square</span></button>
+        <button class="q-btn" data-w="1080" data-h="1920" onclick="crSetSize(this)"><span class="qn">1080×1920</span><span class="qd">Story / Reel</span></button>
+        <button class="q-btn" data-w="1200" data-h="628" onclick="crSetSize(this)"><span class="qn">1200×628</span><span class="qd">Facebook / OG</span></button>
+        <button class="q-btn" data-w="960" data-h="1200" onclick="crSetSize(this)"><span class="qn">960×1200</span><span class="qd">Portrait Feed</span></button>
+        <button class="q-btn" data-w="600" data-h="500" onclick="crSetSize(this)"><span class="qn">600×500</span><span class="qd">Display</span></button>
+        <button class="q-btn" data-w="1940" data-h="500" onclick="crSetSize(this)"><span class="qn">1940×500</span><span class="qd">Leaderboard</span></button>
+        <button class="q-btn" data-w="600" data-h="1200" onclick="crSetSize(this)"><span class="qn">600×1200</span><span class="qd">Half Page</span></button>
+        <button class="q-btn" data-w="1456" data-h="180" onclick="crSetSize(this)"><span class="qn">1456×180</span><span class="qd">Billboard</span></button>
+      </div>
+
+      <span class="s-label">Drag to reposition</span>
+      <div style="position:relative;width:100%;overflow:hidden;border-radius:10px;border:1px solid var(--border);background:#000;touch-action:none" id="cr-stage">
+        <canvas id="cr-canvas" style="display:block;width:100%;cursor:grab"></canvas>
+      </div>
+      <p class="hint" style="margin-top:8px">Scroll to zoom · drag to pan</p>
+
+      <button class="action-btn" onclick="crDownload()" style="margin-top:14px">⬇ Download Cropped Image</button>
+    </div>
+  </div>
+
 </div><!-- /.card -->
 
 <div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
 <footer>Built with <a href="https://pdf-lib.js.org/" target="_blank">pdf-lib</a> &amp; canvas image resampling.</footer>
 
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -526,7 +563,7 @@
 <script>
 
 // Init Lucide icons
-lucide.createIcons();
+if (typeof lucide !== 'undefined') lucide.createIcons();
 
 // ─────────────────────────────────────
 // SHARED HELPERS
@@ -1235,6 +1272,133 @@ function cjCopy() {
     btn.style.background = 'var(--green)';
     setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = 'var(--accent)'; }, 2000);
   });
+}
+
+// ─────────────────────────────────────
+// TAB 11 · IMAGE CROPPER
+// ─────────────────────────────────────
+
+let crImg = null, crW = 1080, crH = 1080;
+let crScale = 1, crOffX = 0, crOffY = 0;
+let crDragging = false, crLastX = 0, crLastY = 0;
+
+(function () {
+  const dz = document.getElementById('cr-dz');
+  const input = document.getElementById('cr-input');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) crLoad(f);
+  });
+  input.addEventListener('change', e => { if (e.target.files[0]) crLoad(e.target.files[0]); input.value = ''; });
+})();
+
+function crLoad(file) {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    crImg = img;
+    URL.revokeObjectURL(url);
+    document.getElementById('cr-dz').style.display = 'none';
+    document.getElementById('cr-controls').style.display = 'block';
+    crFit();
+    crDraw();
+  };
+  img.src = url;
+}
+
+function crSetSize(btn) {
+  document.querySelectorAll('#cr-sizes .q-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  crW = +btn.dataset.w;
+  crH = +btn.dataset.h;
+  crFit();
+  crDraw();
+}
+
+function crFit() {
+  // Fit image so it covers the canvas, centered
+  const scaleX = crW / crImg.naturalWidth;
+  const scaleY = crH / crImg.naturalHeight;
+  crScale = Math.max(scaleX, scaleY);
+  crOffX = (crW - crImg.naturalWidth * crScale) / 2;
+  crOffY = (crH - crImg.naturalHeight * crScale) / 2;
+}
+
+function crDraw() {
+  const canvas = document.getElementById('cr-canvas');
+  canvas.width = crW;
+  canvas.height = crH;
+  // Set display aspect ratio
+  const stage = document.getElementById('cr-stage');
+  const displayW = stage.clientWidth || 640;
+  canvas.style.height = Math.round(displayW * crH / crW) + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, crW, crH);
+  ctx.drawImage(crImg, crOffX, crOffY, crImg.naturalWidth * crScale, crImg.naturalHeight * crScale);
+}
+
+// Drag to pan
+const canvas = document.getElementById('cr-canvas');
+canvas.addEventListener('mousedown', e => { crDragging = true; crLastX = e.clientX; crLastY = e.clientY; canvas.style.cursor = 'grabbing'; });
+window.addEventListener('mousemove', e => {
+  if (!crDragging || !crImg) return;
+  const dx = e.clientX - crLastX, dy = e.clientY - crLastY;
+  crLastX = e.clientX; crLastY = e.clientY;
+  // scale mouse delta from display coords to canvas coords
+  const displayW = canvas.getBoundingClientRect().width;
+  const ratio = crW / displayW;
+  crOffX += dx * ratio;
+  crOffY += dy * ratio;
+  clampOffset();
+  crDraw();
+});
+window.addEventListener('mouseup', () => { crDragging = false; if (canvas) canvas.style.cursor = 'grab'; });
+
+// Touch support
+canvas.addEventListener('touchstart', e => { e.preventDefault(); crLastX = e.touches[0].clientX; crLastY = e.touches[0].clientY; });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!crImg) return;
+  const dx = e.touches[0].clientX - crLastX, dy = e.touches[0].clientY - crLastY;
+  crLastX = e.touches[0].clientX; crLastY = e.touches[0].clientY;
+  const displayW = canvas.getBoundingClientRect().width;
+  const ratio = crW / displayW;
+  crOffX += dx * ratio; crOffY += dy * ratio;
+  clampOffset(); crDraw();
+}, { passive: false });
+
+// Scroll to zoom
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  if (!crImg) return;
+  const zoomFactor = e.deltaY < 0 ? 1.08 : 0.93;
+  const minScale = Math.max(crW / crImg.naturalWidth, crH / crImg.naturalHeight);
+  crScale = Math.max(minScale, crScale * zoomFactor);
+  clampOffset(); crDraw();
+}, { passive: false });
+
+function clampOffset() {
+  const imgW = crImg.naturalWidth * crScale;
+  const imgH = crImg.naturalHeight * crScale;
+  if (imgW >= crW) { crOffX = Math.min(0, Math.max(crW - imgW, crOffX)); }
+  else { crOffX = (crW - imgW) / 2; }
+  if (imgH >= crH) { crOffY = Math.min(0, Math.max(crH - imgH, crOffY)); }
+  else { crOffY = (crH - imgH) / 2; }
+}
+
+function crDownload() {
+  if (!crImg) return;
+  const out = document.createElement('canvas');
+  out.width = crW; out.height = crH;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, crW, crH);
+  ctx.drawImage(crImg, crOffX, crOffY, crImg.naturalWidth * crScale, crImg.naturalHeight * crScale);
+  out.toBlob(blob => triggerDownload(blob, `crop-${crW}x${crH}.jpg`), 'image/jpeg', 0.92);
 }
 
 </script>
