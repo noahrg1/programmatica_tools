@@ -528,8 +528,15 @@
     </div>
 
     <div id="cr-controls" style="display:none;margin-top:16px">
+
+      <!-- Original image info -->
+      <div id="cr-info" style="display:inline-flex;align-items:center;gap:8px;background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.25);border-radius:7px;padding:7px 12px;margin-bottom:16px;font-size:0.8rem;color:var(--muted)">
+        <i data-lucide="image" style="width:13px;height:13px;color:var(--accent)"></i>
+        <span id="cr-info-txt">—</span>
+      </div>
+
       <span class="s-label">Canvas Size</span>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:18px" id="cr-sizes">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px" id="cr-sizes">
         <button class="q-btn active" data-w="1080" data-h="1080" onclick="crSetSize(this)"><span class="qn">1080×1080</span><span class="qd">Square</span></button>
         <button class="q-btn" data-w="1080" data-h="1920" onclick="crSetSize(this)"><span class="qn">1080×1920</span><span class="qd">Story / Reel</span></button>
         <button class="q-btn" data-w="1200" data-h="628" onclick="crSetSize(this)"><span class="qn">1200×628</span><span class="qd">Facebook / OG</span></button>
@@ -538,6 +545,18 @@
         <button class="q-btn" data-w="1940" data-h="500" onclick="crSetSize(this)"><span class="qn">1940×500</span><span class="qd">Leaderboard</span></button>
         <button class="q-btn" data-w="600" data-h="1200" onclick="crSetSize(this)"><span class="qn">600×1200</span><span class="qd">Half Page</span></button>
         <button class="q-btn" data-w="1456" data-h="180" onclick="crSetSize(this)"><span class="qn">1456×180</span><span class="qd">Billboard</span></button>
+      </div>
+
+      <!-- Custom size -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+        <input id="cr-cust-w" type="number" min="1" placeholder="W" oninput="crCustomSize()"
+          style="width:80px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:inherit;font-size:0.85rem;padding:7px 10px;outline:none;transition:border-color 0.15s"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <span style="color:var(--muted);font-size:0.85rem">×</span>
+        <input id="cr-cust-h" type="number" min="1" placeholder="H" oninput="crCustomSize()"
+          style="width:80px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:inherit;font-size:0.85rem;padding:7px 10px;outline:none;transition:border-color 0.15s"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <span style="font-size:0.78rem;color:var(--muted)">Custom size (px)</span>
       </div>
 
       <span class="s-label">Drag to reposition</span>
@@ -1301,6 +1320,13 @@ function crLoad(file) {
   img.onload = () => {
     crImg = img;
     URL.revokeObjectURL(url);
+    // Show original dimensions + aspect ratio
+    const w = img.naturalWidth, h = img.naturalHeight;
+    const gcd = (a, b) => b ? gcd(b, a % b) : a;
+    const d = gcd(w, h);
+    const ratio = `${w/d}:${h/d}`;
+    document.getElementById('cr-info-txt').textContent = `Original: ${w}×${h}px · ${ratio}`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     document.getElementById('cr-dz').style.display = 'none';
     document.getElementById('cr-controls').style.display = 'block';
     crFit();
@@ -1309,11 +1335,24 @@ function crLoad(file) {
   img.src = url;
 }
 
+function crCustomSize() {
+  const w = parseInt(document.getElementById('cr-cust-w').value);
+  const h = parseInt(document.getElementById('cr-cust-h').value);
+  if (!w || !h || w < 1 || h < 1) return;
+  crW = w; crH = h;
+  // Deselect preset buttons
+  document.querySelectorAll('#cr-sizes .q-btn').forEach(b => b.classList.remove('active'));
+  crFit();
+  crDraw();
+}
+
 function crSetSize(btn) {
   document.querySelectorAll('#cr-sizes .q-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   crW = +btn.dataset.w;
   crH = +btn.dataset.h;
+  document.getElementById('cr-cust-w').value = '';
+  document.getElementById('cr-cust-h').value = '';
   crFit();
   crDraw();
 }
