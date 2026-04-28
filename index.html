@@ -7,6 +7,8 @@
   <title>Programmatica Tools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://use.typekit.net/pja1aeg.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Cormorant:wght@600;700&family=Spectral:wght@600;700;800&family=Special+Elite&family=Pirata+One&family=Montserrat:wght@600;700;800;900&family=Oswald:wght@600;700&family=DM+Sans:wght@600;700;800;900&family=Work+Sans:wght@600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -27,7 +29,7 @@
     header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
 
     /* ── Tab nav ── */
-    .tab-nav-wrap { width: 100%; max-width: 700px; margin-bottom: 16px; }
+    .tab-nav-wrap { width: 100%; max-width: 1200px; margin-bottom: 16px; }
     .tab-nav { display: flex; flex-wrap: wrap; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 5px; }
     .tab-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 15px; border: none; background: none; color: var(--muted); font-size: 0.84rem; font-weight: 600; border-radius: 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
     .tab-btn:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
@@ -35,7 +37,7 @@
     .tab-btn i { width: 14px; height: 14px; flex-shrink: 0; }
 
     /* ── Card ── */
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 700px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 700px; transition: max-width 0.3s ease; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
@@ -142,6 +144,67 @@
     footer { margin-top: 14px; font-size: 0.78rem; color: var(--muted); text-align: center; }
     footer a { color: var(--muted); }
     .hint { font-size: 0.76rem; color: var(--muted); margin-top: 10px; }
+
+    /* ── Ad Creative Generator ── */
+    .acg-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; align-items: start; }
+    @media (max-width: 860px) { .acg-layout { grid-template-columns: 1fr; } }
+    .acg-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .acg-field { margin-bottom: 18px; }
+    .acg-field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .acg-field label .acg-hint { font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .acg-upload { border: 2px dashed var(--border); border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+    .acg-upload:hover, .acg-upload.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.06); }
+    .acg-upload.has-image { padding: 0; border-style: solid; border-color: var(--green); }
+    .acg-upload img { width: 100%; display: block; border-radius: 8px; }
+    .acg-upload .acg-replace { display: none; position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.75); color: #fff; font-size: 0.7rem; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
+    .acg-upload.has-image .acg-replace { display: block; }
+    .acg-img-info { margin-top: 6px; font-size: 0.75rem; color: var(--muted); }
+    .acg-img-info.error { color: var(--red); font-weight: 600; }
+    .acg-img-info.success { color: var(--green); }
+    .acg-hl-wrap { position: relative; }
+    .acg-hl-wrap input { width: 100%; padding: 10px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); font-size: 0.9rem; font-weight: 600; outline: none; transition: border-color 0.15s; }
+    .acg-hl-wrap input:focus { border-color: var(--accent); }
+    .acg-charcount { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+    .acg-charcount.at-limit { color: var(--red); }
+    .acg-toggle-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .acg-toggle { padding: 7px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--fg); transition: all 0.15s; }
+    .acg-toggle:hover { border-color: #444; }
+    .acg-toggle.active { border-color: var(--accent); background: rgba(108,99,255,0.12); }
+    .acg-font-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .acg-font-opt { padding: 10px 8px; background: var(--card); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .acg-font-opt:hover { border-color: #444; }
+    .acg-font-opt.active { border-color: var(--accent); background: rgba(108,99,255,0.12); }
+    .acg-font-opt .acg-fp { font-size: 13px; line-height: 1.2; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.2em; }
+    .acg-font-opt .acg-fn { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: -apple-system, sans-serif !important; font-weight: 600; }
+    .acg-font-cat { font-size: 0.68rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .acg-font-sec + .acg-font-sec { margin-top: 10px; }
+    .acg-colors { display: flex; gap: 6px; align-items: center; }
+    .acg-preset { width: 26px; height: 26px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
+    .acg-preset:hover { transform: scale(1.15); }
+    .acg-preset.active { border-color: var(--accent); }
+    .acg-swatch { width: 32px; height: 32px; border-radius: 7px; border: 2px solid var(--border); padding: 0; overflow: hidden; cursor: pointer; position: relative; }
+    .acg-swatch input[type="color"] { position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); border: none; padding: 0; cursor: pointer; background: none; }
+    .acg-pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; width: 108px; }
+    .acg-pos { width: 32px; height: 32px; background: var(--card); border: 1px solid var(--border); border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--muted); transition: all 0.15s; }
+    .acg-pos:hover { border-color: #444; }
+    .acg-pos.active { border-color: var(--accent); background: rgba(108,99,255,0.15); color: var(--accent); }
+    .acg-out-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .acg-out-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .acg-out-card .acg-ch { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+    .acg-out-card .acg-ch .acg-cl { font-size: 0.8rem; font-weight: 700; }
+    .acg-out-card .acg-ch .acg-cd { font-size: 0.68rem; color: var(--muted); font-weight: 600; }
+    .acg-out-card .acg-cp { padding: 12px; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.2); min-height: 160px; }
+    .acg-out-card .acg-cp canvas { max-width: 100%; max-height: 300px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+    .acg-out-card .acg-ca { padding: 8px 14px; border-top: 1px solid var(--border); }
+    .acg-dl-btn { width: 100%; padding: 8px; background: none; border: 1px solid var(--border); color: var(--fg); border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .acg-dl-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .acg-dl-all { display: inline-flex; align-items: center; gap: 5px; padding: 8px 16px; background: none; border: 1px solid var(--border); color: var(--fg); border-radius: 7px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .acg-dl-all:hover { border-color: var(--accent); color: var(--accent); }
+    .acg-empty { text-align: center; padding: 60px 16px; color: var(--muted); font-size: 0.85rem; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
+    .acg-empty .acg-ei { font-size: 2rem; margin-bottom: 10px; display: block; }
+
+    /* Make the card wider when Ad Creative tab is active */
+    .card.wide { max-width: 1200px; }
   </style>
 </head>
 <body>
@@ -164,6 +227,7 @@
     <button class="tab-btn"         onclick="showTab('email-extract',this)"><i data-lucide="mail-open"></i> Email Extractor</button>
     <button class="tab-btn"         onclick="showTab('csv-join',this)"><i data-lucide="list"></i> List to CSV</button>
     <button class="tab-btn"         onclick="showTab('img-crop',this)"><i data-lucide="crop"></i> Image Cropper</button>
+    <button class="tab-btn"         onclick="showTab('ad-creative',this)"><i data-lucide="sparkles"></i> Ad Creatives</button>
   </div>
 </div>
 
@@ -580,6 +644,105 @@
     </div>
   </div>
 
+  <!-- ══════════════════════════════════
+       TAB 12 · AD CREATIVE GENERATOR
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-ad-creative">
+    <div class="acg-layout">
+      <!-- Left: Controls -->
+      <div>
+        <!-- Image Upload -->
+        <div class="acg-field">
+          <label>Background Image <span class="acg-hint">— min 1200 × 1200px</span></label>
+          <div class="acg-upload" id="acg-upload">
+            <div id="acg-placeholder" style="color:var(--muted);font-size:0.85rem">
+              <span style="font-size:2rem;display:block;margin-bottom:8px">📷</span>
+              Drop image here or click to upload
+            </div>
+            <img id="acg-preview" style="display:none" alt="Preview">
+            <span class="acg-replace">Replace</span>
+          </div>
+          <input type="file" id="acg-file" accept="image/*" hidden>
+          <div class="acg-img-info" id="acg-info"></div>
+        </div>
+
+        <!-- Headline -->
+        <div class="acg-field">
+          <label>Headline <span class="acg-hint">— max 25 characters</span></label>
+          <div class="acg-hl-wrap">
+            <input type="text" id="acg-headline" maxlength="25" placeholder="e.g. Bold Savings Await You">
+            <span class="acg-charcount" id="acg-cc">0 / 25</span>
+          </div>
+        </div>
+
+        <button class="action-btn" id="acg-gen-btn" disabled>Generate Creatives</button>
+
+        <!-- Caps Toggle -->
+        <div class="acg-field" style="margin-top:18px">
+          <label>Text Case</label>
+          <div class="acg-toggle-row" id="acg-caps"></div>
+        </div>
+
+        <!-- Boldness -->
+        <div class="acg-field">
+          <label>Font Weight</label>
+          <div class="acg-toggle-row" id="acg-weight"></div>
+        </div>
+
+        <!-- Font Picker -->
+        <div class="acg-field">
+          <label>Font</label>
+          <div class="acg-font-sec">
+            <div class="acg-font-cat">Serif</div>
+            <div class="acg-font-grid" id="acg-serif"></div>
+          </div>
+          <div class="acg-font-sec">
+            <div class="acg-font-cat">Sans-Serif</div>
+            <div class="acg-font-grid" id="acg-sans"></div>
+          </div>
+        </div>
+
+        <!-- Text Color -->
+        <div class="acg-field">
+          <label>Text Color</label>
+          <div class="acg-colors">
+            <div id="acg-presets" style="display:flex;gap:5px"></div>
+            <div class="acg-swatch" title="Pick custom colour">
+              <input type="color" id="acg-custom-color" value="#ffffff">
+              <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:14px;height:14px;opacity:0.7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l-3-3Z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Position -->
+        <div class="acg-field">
+          <label>Text Position</label>
+          <div class="acg-pos-grid" id="acg-pos"></div>
+        </div>
+
+        <!-- Overlay Style -->
+        <div class="acg-field">
+          <label>Overlay Style</label>
+          <div class="acg-toggle-row" id="acg-overlay"></div>
+        </div>
+      </div>
+
+      <!-- Right: Output -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">Output</span>
+          <button class="acg-dl-all" id="acg-dl-all" style="display:none">⬇ Download All</button>
+        </div>
+        <div id="acg-output">
+          <div class="acg-empty">
+            <span class="acg-ei">🎨</span>
+            Upload an image and add a headline,<br>then hit Generate to create your ad creatives.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /.card -->
 
 <div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
@@ -604,6 +767,10 @@ function showTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
+  // Toggle wide card for Ad Creative tab
+  const card = document.querySelector('.card');
+  if (id === 'ad-creative') card.classList.add('wide');
+  else card.classList.remove('wide');
 }
 
 function fmtB(b) {
@@ -1452,6 +1619,351 @@ function crDownload() {
   const ext = crMime === 'image/png' ? 'png' : 'jpg';
   const q = crMime === 'image/jpeg' ? parseInt(document.getElementById('cr-quality').value) / 100 : undefined;
   out.toBlob(blob => triggerDownload(blob, `crop-${crW}x${crH}.${ext}`), crMime, q);
+}
+
+// ─────────────────────────────────────
+// TAB 12 · AD CREATIVE GENERATOR
+// ─────────────────────────────────────
+
+const ACG_FONTS = {
+  serif: [
+    { family: 'Playfair Display', weight: 900, label: 'Playfair' },
+    { family: 'Cormorant', weight: 700, label: 'Cormorant' },
+    { family: 'Spectral', weight: 800, label: 'Spectral' },
+    { family: 'Georgia', weight: 700, label: 'Georgia', fallback: 'serif' },
+    { family: 'Special Elite', weight: 400, label: 'Special Elite', fallback: 'serif' },
+    { family: 'Pirata One', weight: 400, label: 'Pirata One', fallback: 'serif' },
+  ],
+  sans: [
+    { family: 'Montserrat', weight: 900, label: 'Montserrat' },
+    { family: 'Helvetica Neue', weight: 700, label: 'Helvetica Neue', fallback: 'Helvetica, Arial, sans-serif' },
+    { family: 'Oswald', weight: 700, label: 'Oswald' },
+    { family: 'DM Sans', weight: 900, label: 'DM Sans' },
+    { family: 'Work Sans', weight: 900, label: 'Work Sans' },
+    { family: 'Poppins', weight: 900, label: 'Poppins' },
+  ]
+};
+
+const ACG_FORMATS = [
+  { label: 'Story / Reel',     w: 1080, h: 1920 },
+  { label: 'Square Post',      w: 1080, h: 1080 },
+  { label: 'Portrait Post',    w: 1080, h: 1350 },
+  { label: 'Landscape / Link', w: 1200, h: 628  },
+];
+
+const ACG_COLORS = ['#ffffff','#000000','#f59e0b','#ef4444','#22c55e','#3b82f6'];
+const ACG_OVERLAYS = [{id:'shadow',label:'Text Shadow'},{id:'darken',label:'Dark Overlay'},{id:'gradient',label:'Gradient'},{id:'none',label:'None'}];
+const ACG_POSITIONS = ['top-left','top-center','top-right','mid-left','mid-center','mid-right','bottom-left','bottom-center','bottom-right'];
+
+const acg = {
+  image: null, headline: '', font: ACG_FONTS.serif[0],
+  textColor: '#ffffff', position: 'mid-center', overlay: 'gradient',
+  allCaps: true, boldness: 900
+};
+
+(function initACG() {
+  // Upload
+  const upload = document.getElementById('acg-upload');
+  const fileIn = document.getElementById('acg-file');
+  upload.addEventListener('click', () => fileIn.click());
+  upload.addEventListener('dragover', e => { e.preventDefault(); upload.classList.add('drag-over'); });
+  upload.addEventListener('dragleave', () => upload.classList.remove('drag-over'));
+  upload.addEventListener('drop', e => {
+    e.preventDefault(); upload.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) acgHandleFile(e.dataTransfer.files[0]);
+  });
+  fileIn.addEventListener('change', e => { if (e.target.files.length) acgHandleFile(e.target.files[0]); });
+
+  // Headline
+  document.getElementById('acg-headline').addEventListener('input', e => {
+    acg.headline = e.target.value;
+    const len = acg.headline.length;
+    const cc = document.getElementById('acg-cc');
+    cc.textContent = len + ' / 25';
+    cc.classList.toggle('at-limit', len >= 25);
+    acgUpdateBtn();
+    acgUpdateFontPreviews();
+  });
+
+  // Generate
+  document.getElementById('acg-gen-btn').addEventListener('click', acgGenerate);
+
+  // Caps toggle
+  const capsC = document.getElementById('acg-caps');
+  [{id:true,label:'ALL CAPS'},{id:false,label:'Sentence case'}].forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'acg-toggle' + (acg.allCaps === o.id ? ' active' : '');
+    el.textContent = o.label;
+    el.onclick = () => { acg.allCaps = o.id; capsC.querySelectorAll('.acg-toggle').forEach(t=>t.classList.remove('active')); el.classList.add('active'); acgUpdateFontPreviews(); };
+    capsC.appendChild(el);
+  });
+
+  // Weight
+  const weightC = document.getElementById('acg-weight');
+  [600,700,800,900].forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'acg-toggle' + (acg.boldness === w ? ' active' : '');
+    el.innerHTML = '<span style="font-weight:'+w+'">'+w+'</span>';
+    el.onclick = () => { acg.boldness = w; weightC.querySelectorAll('.acg-toggle').forEach(t=>t.classList.remove('active')); el.classList.add('active'); acgUpdateFontPreviews(); };
+    weightC.appendChild(el);
+  });
+
+  // Font picker
+  function addFont(font, container) {
+    const el = document.createElement('div');
+    el.className = 'acg-font-opt' + (acg.font === font ? ' active' : '');
+    el.innerHTML = '<div class="acg-fp" style="font-family:\''+font.family+'\','+(font.fallback||'serif')+';font-weight:'+acg.boldness+'">'+acgPreviewText()+'</div><div class="acg-fn">'+font.label+'</div>';
+    el.onclick = () => { acg.font = font; document.querySelectorAll('.acg-font-opt').forEach(f=>f.classList.remove('active')); el.classList.add('active'); };
+    container.appendChild(el);
+  }
+  ACG_FONTS.serif.forEach(f => addFont(f, document.getElementById('acg-serif')));
+  ACG_FONTS.sans.forEach(f => addFont(f, document.getElementById('acg-sans')));
+
+  // Colors
+  const presetC = document.getElementById('acg-presets');
+  ACG_COLORS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'acg-preset' + (acg.textColor === c ? ' active' : '');
+    el.style.background = c;
+    if (c === '#ffffff') el.style.border = '2px solid #555';
+    el.onclick = () => { acg.textColor = c; presetC.querySelectorAll('.acg-preset').forEach(p=>p.classList.remove('active')); el.classList.add('active'); document.getElementById('acg-custom-color').value = c; };
+    presetC.appendChild(el);
+  });
+  document.getElementById('acg-custom-color').addEventListener('input', e => {
+    acg.textColor = e.target.value;
+    presetC.querySelectorAll('.acg-preset').forEach(p=>p.classList.remove('active'));
+  });
+
+  // Position
+  const posC = document.getElementById('acg-pos');
+  const posLabels = ['↖','↑','↗','←','·','→','↙','↓','↘'];
+  ACG_POSITIONS.forEach((pos, i) => {
+    const el = document.createElement('button');
+    el.className = 'acg-pos' + (acg.position === pos ? ' active' : '');
+    el.textContent = posLabels[i];
+    el.onclick = () => { acg.position = pos; posC.querySelectorAll('.acg-pos').forEach(p=>p.classList.remove('active')); el.classList.add('active'); };
+    posC.appendChild(el);
+  });
+
+  // Overlay
+  const ovC = document.getElementById('acg-overlay');
+  ACG_OVERLAYS.forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'acg-toggle' + (acg.overlay === o.id ? ' active' : '');
+    el.textContent = o.label;
+    el.onclick = () => { acg.overlay = o.id; ovC.querySelectorAll('.acg-toggle').forEach(t=>t.classList.remove('active')); el.classList.add('active'); };
+    ovC.appendChild(el);
+  });
+})();
+
+function acgPreviewText() {
+  const raw = acg.headline.trim() || 'Aa Bb';
+  const first = raw.split(/\s+/)[0];
+  return acg.allCaps ? first.toUpperCase() : first;
+}
+
+function acgUpdateFontPreviews() {
+  const t = acgPreviewText();
+  document.querySelectorAll('.acg-fp').forEach(el => { el.textContent = t; el.style.fontWeight = acg.boldness; });
+}
+
+function acgUpdateBtn() {
+  document.getElementById('acg-gen-btn').disabled = !acg.image;
+}
+
+function acgHandleFile(file) {
+  if (!file.type.startsWith('image/')) { document.getElementById('acg-info').textContent = 'Please upload an image.'; document.getElementById('acg-info').className = 'acg-img-info error'; return; }
+  const img = new Image();
+  img.onload = () => {
+    if (img.naturalWidth < 1200 || img.naturalHeight < 1200) {
+      document.getElementById('acg-info').textContent = img.naturalWidth+'×'+img.naturalHeight+'px — must be at least 1200×1200px.';
+      document.getElementById('acg-info').className = 'acg-img-info error';
+      acg.image = null; document.getElementById('acg-upload').classList.remove('has-image');
+      document.getElementById('acg-preview').style.display = 'none'; document.getElementById('acg-placeholder').style.display = '';
+      acgUpdateBtn(); return;
+    }
+    acg.image = img;
+    document.getElementById('acg-preview').src = img.src;
+    document.getElementById('acg-preview').style.display = 'block';
+    document.getElementById('acg-placeholder').style.display = 'none';
+    document.getElementById('acg-upload').classList.add('has-image');
+    document.getElementById('acg-info').textContent = img.naturalWidth+'×'+img.naturalHeight+'px — ✓ Accepted';
+    document.getElementById('acg-info').className = 'acg-img-info success';
+    acgUpdateBtn();
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+let acgCards = []; // track per-card state for dragging
+
+function acgGenerate() {
+  const out = document.getElementById('acg-output');
+  out.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'acg-out-grid';
+  out.appendChild(grid);
+  acgCards = [];
+
+  ACG_FORMATS.forEach((fmt, idx) => {
+    const card = document.createElement('div');
+    card.className = 'acg-out-card';
+    const canvas = document.createElement('canvas');
+    canvas.width = fmt.w; canvas.height = fmt.h;
+    canvas.style.cursor = 'grab';
+
+    // Calculate initial cover-fit offset
+    const img = acg.image;
+    const srcSize = Math.min(img.naturalWidth, img.naturalHeight);
+    const imgRatio = 1;
+    const canvasRatio = fmt.w / fmt.h;
+    let dw, dh, offX, offY;
+    if (canvasRatio > imgRatio) { dw = fmt.w; dh = fmt.w; } else { dh = fmt.h; dw = fmt.h; }
+    offX = (fmt.w - dw) / 2;
+    offY = (fmt.h - dh) / 2;
+
+    const cardState = { canvas, fmt, offX, offY, dw, dh, dragging: false, lastX: 0, lastY: 0 };
+    acgCards.push(cardState);
+
+    acgRender(cardState);
+
+    // Drag handlers
+    canvas.addEventListener('mousedown', e => {
+      cardState.dragging = true; cardState.lastX = e.clientX; cardState.lastY = e.clientY;
+      canvas.style.cursor = 'grabbing'; e.preventDefault();
+    });
+    canvas.addEventListener('touchstart', e => {
+      cardState.lastX = e.touches[0].clientX; cardState.lastY = e.touches[0].clientY;
+      cardState.dragging = true; e.preventDefault();
+    }, {passive:false});
+
+    card.innerHTML = '<div class="acg-ch"><span class="acg-cl">'+fmt.label+'</span><span class="acg-cd">'+fmt.w+' × '+fmt.h+'</span></div>';
+    const cp = document.createElement('div'); cp.className = 'acg-cp'; cp.appendChild(canvas); card.appendChild(cp);
+    const ca = document.createElement('div'); ca.className = 'acg-ca';
+    const dl = document.createElement('button'); dl.className = 'acg-dl-btn'; dl.textContent = 'Download PNG';
+    dl.onclick = () => acgDownload(canvas, fmt);
+    ca.appendChild(dl); card.appendChild(ca);
+    grid.appendChild(card);
+  });
+
+  // Global move/up handlers for dragging
+  window.addEventListener('mousemove', acgDragMove);
+  window.addEventListener('mouseup', acgDragEnd);
+  window.addEventListener('touchmove', acgDragMoveTouch, {passive:false});
+  window.addEventListener('touchend', acgDragEnd);
+
+  const dlAll = document.getElementById('acg-dl-all');
+  dlAll.style.display = 'inline-flex';
+  dlAll.onclick = () => acgCards.forEach(c => acgDownload(c.canvas, c.fmt));
+}
+
+function acgDragMove(e) {
+  acgCards.forEach(cs => {
+    if (!cs.dragging) return;
+    const dx = e.clientX - cs.lastX, dy = e.clientY - cs.lastY;
+    cs.lastX = e.clientX; cs.lastY = e.clientY;
+    const displayW = cs.canvas.getBoundingClientRect().width;
+    const ratio = cs.fmt.w / displayW;
+    cs.offX += dx * ratio; cs.offY += dy * ratio;
+    acgClampOffset(cs);
+    acgRender(cs);
+  });
+}
+
+function acgDragMoveTouch(e) {
+  acgCards.forEach(cs => {
+    if (!cs.dragging) return;
+    e.preventDefault();
+    const dx = e.touches[0].clientX - cs.lastX, dy = e.touches[0].clientY - cs.lastY;
+    cs.lastX = e.touches[0].clientX; cs.lastY = e.touches[0].clientY;
+    const displayW = cs.canvas.getBoundingClientRect().width;
+    const ratio = cs.fmt.w / displayW;
+    cs.offX += dx * ratio; cs.offY += dy * ratio;
+    acgClampOffset(cs);
+    acgRender(cs);
+  });
+}
+
+function acgDragEnd() {
+  acgCards.forEach(cs => { cs.dragging = false; cs.canvas.style.cursor = 'grab'; });
+}
+
+function acgClampOffset(cs) {
+  const {fmt, dw, dh} = cs;
+  if (dw >= fmt.w) cs.offX = Math.min(0, Math.max(fmt.w - dw, cs.offX));
+  else cs.offX = (fmt.w - dw) / 2;
+  if (dh >= fmt.h) cs.offY = Math.min(0, Math.max(fmt.h - dh, cs.offY));
+  else cs.offY = (fmt.h - dh) / 2;
+}
+
+function acgRender(cs) {
+  const canvas = cs.canvas, fmt = cs.fmt;
+  const ctx = canvas.getContext('2d');
+  const {w,h} = fmt, img = acg.image;
+
+  // Cover fill from center-cropped square, using draggable offset
+  const srcSize = Math.min(img.naturalWidth, img.naturalHeight);
+  const sx = (img.naturalWidth - srcSize)/2, sy = (img.naturalHeight - srcSize)/2;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h);
+  ctx.drawImage(img, sx, sy, srcSize, srcSize, cs.offX, cs.offY, cs.dw, cs.dh);
+
+  // Overlay
+  if (acg.overlay === 'darken') { ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0,0,w,h); }
+  else if (acg.overlay === 'gradient') {
+    const posY = acg.position.startsWith('top') ? 'top' : acg.position.startsWith('mid') ? 'mid' : 'bottom';
+    let grad;
+    if (posY === 'top') { grad = ctx.createLinearGradient(0,0,0,h*0.6); grad.addColorStop(0,'rgba(0,0,0,0.7)'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    else if (posY === 'bottom') { grad = ctx.createLinearGradient(0,h,0,h*0.4); grad.addColorStop(0,'rgba(0,0,0,0.7)'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    else { grad = ctx.createLinearGradient(0,h*0.2,0,h*0.8); grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.35,'rgba(0,0,0,0.5)'); grad.addColorStop(0.65,'rgba(0,0,0,0.5)'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+  }
+
+  // Text (only if headline exists)
+  const headline = acg.allCaps ? acg.headline.toUpperCase() : acg.headline;
+  if (!headline.trim()) return;
+
+  const padding = Math.round(w*0.07);
+  const maxTW = w - padding*2;
+  const spacingEm = 0.35;
+  let fontSize = Math.round(Math.min(w,h)*0.13);
+  const fStr = () => acg.boldness+' '+fontSize+'px \''+acg.font.family+'\', '+(acg.font.fallback||'sans-serif');
+
+  function measure(text, size) {
+    ctx.font = acg.boldness+' '+size+'px \''+acg.font.family+'\', '+(acg.font.fallback||'sans-serif');
+    const sp = size*spacingEm; let tw = 0;
+    for (let i=0;i<text.length;i++) { tw += ctx.measureText(text[i]).width; if (i<text.length-1) tw += sp; }
+    return tw;
+  }
+
+  while (measure(headline, fontSize) > maxTW && fontSize > 20) fontSize -= 2;
+  ctx.font = fStr();
+  const spacing = fontSize * spacingEm;
+  const totalTW = measure(headline, fontSize);
+
+  const [posV, posH] = [acg.position.split('-')[0], acg.position.split('-')[1]];
+  let textY = posV === 'top' ? padding+fontSize : posV === 'bottom' ? h-padding : h/2+fontSize/3;
+  let startX = posH === 'left' ? padding : posH === 'right' ? w-padding-totalTW : (w-totalTW)/2;
+
+  ctx.fillStyle = acg.textColor; ctx.textAlign = 'left';
+  if (acg.overlay === 'shadow' || acg.overlay === 'none') {
+    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = fontSize*0.25;
+    ctx.shadowOffsetX = Math.round(fontSize*0.03); ctx.shadowOffsetY = Math.round(fontSize*0.03);
+  }
+  let curX = startX;
+  for (let i=0;i<headline.length;i++) { ctx.fillText(headline[i],curX,textY); curX += ctx.measureText(headline[i]).width+spacing; }
+
+  ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+  ctx.strokeStyle = acg.textColor; ctx.lineWidth = fontSize*0.025; ctx.lineJoin = 'round';
+  curX = startX;
+  for (let i=0;i<headline.length;i++) { ctx.strokeText(headline[i],curX,textY); curX += ctx.measureText(headline[i]).width+spacing; }
+}
+
+function acgDownload(canvas, fmt) {
+  const slug = acg.headline.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-+$/,'');
+  const a = document.createElement('a');
+  a.download = slug+'-'+fmt.w+'x'+fmt.h+'.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
 }
 
 </script>
