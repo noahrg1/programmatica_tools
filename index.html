@@ -220,6 +220,16 @@
     .acg-color-row { display: flex; gap: 12px; align-items: center; }
     .acg-color-row label { font-size: 0.75rem; color: var(--muted); font-weight: 600; min-width: 50px; }
     .acg-color-row .acg-swatch { width: 32px; height: 32px; }
+
+    /* ── Logo section (DV360) ── */
+    .acg-logo-section { display: none; }
+    .acg-logo-section.visible { display: block; }
+    .acg-logo-upload { border: 2px dashed var(--border); border-radius: 8px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+    .acg-logo-upload:hover { border-color: var(--accent); background: rgba(108,99,255,0.06); }
+    .acg-logo-upload.has-logo { padding: 8px; border-style: solid; border-color: var(--green); }
+    .acg-logo-upload img { max-width: 80px; max-height: 80px; display: block; margin: 0 auto; border-radius: 4px; }
+    .acg-pos-pair { display: flex; gap: 16px; align-items: flex-start; }
+    .acg-pos-pair > div { flex: 1; }
     /* Make the card wider when Ad Creative tab is active */
     .card.wide { max-width: 1200px; }
   </style>
@@ -672,6 +682,7 @@
         <div class="acg-platform-toggle">
           <button class="active" onclick="acgSetPlatform('meta',this)">Meta</button>
           <button onclick="acgSetPlatform('dv360',this)">DV360</button>
+          <button onclick="acgSetPlatform('search',this)">Search</button>
         </div>
 
         <!-- Image Upload -->
@@ -737,10 +748,31 @@
           </div>
         </div>
 
-        <!-- Text Position -->
+        <!-- Text Position + Logo Position side by side -->
         <div class="acg-field">
-          <label>Text Position</label>
-          <div class="acg-pos-grid" id="acg-pos"></div>
+          <div class="acg-pos-pair">
+            <div>
+              <label>Text Position</label>
+              <div class="acg-pos-grid" id="acg-pos"></div>
+            </div>
+            <div class="acg-logo-section" id="acg-logo-pos-section">
+              <label>Logo Position</label>
+              <div class="acg-pos-grid" id="acg-logo-pos"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logo Upload (DV360 only) -->
+        <div class="acg-logo-section" id="acg-logo-section">
+          <div class="acg-field">
+            <label>Logo <span class="acg-hint">— square PNG only</span></label>
+            <div class="acg-logo-upload" id="acg-logo-upload">
+              <div id="acg-logo-placeholder" style="color:var(--muted);font-size:0.78rem">⬆ Upload square logo (PNG)</div>
+              <img id="acg-logo-preview" style="display:none" alt="Logo">
+            </div>
+            <input type="file" id="acg-logo-file" accept="image/png" hidden>
+            <div class="acg-img-info" id="acg-logo-info"></div>
+          </div>
         </div>
 
         <!-- Overlay Style -->
@@ -758,22 +790,18 @@
               <span class="acg-charcount" id="acg-cta-cc">0 / 15</span>
             </div>
           </div>
-
           <div class="acg-field">
             <label>Button Style</label>
             <div class="acg-corner-grid" id="acg-corner-grid"></div>
           </div>
-
           <div class="acg-field">
             <label>Button Size</label>
             <div class="acg-toggle-row" id="acg-cta-size"></div>
           </div>
-
           <div class="acg-field">
             <label>Button Position</label>
             <div class="acg-pos-grid" id="acg-cta-pos"></div>
           </div>
-
           <div class="acg-field">
             <label>Button Colours</label>
             <div style="display:flex;flex-direction:column;gap:8px">
@@ -1729,8 +1757,14 @@ const ACG_FORMATS = [
 const ACG_DV360_FORMATS = [
   { label: 'Half Page',    w: 600,  h: 1200 },
   { label: 'Billboard',    w: 1940, h: 500  },
-  { label: 'MREC',          w: 600,  h: 500  },
+  { label: 'MREC',         w: 600,  h: 500  },
   { label: 'Skyscraper',   w: 320,  h: 1200 },
+];
+
+const ACG_SEARCH_FORMATS = [
+  { label: 'Square',       w: 1080, h: 1080 },
+  { label: 'Landscape',    w: 1200, h: 628  },
+  { label: 'Portrait',     w: 960,  h: 1200 },
 ];
 
 const ACG_COLORS = ['#ffffff','#000000','#f59e0b','#ef4444','#22c55e','#3b82f6'];
@@ -1743,7 +1777,8 @@ const acg = {
   allCaps: true, boldness: 900,
   platform: 'meta',
   ctaText: '', ctaCorner: 'pill', ctaPosition: 'mid-center', ctaSize: 'medium',
-  ctaBorderColor: '#ffffff', ctaBgColor: '#000000', ctaBgTransparent: true
+  ctaBorderColor: '#ffffff', ctaBgColor: '#000000', ctaBgTransparent: true,
+  logo: null, logoPosition: 'bottom-center'
 };
 
 (function initACG() {
@@ -1848,13 +1883,13 @@ function acgSetPlatform(platform, btn) {
   btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const ctaSec = document.getElementById('acg-cta-section');
-  if (platform === 'dv360') ctaSec.classList.add('visible');
-  else ctaSec.classList.remove('visible');
+  const logoSec = document.getElementById('acg-logo-section');
+  const logoPosSec = document.getElementById('acg-logo-pos-section');
+  if (platform === 'dv360') { ctaSec.classList.add('visible'); logoSec.classList.add('visible'); logoPosSec.classList.add('visible'); }
+  else { ctaSec.classList.remove('visible'); logoSec.classList.remove('visible'); logoPosSec.classList.remove('visible'); }
 }
 
-// CTA controls init
 (function initCTA() {
-  // CTA text input
   document.getElementById('acg-cta-text').addEventListener('input', e => {
     acg.ctaText = e.target.value;
     const len = acg.ctaText.length;
@@ -1862,55 +1897,80 @@ function acgSetPlatform(platform, btn) {
     cc.textContent = len + ' / 15';
     cc.classList.toggle('at-limit', len >= 15);
   });
-
-  // Corner style picker
   const cornerC = document.getElementById('acg-corner-grid');
   [{id:'square',label:'Square'},{id:'rounded',label:'Rounded'},{id:'pill',label:'Pill'}].forEach(o => {
     const el = document.createElement('div');
     el.className = 'acg-corner-opt' + (acg.ctaCorner === o.id ? ' active' : '');
     el.textContent = o.label;
-    el.onclick = () => {
-      acg.ctaCorner = o.id;
-      cornerC.querySelectorAll('.acg-corner-opt').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    };
+    el.onclick = () => { acg.ctaCorner = o.id; cornerC.querySelectorAll('.acg-corner-opt').forEach(t => t.classList.remove('active')); el.classList.add('active'); };
     cornerC.appendChild(el);
   });
-
-  // CTA size selector
   const sizeC = document.getElementById('acg-cta-size');
   [{id:'small',label:'Small'},{id:'medium',label:'Medium'},{id:'big',label:'Big'}].forEach(o => {
     const el = document.createElement('div');
     el.className = 'acg-toggle' + (acg.ctaSize === o.id ? ' active' : '');
     el.textContent = o.label;
-    el.onclick = () => {
-      acg.ctaSize = o.id;
-      sizeC.querySelectorAll('.acg-toggle').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    };
+    el.onclick = () => { acg.ctaSize = o.id; sizeC.querySelectorAll('.acg-toggle').forEach(t => t.classList.remove('active')); el.classList.add('active'); };
     sizeC.appendChild(el);
   });
-
-  // CTA position grid (independent of headline position)
   const ctaPosC = document.getElementById('acg-cta-pos');
   const ctaPosLabels = ['↖','↑','↗','←','·','→','↙','↓','↘'];
   ACG_POSITIONS.forEach((pos, i) => {
     const el = document.createElement('button');
     el.className = 'acg-pos' + (acg.ctaPosition === pos ? ' active' : '');
     el.textContent = ctaPosLabels[i];
-    el.onclick = () => {
-      acg.ctaPosition = pos;
-      ctaPosC.querySelectorAll('.acg-pos').forEach(p => p.classList.remove('active'));
-      el.classList.add('active');
-    };
+    el.onclick = () => { acg.ctaPosition = pos; ctaPosC.querySelectorAll('.acg-pos').forEach(p => p.classList.remove('active')); el.classList.add('active'); };
     ctaPosC.appendChild(el);
   });
-
-  // CTA colour inputs
   document.getElementById('acg-cta-border-color').addEventListener('input', e => { acg.ctaBorderColor = e.target.value; });
   document.getElementById('acg-cta-bg-color').addEventListener('input', e => { acg.ctaBgColor = e.target.value; });
   document.getElementById('acg-cta-bg-transparent').addEventListener('change', e => { acg.ctaBgTransparent = e.target.checked; });
 })();
+
+
+// Logo upload init
+(function initLogo() {
+  const upload = document.getElementById('acg-logo-upload');
+  const fileIn = document.getElementById('acg-logo-file');
+  upload.addEventListener('click', () => fileIn.click());
+  fileIn.addEventListener('change', e => { if (e.target.files.length) acgHandleLogo(e.target.files[0]); });
+
+  // Logo position grid
+  const logoPosC = document.getElementById('acg-logo-pos');
+  const posLabels = ['↖','↑','↗','←','·','→','↙','↓','↘'];
+  ACG_POSITIONS.forEach((pos, i) => {
+    const el = document.createElement('button');
+    el.className = 'acg-pos' + (acg.logoPosition === pos ? ' active' : '');
+    el.textContent = posLabels[i];
+    el.onclick = () => { acg.logoPosition = pos; logoPosC.querySelectorAll('.acg-pos').forEach(p => p.classList.remove('active')); el.classList.add('active'); };
+    logoPosC.appendChild(el);
+  });
+})();
+
+function acgHandleLogo(file) {
+  if (file.type !== 'image/png') {
+    document.getElementById('acg-logo-info').textContent = 'PNG only please.';
+    document.getElementById('acg-logo-info').className = 'acg-img-info error';
+    return;
+  }
+  const img = new Image();
+  img.onload = () => {
+    if (Math.abs(img.naturalWidth - img.naturalHeight) > 2) {
+      document.getElementById('acg-logo-info').textContent = img.naturalWidth+'×'+img.naturalHeight+'px — must be square (1:1).';
+      document.getElementById('acg-logo-info').className = 'acg-img-info error';
+      acg.logo = null;
+      return;
+    }
+    acg.logo = img;
+    document.getElementById('acg-logo-preview').src = img.src;
+    document.getElementById('acg-logo-preview').style.display = 'block';
+    document.getElementById('acg-logo-placeholder').style.display = 'none';
+    document.getElementById('acg-logo-upload').classList.add('has-logo');
+    document.getElementById('acg-logo-info').textContent = img.naturalWidth+'×'+img.naturalHeight+'px — ✓ Accepted';
+    document.getElementById('acg-logo-info').className = 'acg-img-info success';
+  };
+  img.src = URL.createObjectURL(file);
+}
 
 function acgPreviewText() {
   const raw = acg.headline.trim() || 'Aa Bb';
@@ -1962,7 +2022,7 @@ function acgGenerate() {
   out.appendChild(grid);
   acgCards = [];
 
-  const formats = acg.platform === 'dv360' ? ACG_DV360_FORMATS : ACG_FORMATS;
+  const formats = acg.platform === 'dv360' ? ACG_DV360_FORMATS : acg.platform === 'search' ? ACG_SEARCH_FORMATS : ACG_FORMATS;
   formats.forEach((fmt, idx) => {
     const card = document.createElement('div');
     card.className = 'acg-out-card';
@@ -2060,11 +2120,8 @@ function acgRender(cs) {
   const ctx = canvas.getContext('2d');
   const {w,h} = fmt, img = acg.image;
   const dpr = cs.dpr || 1;
-
-  // Scale context for HiDPI rendering (all coords stay in logical pixels)
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  // Cover fill from center-cropped square, using draggable offset
   const srcSize = Math.min(img.naturalWidth, img.naturalHeight);
   const sx = (img.naturalWidth - srcSize)/2, sy = (img.naturalHeight - srcSize)/2;
   ctx.clearRect(0,0,w,h);
@@ -2075,17 +2132,34 @@ function acgRender(cs) {
   if (acg.overlay === 'darken') { ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0,0,w,h); }
   else if (acg.overlay === 'gradient') {
     const posY = acg.position.startsWith('top') ? 'top' : acg.position.startsWith('mid') ? 'mid' : 'bottom';
-    const isBillboard = (w === 1940 && h === 500);
-    const gAlpha = isBillboard ? 0.35 : 0.7;
-    const gMid = isBillboard ? 0.25 : 0.5;
+    const isBB = (w === 1940 && h === 500);
+    const gA = isBB ? 0.35 : 0.7;
+    const gM = isBB ? 0.25 : 0.5;
     let grad;
-    if (posY === 'top') { grad = ctx.createLinearGradient(0,0,0,h*0.6); grad.addColorStop(0,'rgba(0,0,0,'+gAlpha+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
-    else if (posY === 'bottom') { grad = ctx.createLinearGradient(0,h,0,h*0.4); grad.addColorStop(0,'rgba(0,0,0,'+gAlpha+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
-    else { grad = ctx.createLinearGradient(0,h*0.2,0,h*0.8); grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.35,'rgba(0,0,0,'+gMid+')'); grad.addColorStop(0.65,'rgba(0,0,0,'+gMid+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    if (posY === 'top') { grad = ctx.createLinearGradient(0,0,0,h*0.6); grad.addColorStop(0,'rgba(0,0,0,'+gA+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    else if (posY === 'bottom') { grad = ctx.createLinearGradient(0,h,0,h*0.4); grad.addColorStop(0,'rgba(0,0,0,'+gA+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    else { grad = ctx.createLinearGradient(0,h*0.2,0,h*0.8); grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.35,'rgba(0,0,0,'+gM+')'); grad.addColorStop(0.65,'rgba(0,0,0,'+gM+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
     ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
   }
 
-  // Text (only if headline exists)
+  // Logo (DV360 only)
+  if (acg.platform === 'dv360' && acg.logo) {
+    const logoSize = Math.round(Math.min(w, h) * 0.25);
+    const margin = Math.round(Math.min(w, h) * 0.05);
+    // Determine logo position — default: opposite of headline vertically
+    let lPos = acg.logoPosition;
+    const [lPosV, lPosH] = [lPos.split('-')[0], lPos.split('-')[1]];
+    let lx, ly;
+    if (lPosH === 'left') lx = margin;
+    else if (lPosH === 'right') lx = w - margin - logoSize;
+    else lx = (w - logoSize) / 2;
+    if (lPosV === 'top') ly = margin;
+    else if (lPosV === 'bottom') ly = h - margin - logoSize;
+    else ly = (h - logoSize) / 2;
+    ctx.drawImage(acg.logo, lx, ly, logoSize, logoSize);
+  }
+
+  // Text
   const headline = acg.allCaps ? acg.headline.toUpperCase() : acg.headline;
   if (!headline.trim()) return;
 
@@ -2093,7 +2167,6 @@ function acgRender(cs) {
   const maxTW = w - padding*2;
   const spacingEm = 0.35;
   let fontSize = Math.round(Math.min(w,h)*0.13);
-  const fStr = () => acg.boldness+' '+fontSize+'px \''+acg.font.family+'\', '+(acg.font.fallback||'sans-serif');
 
   function measure(text, size) {
     ctx.font = acg.boldness+' '+size+'px \''+acg.font.family+'\', '+(acg.font.fallback||'sans-serif');
@@ -2102,34 +2175,68 @@ function acgRender(cs) {
     return tw;
   }
 
+  // For narrow formats, allow two-line wrapping
+  let textLines = [headline];
   while (measure(headline, fontSize) > maxTW && fontSize > 20) fontSize -= 2;
-  ctx.font = fStr();
+
+  // If text still overflows at min size, split into two lines
+  if (measure(headline, fontSize) > maxTW) {
+    const words = headline.split(' ');
+    if (words.length >= 2) {
+      let bestSplit = Math.floor(words.length / 2);
+      textLines = [words.slice(0, bestSplit).join(' '), words.slice(bestSplit).join(' ')];
+      // Re-calc font size for the longest line
+      fontSize = Math.round(Math.min(w,h)*0.13);
+      const longestLine = textLines.reduce((a,b) => measure(a,fontSize) > measure(b,fontSize) ? a : b);
+      while (measure(longestLine, fontSize) > maxTW && fontSize > 20) fontSize -= 2;
+    }
+  }
+
+  ctx.font = acg.boldness+' '+fontSize+'px \''+acg.font.family+'\', '+(acg.font.fallback||'sans-serif');
   const spacing = fontSize * spacingEm;
-  const totalTW = measure(headline, fontSize);
+  const lineHeight = fontSize * 1.3;
 
   const [posV, posH] = [acg.position.split('-')[0], acg.position.split('-')[1]];
-  let textY = posV === 'top' ? padding+fontSize : posV === 'bottom' ? h-padding : h/2+fontSize/3;
-  let startX = posH === 'left' ? padding : posH === 'right' ? w-padding-totalTW : (w-totalTW)/2;
+  // Thirds positioning: top=1/3, mid=1/2, bottom=2/3
+  const totalTextH = textLines.length * lineHeight;
+  const isBillboard = (w === 1940 && h === 500);
+  const bbCTAShared = isBillboard && acg.platform === 'dv360' && acg.ctaText.trim() && acg.ctaPosition === acg.position;
+  let blockY;
+  if (posV === 'top') blockY = h / 3 - totalTextH / 2;
+  else if (posV === 'bottom') blockY = (2 * h / 3) - totalTextH / 2;
+  else blockY = h / 2 - totalTextH / 2;
+  // Billboard: shift headline up when CTA shares position so CTA fits below
+  if (bbCTAShared) blockY -= h * 0.08;
 
   const hasCTA = acg.platform === 'dv360' && acg.ctaText.trim();
 
-  ctx.fillStyle = acg.textColor; ctx.textAlign = 'left';
-  if (acg.overlay === 'shadow' || acg.overlay === 'none') {
-    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = fontSize*0.25;
-    ctx.shadowOffsetX = Math.round(fontSize*0.03); ctx.shadowOffsetY = Math.round(fontSize*0.03);
-  }
-  let curX = startX;
-  for (let i=0;i<headline.length;i++) { ctx.fillText(headline[i],curX,textY); curX += ctx.measureText(headline[i]).width+spacing; }
+  // Draw each line
+  textLines.forEach((line, lineIdx) => {
+    const lineTW = measure(line, fontSize);
+    let startX = posH === 'left' ? padding : posH === 'right' ? w - padding - lineTW : (w - lineTW) / 2;
+    let textY = blockY + lineIdx * lineHeight + fontSize;
 
-  ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
-  ctx.strokeStyle = acg.textColor; ctx.lineWidth = fontSize*0.025; ctx.lineJoin = 'round';
-  curX = startX;
-  for (let i=0;i<headline.length;i++) { ctx.strokeText(headline[i],curX,textY); curX += ctx.measureText(headline[i]).width+spacing; }
+    ctx.fillStyle = acg.textColor; ctx.textAlign = 'left';
+    if (acg.overlay === 'shadow' || acg.overlay === 'none') {
+      ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = fontSize*0.25;
+      ctx.shadowOffsetX = Math.round(fontSize*0.03); ctx.shadowOffsetY = Math.round(fontSize*0.03);
+    }
+    ctx.font = acg.boldness+' '+fontSize+'px \''+acg.font.family+'\', '+(acg.font.fallback||'sans-serif');
+    let curX = startX;
+    for (let i=0;i<line.length;i++) { ctx.fillText(line[i],curX,textY); curX += ctx.measureText(line[i]).width+spacing; }
 
-  // CTA Button (DV360 only) — independent position & size
+    ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+    ctx.strokeStyle = acg.textColor; ctx.lineWidth = fontSize*0.025; ctx.lineJoin = 'round';
+    curX = startX;
+    for (let i=0;i<line.length;i++) { ctx.strokeText(line[i],curX,textY); curX += ctx.measureText(line[i]).width+spacing; }
+  });
+
+  // textY for CTA positioning = bottom of last text line
+  const lastTextY = blockY + (textLines.length - 1) * lineHeight + fontSize;
+
+  // CTA Button (DV360 only)
   if (hasCTA) {
     const ctaText = acg.ctaText.trim();
-    // Base sizes; +33% for half page, billboard, skyscraper; extra +75% for skyscraper
     const isMREC = (w === 600 && h === 500);
     const isSkyscraper = (w === 320 && h === 1200);
     let sizeScale = acg.ctaSize === 'small' ? 0.28 : acg.ctaSize === 'big' ? 0.52 : 0.38;
@@ -2143,34 +2250,30 @@ function acgRender(cs) {
     const btnW = ctaTW + btnPadX * 2;
     const btnH = ctaFontSize + btnPadY * 2;
 
-    // Independent CTA position
     const [ctaPosV, ctaPosH] = [acg.ctaPosition.split('-')[0], acg.ctaPosition.split('-')[1]];
     let btnX;
     if (ctaPosH === 'left') btnX = padding;
     else if (ctaPosH === 'right') btnX = w - padding - btnW;
     else btnX = (w - btnW) / 2;
 
+    const isBB_cta = (w === 1940 && h === 500);
     let btnY;
-    if (ctaPosV === 'top') btnY = padding;
-    else if (ctaPosV === 'bottom') btnY = h - padding - btnH;
+    if (ctaPosV === 'top') btnY = h / 3 - btnH / 2;
+    else if (ctaPosV === 'bottom') btnY = (2 * h / 3) - btnH / 2;
     else btnY = (h - btnH) / 2;
 
-    // When headline and button share the same position, nudge button below headline
     if (acg.ctaPosition === acg.position && headline.trim()) {
-      const isTall = h / w >= 2; // skyscraper & half page
-      const isBillboard = (w === 1940 && h === 500);
-      const isMREC = (w === 600 && h === 500);
-      const isSkyscraper = (w === 320 && h === 1200);
-      const gap = isSkyscraper ? fontSize * 1.6 : isTall ? fontSize * 1.2 : isBillboard ? fontSize * 0.85 : isMREC ? fontSize * 0.75 : fontSize * 0.55;
-      btnY = textY + Math.round(gap);
+      const isTall = h / w >= 2;
+      const isSky = (w === 320 && h === 1200);
+      const isMR = (w === 600 && h === 500);
+      const gap = isSky ? fontSize * 1.6 : isTall ? fontSize * 1.2 : isBB_cta ? fontSize * 0.85 : isMR ? fontSize * 0.75 : fontSize * 0.55;
+      btnY = lastTextY + Math.round(gap);
     }
 
-    // Corner radius
     let radius = 0;
     if (acg.ctaCorner === 'rounded') radius = Math.round(btnH * 0.2);
     else if (acg.ctaCorner === 'pill') radius = Math.round(btnH / 2);
 
-    // Draw button background
     ctx.beginPath();
     if (radius > 0) {
       ctx.moveTo(btnX + radius, btnY);
@@ -2187,16 +2290,12 @@ function acgRender(cs) {
     }
     ctx.closePath();
 
-    if (!acg.ctaBgTransparent) {
-      ctx.fillStyle = acg.ctaBgColor;
-      ctx.fill();
-    }
+    if (!acg.ctaBgTransparent) { ctx.fillStyle = acg.ctaBgColor; ctx.fill(); }
     ctx.strokeStyle = acg.ctaBorderColor;
     ctx.lineWidth = Math.max(2, Math.round(ctaFontSize * 0.1));
     ctx.lineJoin = 'round';
     ctx.stroke();
 
-    // Draw CTA text
     ctx.fillStyle = acg.ctaBorderColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -2206,14 +2305,11 @@ function acgRender(cs) {
 }
 
 function acgDownload(canvas, fmt) {
-  // Find the card state for this canvas to get drag offsets
   const cs = acgCards.find(c => c.canvas === canvas);
-  // Render a fresh 1× canvas at exact ad dimensions for download
   const dlCanvas = document.createElement('canvas');
   dlCanvas.width = fmt.w; dlCanvas.height = fmt.h;
   const dlState = { canvas: dlCanvas, fmt, offX: cs.offX, offY: cs.offY, dw: cs.dw, dh: cs.dh, dpr: 1 };
   acgRender(dlState);
-
   const slug = acg.headline.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-+$/,'');
   const a = document.createElement('a');
   a.download = slug+'-'+fmt.w+'x'+fmt.h+'.png';
