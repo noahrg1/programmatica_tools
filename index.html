@@ -203,6 +203,23 @@
     .acg-empty { text-align: center; padding: 60px 16px; color: var(--muted); font-size: 0.85rem; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
     .acg-empty .acg-ei { font-size: 2rem; margin-bottom: 10px; display: block; }
 
+
+    /* ── Platform Toggle ── */
+    .acg-platform-toggle { display: flex; gap: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .acg-platform-toggle button { flex: 1; padding: 10px 16px; border: none; background: none; color: var(--muted); font-size: 0.84rem; font-weight: 700; cursor: pointer; transition: all 0.15s; letter-spacing: 0.03em; }
+    .acg-platform-toggle button:hover { color: var(--fg); }
+    .acg-platform-toggle button.active { background: var(--accent); color: #fff; }
+
+    /* ── CTA Controls (DV360 only) ── */
+    .acg-cta-section { display: none; background: #161820; border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-top: 4px; }
+    .acg-cta-section.visible { display: block; }
+    .acg-corner-grid { display: flex; gap: 6px; }
+    .acg-corner-opt { padding: 7px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--fg); transition: all 0.15s; }
+    .acg-corner-opt:hover { border-color: #444; }
+    .acg-corner-opt.active { border-color: var(--accent); background: rgba(108,99,255,0.12); }
+    .acg-color-row { display: flex; gap: 12px; align-items: center; }
+    .acg-color-row label { font-size: 0.75rem; color: var(--muted); font-weight: 600; min-width: 50px; }
+    .acg-color-row .acg-swatch { width: 32px; height: 32px; }
     /* Make the card wider when Ad Creative tab is active */
     .card.wide { max-width: 1200px; }
   </style>
@@ -651,6 +668,12 @@
     <div class="acg-layout">
       <!-- Left: Controls -->
       <div>
+        <!-- Platform Toggle -->
+        <div class="acg-platform-toggle">
+          <button class="active" onclick="acgSetPlatform('meta',this)">Meta</button>
+          <button onclick="acgSetPlatform('dv360',this)">DV360</button>
+        </div>
+
         <!-- Image Upload -->
         <div class="acg-field">
           <label>Background Image <span class="acg-hint">— min 1200 × 1200px</span></label>
@@ -725,6 +748,57 @@
           <label>Overlay Style</label>
           <div class="acg-toggle-row" id="acg-overlay"></div>
         </div>
+
+        <!-- CTA (DV360 only) -->
+        <div class="acg-cta-section" id="acg-cta-section">
+          <div class="acg-field">
+            <label>CTA Text <span class="acg-hint">— max 15 characters</span></label>
+            <div class="acg-hl-wrap">
+              <input type="text" id="acg-cta-text" maxlength="15" placeholder="e.g. Shop Now">
+              <span class="acg-charcount" id="acg-cta-cc">0 / 15</span>
+            </div>
+          </div>
+
+          <div class="acg-field">
+            <label>Button Style</label>
+            <div class="acg-corner-grid" id="acg-corner-grid"></div>
+          </div>
+
+          <div class="acg-field">
+            <label>Button Size</label>
+            <div class="acg-toggle-row" id="acg-cta-size"></div>
+          </div>
+
+          <div class="acg-field">
+            <label>Button Position</label>
+            <div class="acg-pos-grid" id="acg-cta-pos"></div>
+          </div>
+
+          <div class="acg-field">
+            <label>Button Colours</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="acg-color-row">
+                <label>Border</label>
+                <div class="acg-swatch" title="Button border colour">
+                  <input type="color" id="acg-cta-border-color" value="#ffffff">
+                </div>
+              </div>
+              <div class="acg-color-row">
+                <label>Fill</label>
+                <div class="acg-swatch" title="Button background colour">
+                  <input type="color" id="acg-cta-bg-color" value="#000000">
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;margin-left:4px">
+                  <input type="checkbox" id="acg-cta-bg-transparent" checked style="accent-color:var(--accent);cursor:pointer">
+                  <label for="acg-cta-bg-transparent" style="font-size:0.75rem;color:var(--muted);cursor:pointer;min-width:auto">Transparent</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="action-btn" id="acg-gen-btn2" disabled>Generate Creatives</button>
+
       </div>
 
       <!-- Right: Output -->
@@ -1651,6 +1725,14 @@ const ACG_FORMATS = [
   { label: 'Landscape / Link', w: 1200, h: 628  },
 ];
 
+
+const ACG_DV360_FORMATS = [
+  { label: 'Half Page',    w: 600,  h: 1200 },
+  { label: 'Billboard',    w: 1940, h: 500  },
+  { label: 'MREC',          w: 600,  h: 500  },
+  { label: 'Skyscraper',   w: 320,  h: 1200 },
+];
+
 const ACG_COLORS = ['#ffffff','#000000','#f59e0b','#ef4444','#22c55e','#3b82f6'];
 const ACG_OVERLAYS = [{id:'shadow',label:'Text Shadow'},{id:'darken',label:'Dark Overlay'},{id:'gradient',label:'Gradient'},{id:'none',label:'None'}];
 const ACG_POSITIONS = ['top-left','top-center','top-right','mid-left','mid-center','mid-right','bottom-left','bottom-center','bottom-right'];
@@ -1658,7 +1740,10 @@ const ACG_POSITIONS = ['top-left','top-center','top-right','mid-left','mid-cente
 const acg = {
   image: null, headline: '', font: ACG_FONTS.serif[0],
   textColor: '#ffffff', position: 'mid-center', overlay: 'gradient',
-  allCaps: true, boldness: 900
+  allCaps: true, boldness: 900,
+  platform: 'meta',
+  ctaText: '', ctaCorner: 'pill', ctaPosition: 'mid-center', ctaSize: 'medium',
+  ctaBorderColor: '#ffffff', ctaBgColor: '#000000', ctaBgTransparent: true
 };
 
 (function initACG() {
@@ -1685,8 +1770,9 @@ const acg = {
     acgUpdateFontPreviews();
   });
 
-  // Generate
+  // Generate (both buttons)
   document.getElementById('acg-gen-btn').addEventListener('click', acgGenerate);
+  document.getElementById('acg-gen-btn2').addEventListener('click', acgGenerate);
 
   // Caps toggle
   const capsC = document.getElementById('acg-caps');
@@ -1756,6 +1842,76 @@ const acg = {
   });
 })();
 
+
+function acgSetPlatform(platform, btn) {
+  acg.platform = platform;
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const ctaSec = document.getElementById('acg-cta-section');
+  if (platform === 'dv360') ctaSec.classList.add('visible');
+  else ctaSec.classList.remove('visible');
+}
+
+// CTA controls init
+(function initCTA() {
+  // CTA text input
+  document.getElementById('acg-cta-text').addEventListener('input', e => {
+    acg.ctaText = e.target.value;
+    const len = acg.ctaText.length;
+    const cc = document.getElementById('acg-cta-cc');
+    cc.textContent = len + ' / 15';
+    cc.classList.toggle('at-limit', len >= 15);
+  });
+
+  // Corner style picker
+  const cornerC = document.getElementById('acg-corner-grid');
+  [{id:'square',label:'Square'},{id:'rounded',label:'Rounded'},{id:'pill',label:'Pill'}].forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'acg-corner-opt' + (acg.ctaCorner === o.id ? ' active' : '');
+    el.textContent = o.label;
+    el.onclick = () => {
+      acg.ctaCorner = o.id;
+      cornerC.querySelectorAll('.acg-corner-opt').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    };
+    cornerC.appendChild(el);
+  });
+
+  // CTA size selector
+  const sizeC = document.getElementById('acg-cta-size');
+  [{id:'small',label:'Small'},{id:'medium',label:'Medium'},{id:'big',label:'Big'}].forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'acg-toggle' + (acg.ctaSize === o.id ? ' active' : '');
+    el.textContent = o.label;
+    el.onclick = () => {
+      acg.ctaSize = o.id;
+      sizeC.querySelectorAll('.acg-toggle').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    };
+    sizeC.appendChild(el);
+  });
+
+  // CTA position grid (independent of headline position)
+  const ctaPosC = document.getElementById('acg-cta-pos');
+  const ctaPosLabels = ['↖','↑','↗','←','·','→','↙','↓','↘'];
+  ACG_POSITIONS.forEach((pos, i) => {
+    const el = document.createElement('button');
+    el.className = 'acg-pos' + (acg.ctaPosition === pos ? ' active' : '');
+    el.textContent = ctaPosLabels[i];
+    el.onclick = () => {
+      acg.ctaPosition = pos;
+      ctaPosC.querySelectorAll('.acg-pos').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+    };
+    ctaPosC.appendChild(el);
+  });
+
+  // CTA colour inputs
+  document.getElementById('acg-cta-border-color').addEventListener('input', e => { acg.ctaBorderColor = e.target.value; });
+  document.getElementById('acg-cta-bg-color').addEventListener('input', e => { acg.ctaBgColor = e.target.value; });
+  document.getElementById('acg-cta-bg-transparent').addEventListener('change', e => { acg.ctaBgTransparent = e.target.checked; });
+})();
+
 function acgPreviewText() {
   const raw = acg.headline.trim() || 'Aa Bb';
   const first = raw.split(/\s+/)[0];
@@ -1768,7 +1924,9 @@ function acgUpdateFontPreviews() {
 }
 
 function acgUpdateBtn() {
-  document.getElementById('acg-gen-btn').disabled = !acg.image;
+  const d = !acg.image;
+  document.getElementById('acg-gen-btn').disabled = d;
+  document.getElementById('acg-gen-btn2').disabled = d;
 }
 
 function acgHandleFile(file) {
@@ -1804,11 +1962,13 @@ function acgGenerate() {
   out.appendChild(grid);
   acgCards = [];
 
-  ACG_FORMATS.forEach((fmt, idx) => {
+  const formats = acg.platform === 'dv360' ? ACG_DV360_FORMATS : ACG_FORMATS;
+  formats.forEach((fmt, idx) => {
     const card = document.createElement('div');
     card.className = 'acg-out-card';
     const canvas = document.createElement('canvas');
-    canvas.width = fmt.w; canvas.height = fmt.h;
+    const dpr = 2;
+    canvas.width = fmt.w * dpr; canvas.height = fmt.h * dpr;
     canvas.style.cursor = 'grab';
 
     // Calculate initial cover-fit offset
@@ -1821,7 +1981,7 @@ function acgGenerate() {
     offX = (fmt.w - dw) / 2;
     offY = (fmt.h - dh) / 2;
 
-    const cardState = { canvas, fmt, offX, offY, dw, dh, dragging: false, lastX: 0, lastY: 0 };
+    const cardState = { canvas, fmt, offX, offY, dw, dh, dragging: false, lastX: 0, lastY: 0, dpr };
     acgCards.push(cardState);
 
     acgRender(cardState);
@@ -1899,6 +2059,10 @@ function acgRender(cs) {
   const canvas = cs.canvas, fmt = cs.fmt;
   const ctx = canvas.getContext('2d');
   const {w,h} = fmt, img = acg.image;
+  const dpr = cs.dpr || 1;
+
+  // Scale context for HiDPI rendering (all coords stay in logical pixels)
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   // Cover fill from center-cropped square, using draggable offset
   const srcSize = Math.min(img.naturalWidth, img.naturalHeight);
@@ -1911,10 +2075,13 @@ function acgRender(cs) {
   if (acg.overlay === 'darken') { ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0,0,w,h); }
   else if (acg.overlay === 'gradient') {
     const posY = acg.position.startsWith('top') ? 'top' : acg.position.startsWith('mid') ? 'mid' : 'bottom';
+    const isBillboard = (w === 1940 && h === 500);
+    const gAlpha = isBillboard ? 0.35 : 0.7;
+    const gMid = isBillboard ? 0.25 : 0.5;
     let grad;
-    if (posY === 'top') { grad = ctx.createLinearGradient(0,0,0,h*0.6); grad.addColorStop(0,'rgba(0,0,0,0.7)'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
-    else if (posY === 'bottom') { grad = ctx.createLinearGradient(0,h,0,h*0.4); grad.addColorStop(0,'rgba(0,0,0,0.7)'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
-    else { grad = ctx.createLinearGradient(0,h*0.2,0,h*0.8); grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.35,'rgba(0,0,0,0.5)'); grad.addColorStop(0.65,'rgba(0,0,0,0.5)'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    if (posY === 'top') { grad = ctx.createLinearGradient(0,0,0,h*0.6); grad.addColorStop(0,'rgba(0,0,0,'+gAlpha+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    else if (posY === 'bottom') { grad = ctx.createLinearGradient(0,h,0,h*0.4); grad.addColorStop(0,'rgba(0,0,0,'+gAlpha+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
+    else { grad = ctx.createLinearGradient(0,h*0.2,0,h*0.8); grad.addColorStop(0,'rgba(0,0,0,0)'); grad.addColorStop(0.35,'rgba(0,0,0,'+gMid+')'); grad.addColorStop(0.65,'rgba(0,0,0,'+gMid+')'); grad.addColorStop(1,'rgba(0,0,0,0)'); }
     ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
   }
 
@@ -1944,6 +2111,8 @@ function acgRender(cs) {
   let textY = posV === 'top' ? padding+fontSize : posV === 'bottom' ? h-padding : h/2+fontSize/3;
   let startX = posH === 'left' ? padding : posH === 'right' ? w-padding-totalTW : (w-totalTW)/2;
 
+  const hasCTA = acg.platform === 'dv360' && acg.ctaText.trim();
+
   ctx.fillStyle = acg.textColor; ctx.textAlign = 'left';
   if (acg.overlay === 'shadow' || acg.overlay === 'none') {
     ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = fontSize*0.25;
@@ -1956,13 +2125,99 @@ function acgRender(cs) {
   ctx.strokeStyle = acg.textColor; ctx.lineWidth = fontSize*0.025; ctx.lineJoin = 'round';
   curX = startX;
   for (let i=0;i<headline.length;i++) { ctx.strokeText(headline[i],curX,textY); curX += ctx.measureText(headline[i]).width+spacing; }
+
+  // CTA Button (DV360 only) — independent position & size
+  if (hasCTA) {
+    const ctaText = acg.ctaText.trim();
+    // Base sizes; +33% for half page, billboard, skyscraper; extra +75% for skyscraper
+    const isMREC = (w === 600 && h === 500);
+    const isSkyscraper = (w === 320 && h === 1200);
+    let sizeScale = acg.ctaSize === 'small' ? 0.28 : acg.ctaSize === 'big' ? 0.52 : 0.38;
+    if (!isMREC) sizeScale *= 1.33;
+    if (isSkyscraper) sizeScale *= 1.75 * 0.85;
+    const ctaFontSize = Math.round(fontSize * sizeScale);
+    ctx.font = '700 ' + ctaFontSize + 'px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    const ctaTW = ctx.measureText(ctaText).width;
+    const btnPadX = Math.round(ctaFontSize * 1.6);
+    const btnPadY = Math.round(ctaFontSize * 0.7);
+    const btnW = ctaTW + btnPadX * 2;
+    const btnH = ctaFontSize + btnPadY * 2;
+
+    // Independent CTA position
+    const [ctaPosV, ctaPosH] = [acg.ctaPosition.split('-')[0], acg.ctaPosition.split('-')[1]];
+    let btnX;
+    if (ctaPosH === 'left') btnX = padding;
+    else if (ctaPosH === 'right') btnX = w - padding - btnW;
+    else btnX = (w - btnW) / 2;
+
+    let btnY;
+    if (ctaPosV === 'top') btnY = padding;
+    else if (ctaPosV === 'bottom') btnY = h - padding - btnH;
+    else btnY = (h - btnH) / 2;
+
+    // When headline and button share the same position, nudge button below headline
+    if (acg.ctaPosition === acg.position && headline.trim()) {
+      const isTall = h / w >= 2; // skyscraper & half page
+      const isBillboard = (w === 1940 && h === 500);
+      const isMREC = (w === 600 && h === 500);
+      const isSkyscraper = (w === 320 && h === 1200);
+      const gap = isSkyscraper ? fontSize * 1.6 : isTall ? fontSize * 1.2 : isBillboard ? fontSize * 0.85 : isMREC ? fontSize * 0.75 : fontSize * 0.55;
+      btnY = textY + Math.round(gap);
+    }
+
+    // Corner radius
+    let radius = 0;
+    if (acg.ctaCorner === 'rounded') radius = Math.round(btnH * 0.2);
+    else if (acg.ctaCorner === 'pill') radius = Math.round(btnH / 2);
+
+    // Draw button background
+    ctx.beginPath();
+    if (radius > 0) {
+      ctx.moveTo(btnX + radius, btnY);
+      ctx.lineTo(btnX + btnW - radius, btnY);
+      ctx.arcTo(btnX + btnW, btnY, btnX + btnW, btnY + radius, radius);
+      ctx.lineTo(btnX + btnW, btnY + btnH - radius);
+      ctx.arcTo(btnX + btnW, btnY + btnH, btnX + btnW - radius, btnY + btnH, radius);
+      ctx.lineTo(btnX + radius, btnY + btnH);
+      ctx.arcTo(btnX, btnY + btnH, btnX, btnY + btnH - radius, radius);
+      ctx.lineTo(btnX, btnY + radius);
+      ctx.arcTo(btnX, btnY, btnX + radius, btnY, radius);
+    } else {
+      ctx.rect(btnX, btnY, btnW, btnH);
+    }
+    ctx.closePath();
+
+    if (!acg.ctaBgTransparent) {
+      ctx.fillStyle = acg.ctaBgColor;
+      ctx.fill();
+    }
+    ctx.strokeStyle = acg.ctaBorderColor;
+    ctx.lineWidth = Math.max(2, Math.round(ctaFontSize * 0.1));
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Draw CTA text
+    ctx.fillStyle = acg.ctaBorderColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ctaText, btnX + btnW / 2, btnY + btnH / 2 + 1);
+    ctx.textBaseline = 'alphabetic';
+  }
 }
 
 function acgDownload(canvas, fmt) {
+  // Find the card state for this canvas to get drag offsets
+  const cs = acgCards.find(c => c.canvas === canvas);
+  // Render a fresh 1× canvas at exact ad dimensions for download
+  const dlCanvas = document.createElement('canvas');
+  dlCanvas.width = fmt.w; dlCanvas.height = fmt.h;
+  const dlState = { canvas: dlCanvas, fmt, offX: cs.offX, offY: cs.offY, dw: cs.dw, dh: cs.dh, dpr: 1 };
+  acgRender(dlState);
+
   const slug = acg.headline.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-+$/,'');
   const a = document.createElement('a');
   a.download = slug+'-'+fmt.w+'x'+fmt.h+'.png';
-  a.href = canvas.toDataURL('image/png');
+  a.href = dlCanvas.toDataURL('image/png');
   a.click();
 }
 
