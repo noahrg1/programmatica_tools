@@ -255,6 +255,7 @@
     <button class="tab-btn"         onclick="showTab('csv-join',this)"><i data-lucide="list"></i> List to CSV</button>
     <button class="tab-btn"         onclick="showTab('img-crop',this)"><i data-lucide="crop"></i> Image Cropper</button>
     <button class="tab-btn"         onclick="showTab('ad-creative',this)"><i data-lucide="sparkles"></i> Ad Creatives</button>
+    <button class="tab-btn"         onclick="showTab('campaign-cal',this)"><i data-lucide="calendar-days"></i> Campaign Calendar</button>
   </div>
 </div>
 
@@ -845,6 +846,1551 @@
     </div>
   </div>
 
+  <!-- CAMPAIGN-CALENDAR:START (auto-generated monthly; content replaced between these markers) -->
+  <div class="tab-panel" id="tab-campaign-cal">
+    <iframe id="cc-frame" title="Client campaign calendar" style="width:100%;border:0;display:block;min-height:600px" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Campaign Calendar October 2026&lt;/title&gt;
+&lt;style&gt;
+:root{
+  color-scheme:light;
+  --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+  --grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--weekend:#f2f1ec;--group:#f4f3ef;
+  --today:#d03b3b;
+  --s-retail:#2a78d6;--s-auto:#eb6834;--s-pf:#1baf7a;--s-tour:#eda100;--s-fmcg:#e87ba4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme=&quot;light&quot;]){
+    color-scheme:dark;
+    --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;
+    --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--weekend:#222220;--group:#232321;
+    --today:#e66767;
+    --s-retail:#3987e5;--s-auto:#d95926;--s-pf:#199e70;--s-tour:#c98500;--s-fmcg:#d55181;
+  }
+}
+:root[data-theme=&quot;dark&quot;]{
+  color-scheme:dark;
+  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;
+  --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--weekend:#222220;--group:#232321;
+  --today:#e66767;
+  --s-retail:#3987e5;--s-auto:#d95926;--s-pf:#199e70;--s-tour:#c98500;--s-fmcg:#d55181;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.45 system-ui,-apple-system,&quot;Segoe UI&quot;,sans-serif}
+.wrap{max-width:1500px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;margin:0 0 4px;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:13px;margin:0 0 20px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:12px 14px}
+.tile .k{font-size:12px;color:var(--ink2)}
+.tile .v{font-size:22px;font-weight:650;margin-top:2px}
+.tile .n{font-size:12px;color:var(--muted)}
+.bar-row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--ring);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px 5px 9px;font:inherit;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip[aria-pressed=&quot;false&quot;]{opacity:.45}
+.sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+select,input[type=search]{font:inherit;font-size:13px;padding:5px 9px;border-radius:8px;border:1px solid var(--axis);background:var(--surface);color:var(--ink)}
+label.tog{font-size:13px;color:var(--ink2);display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.viewbtn{margin-left:auto}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:12px;overflow:hidden}
+.scroller{overflow-x:auto}
+.cal{display:grid;min-width:1180px;position:relative}
+.cell{border-bottom:1px solid var(--grid);min-height:30px}
+.hd{position:sticky;top:0;z-index:3;background:var(--surface);font-size:11.5px;color:var(--muted);text-align:center;padding:6px 0 4px;border-bottom:1px solid var(--axis)}
+.hd b{display:block;color:var(--ink2);font-size:12.5px;font-weight:600}
+.hd.we{background:var(--weekend)}
+.hd.today b{color:var(--today)}
+.namecol{position:sticky;left:0;z-index:2;background:var(--surface);padding:6px 10px 6px 14px;border-right:1px solid var(--grid);display:flex;align-items:center;min-width:0}
+.namecol span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.budcol{padding:6px 10px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2);font-size:13px;border-right:1px solid var(--grid);display:flex;align-items:center;justify-content:flex-end}
+.grp .namecol,.grp .budcol,.grpfill{background:var(--group)}
+.grp .namecol{font-weight:650;gap:8px}
+.grp .budcol{color:var(--ink);font-weight:650}
+.daybg{border-left:1px solid var(--grid)}
+.daybg.we{background:var(--weekend)}
+.bar{position:relative;z-index:1;align-self:center;height:22px;margin:0 2px;border-radius:4px;display:flex;align-items:center;padding:0 7px;font-size:12px;color:var(--ink);white-space:nowrap;overflow:hidden;cursor:default;font-variant-numeric:tabular-nums}
+.bar::before{content:&quot;&quot;;position:absolute;inset:0;background:var(--c);opacity:.22;border-radius:4px}
+.bar::after{content:&quot;&quot;;position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c);border-radius:4px 0 0 4px}
+.bar.contL{border-top-left-radius:0;border-bottom-left-radius:0}
+.bar.contL::after{width:0}
+.bar.contL{border-left:3px dashed var(--c)}
+.bar.contR{border-right:3px dashed var(--c);border-top-right-radius:0;border-bottom-right-radius:0}
+.bar.zero::before{opacity:.07}
+.bar.zero{color:var(--muted);font-style:italic}
+.bar span{position:relative}
+.bar:hover::before,.bar:focus::before{opacity:.38}
+.todayline{position:absolute;top:0;bottom:0;width:2px;background:var(--today);z-index:0;pointer-events:none;opacity:.6}
+.hol{font-size:10px;color:var(--today);display:block}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--ring);box-shadow:0 6px 24px rgba(0,0,0,.18);border-radius:10px;padding:10px 12px;font-size:12.5px;min-width:220px;max-width:300px;display:none}
+#tip h4{margin:0 0 2px;font-size:13.5px}
+#tip .cl{color:var(--ink2);margin-bottom:6px}
+#tip table{border-collapse:collapse;width:100%}
+#tip td{padding:1px 0;font-variant-numeric:tabular-nums}
+#tip td:last-child{text-align:right}
+#tip .sep td{border-top:1px solid var(--grid);padding-top:4px}
+.lists{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:16px}
+.lists h3{font-size:14px;margin:0 0 8px}
+.lists ul{margin:0;padding:0;list-style:none}
+.lists li{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--grid);font-size:13px}
+.lists li .r{color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lists .card{padding:14px 16px}
+.note{font-size:12px;color:var(--muted);margin-top:16px}
+table.tv{width:100%;border-collapse:collapse;font-size:13px}
+table.tv th{text-align:left;font-weight:600;color:var(--ink2);border-bottom:1px solid var(--axis);padding:8px 10px;position:sticky;top:0;background:var(--surface);cursor:pointer;white-space:nowrap}
+table.tv td{padding:6px 10px;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.tv td.num,table.tv th.num{text-align:right}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink2);align-items:center}
+.legend i{display:inline-block;width:18px;height:10px;border-radius:2px;vertical-align:middle;margin-right:5px}
+@media (max-width:640px){.tile .v{font-size:18px}.viewbtn{margin-left:0}}
+html,body{background:#1a1d27}.wrap{padding:0;max-width:none}.cal{min-width:980px!important}:root[data-theme=&quot;dark&quot;]{--page:transparent;--surface:#1a1d27;--group:#20232f;--weekend:#1d202b;--grid:#2a2d3e;--ring:#2a2d3e;--axis:#3a3d50}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;h1&gt;Client campaign calendar · October 2026&lt;/h1&gt;
+  &lt;p class=&quot;sub&quot; id=&quot;sub&quot;&gt;&lt;/p&gt;
+  &lt;div class=&quot;tiles&quot; id=&quot;tiles&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;bar-row&quot;&gt;
+    &lt;div class=&quot;filters&quot; id=&quot;sectors&quot;&gt;&lt;/div&gt;
+    &lt;select id=&quot;plat&quot; aria-label=&quot;Platform filter&quot;&gt;
+      &lt;option value=&quot;&quot;&gt;All platforms&lt;/option&gt;&lt;option&gt;DV360&lt;/option&gt;&lt;option&gt;Google Ads&lt;/option&gt;&lt;option&gt;Meta&lt;/option&gt;&lt;option&gt;TikTok&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;input type=&quot;search&quot; id=&quot;q&quot; placeholder=&quot;Search client or campaign&quot; aria-label=&quot;Search&quot;&gt;
+    &lt;label class=&quot;tog&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;zero&quot;&gt; Show campaigns with no budget&lt;/label&gt;
+    &lt;button class=&quot;chip viewbtn&quot; id=&quot;view&quot; aria-pressed=&quot;true&quot;&gt;Table view&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;legend&quot; style=&quot;margin-bottom:10px&quot;&gt;
+    &lt;span&gt;&lt;i style=&quot;background:color-mix(in srgb,var(--s-retail) 30%,transparent);border-left:3px solid var(--s-retail)&quot;&gt;&lt;/i&gt;Bar = campaign flight, coloured by sector&lt;/span&gt;
+    &lt;span&gt;&lt;i style=&quot;border-left:3px dashed var(--muted);background:var(--grid)&quot;&gt;&lt;/i&gt;Dashed edge = runs before or after October&lt;/span&gt;
+    &lt;span&gt;&lt;i style=&quot;background:var(--today);width:2px&quot;&gt;&lt;/i&gt;Today (14 Oct)&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;scroller&quot; id=&quot;main&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;lists&quot; id=&quot;lists&quot;&gt;&lt;/div&gt;
+  &lt;p class=&quot;note&quot; id=&quot;note&quot;&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&quot;tip&quot; role=&quot;tooltip&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+const DATA = {
+ &quot;month&quot;: &quot;2026-10&quot;,
+ &quot;camps&quot;: [
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Always On&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 4000.0,
+   &quot;prog&quot;: 3720.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 4000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Best Buys 1&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-06&quot;,
+   &quot;budget&quot;: 900.0,
+   &quot;prog&quot;: 810.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Google Ads&quot;: 200.0,
+    &quot;Meta&quot;: 200.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Best Buys 2&quot;,
+   &quot;start&quot;: &quot;2026-10-08&quot;,
+   &quot;end&quot;: &quot;2026-10-13&quot;,
+   &quot;budget&quot;: 900.0,
+   &quot;prog&quot;: 810.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Google Ads&quot;: 200.0,
+    &quot;Meta&quot;: 200.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Best Buys 3&quot;,
+   &quot;start&quot;: &quot;2026-10-15&quot;,
+   &quot;end&quot;: &quot;2026-10-20&quot;,
+   &quot;budget&quot;: 900.0,
+   &quot;prog&quot;: 810.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Google Ads&quot;: 200.0,
+    &quot;Meta&quot;: 200.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Best Buys 4&quot;,
+   &quot;start&quot;: &quot;2026-10-22&quot;,
+   &quot;end&quot;: &quot;2026-10-27&quot;,
+   &quot;budget&quot;: 900.0,
+   &quot;prog&quot;: 810.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Google Ads&quot;: 200.0,
+    &quot;Meta&quot;: 200.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Best Buys 5&quot;,
+   &quot;start&quot;: &quot;2026-10-29&quot;,
+   &quot;end&quot;: &quot;2026-11-02&quot;,
+   &quot;budget&quot;: 900.0,
+   &quot;prog&quot;: 810.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Google Ads&quot;: 200.0,
+    &quot;Meta&quot;: 200.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Boschtober + 5 Year Warranty&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-11-02&quot;,
+   &quot;budget&quot;: 4550.0,
+   &quot;prog&quot;: 4089.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 3350.0,
+    &quot;Google Ads&quot;: 400.0,
+    &quot;Meta&quot;: 800.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Bosch Finish Dishwashing Bonus&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-11-02&quot;,
+   &quot;budget&quot;: 1950.0,
+   &quot;prog&quot;: 1642.5,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0,
+    &quot;Meta&quot;: 950.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Bundle and Save&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-13&quot;,
+   &quot;budget&quot;: 4000.0,
+   &quot;prog&quot;: 3555.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2000.0,
+    &quot;Google Ads&quot;: 1000.0,
+    &quot;Meta&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Warehouse Clearout  (TBC)&quot;,
+   &quot;start&quot;: &quot;2026-10-15&quot;,
+   &quot;end&quot;: &quot;2026-10-20&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Labour Weekend Price Attack&quot;,
+   &quot;start&quot;: &quot;2026-10-22&quot;,
+   &quot;end&quot;: &quot;2026-10-27&quot;,
+   &quot;budget&quot;: 12000.0,
+   &quot;prog&quot;: 10900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 6000.0,
+    &quot;Google Ads&quot;: 3000.0,
+    &quot;Meta&quot;: 3000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;HGS (100%)&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Fisher &amp; Paykel&quot;,
+   &quot;start&quot;: &quot;2026-10-14&quot;,
+   &quot;end&quot;: &quot;2026-11-23&quot;,
+   &quot;budget&quot;: 8000.0,
+   &quot;prog&quot;: 7150.25,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 6000.0,
+    &quot;Meta&quot;: 2000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Always On&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5000.0,
+   &quot;prog&quot;: 6064.2,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Google Ads&quot;: 3000.0,
+    &quot;Meta&quot;: 1500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Unnamed campaign&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-11&quot;,
+   &quot;budget&quot;: 3000.0,
+   &quot;prog&quot;: 2191.85,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1500.0,
+    &quot;Google Ads&quot;: 750.0,
+    &quot;Meta&quot;: 750.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;LEGO Blog&quot;,
+   &quot;start&quot;: &quot;2026-09-15&quot;,
+   &quot;end&quot;: &quot;2026-10-17&quot;,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 379.5,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Meta&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Crazy Deals&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-18&quot;,
+   &quot;budget&quot;: 2000.0,
+   &quot;prog&quot;: 1728.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0,
+    &quot;Google Ads&quot;: 500.0,
+    &quot;Meta&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;October Blitz&quot;,
+   &quot;start&quot;: &quot;2026-10-13&quot;,
+   &quot;end&quot;: &quot;2026-10-18&quot;,
+   &quot;budget&quot;: 4000.0,
+   &quot;prog&quot;: 2880.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2000.0,
+    &quot;Google Ads&quot;: 1000.0,
+    &quot;Meta&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Gisborne Opening&quot;,
+   &quot;start&quot;: &quot;2026-10-13&quot;,
+   &quot;end&quot;: &quot;2026-10-18&quot;,
+   &quot;budget&quot;: 3000.0,
+   &quot;prog&quot;: 2622.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Meta&quot;: 3000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;New Plymouth&quot;,
+   &quot;start&quot;: &quot;2026-10-06&quot;,
+   &quot;end&quot;: &quot;2026-12-20&quot;,
+   &quot;budget&quot;: 4000.0,
+   &quot;prog&quot;: 3548.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2000.0,
+    &quot;Meta&quot;: 2000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Unnamed campaign&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 3250.0,
+   &quot;prog&quot;: 2997.3,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1650.0,
+    &quot;Google Ads&quot;: 800.0,
+    &quot;Meta&quot;: 800.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;JAC&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;Brand&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 2500.0,
+   &quot;prog&quot;: 2241.25,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1500.0,
+    &quot;Google Ads&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;JAC&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;Conversion&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 450.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;JAC&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;New Price&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 600.0,
+   &quot;prog&quot;: 550.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 600.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;JAC&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;$199, Zero Deposit&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 600.0,
+   &quot;prog&quot;: 550.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 600.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;JAC&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;PHEV&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 800.0,
+   &quot;prog&quot;: 700.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 800.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Super Liquor&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;C9&quot;,
+   &quot;start&quot;: &quot;2026-09-21&quot;,
+   &quot;end&quot;: &quot;2026-10-11&quot;,
+   &quot;budget&quot;: 10000.0,
+   &quot;prog&quot;: 7692.31,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 10000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Super Liquor&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;C10&quot;,
+   &quot;start&quot;: &quot;2026-10-12&quot;,
+   &quot;end&quot;: &quot;2026-11-01&quot;,
+   &quot;budget&quot;: 15000.0,
+   &quot;prog&quot;: 11500.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 15000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Super Liquor&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Boost&quot;,
+   &quot;start&quot;: &quot;2026-10-14&quot;,
+   &quot;end&quot;: &quot;2026-10-18&quot;,
+   &quot;budget&quot;: 10000.0,
+   &quot;prog&quot;: 7500.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 10000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Catalogue&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;5 Reasons&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Series 8&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Unnamed campaign&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1500.0,
+   &quot;prog&quot;: 1350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Google &amp; Meta&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 2500.0,
+   &quot;prog&quot;: 2317.25,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 750.0,
+    &quot;Meta&quot;: 1750.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Branded - Grass is Greener&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Catalogue - Winter/Spring&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1500.0,
+   &quot;prog&quot;: 1350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;4E&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Unnamed campaign&quot;,
+   &quot;start&quot;: &quot;2026-10-05&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1500.0,
+   &quot;prog&quot;: 1350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Warrior&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;1PD Priority&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;DV Youtube&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 450.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Google &amp; Meta&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5500.0,
+   &quot;prog&quot;: 5115.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 1500.0,
+    &quot;Meta&quot;: 4000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;0% Finance&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5000.0,
+   &quot;prog&quot;: 4485.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Meta&quot;: 5000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming USA | Deutz&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Nationwide \u2013 Leads&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 4050.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Telehandler - Brand&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1100.0,
+   &quot;prog&quot;: 1000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1100.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Excavator - Brand&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1100.0,
+   &quot;prog&quot;: 1000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1100.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Telehandler - 5 Reasons&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1100.0,
+   &quot;prog&quot;: 1000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1100.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Excavator - 5 Reasons&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1100.0,
+   &quot;prog&quot;: 1000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1100.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Excavator - JS130 Bootcamp&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 2000.0,
+   &quot;prog&quot;: 1800.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Google &amp; Meta&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 7000.0,
+   &quot;prog&quot;: 6060.5,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 2000.0,
+    &quot;Meta&quot;: 5000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Yellow Hire&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 463.45,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Power Farming Used Gear Feed&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Power Farming Used Gear&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1500.0,
+   &quot;prog&quot;: 1360.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1150.0,
+    &quot;Meta&quot;: 350.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | JCB&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;PF Hawkes Bay Used Gear&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 460.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 170.0,
+    &quot;Meta&quot;: 330.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;CK&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;CS&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;DK&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;HX&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 1350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Lifestyle&quot;,
+   &quot;start&quot;: &quot;2026-10-02&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 1500.0,
+   &quot;prog&quot;: 900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Catalogue&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 4500.0,
+   &quot;prog&quot;: 4000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 4500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;0% Finance&quot;,
+   &quot;start&quot;: &quot;2026-10-06&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 4500.0,
+   &quot;prog&quot;: 4000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 4500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Google &amp; Meta&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 9000.0,
+   &quot;prog&quot;: 8370.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 4500.0,
+    &quot;Meta&quot;: 4500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;In Stock (Kubota)&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 10000.0,
+   &quot;prog&quot;: 9210.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 3000.0,
+    &quot;Google Ads&quot;: 2500.0,
+    &quot;Meta&quot;: 4500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kverneland&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;General&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 2500.0,
+   &quot;prog&quot;: 2350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 900.0,
+    &quot;Google Ads&quot;: 350.0,
+    &quot;Meta&quot;: 1250.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kverneland&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Product Feed&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 450.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | McHale&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Used&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 400.0,
+   &quot;prog&quot;: 350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 400.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | McHale&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Video&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 400.0,
+   &quot;prog&quot;: 350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 400.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | McHale&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Google&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 125.0,
+   &quot;prog&quot;: 106.95,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 125.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Machinery&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;SAM \u2013 Clearance&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5500.0,
+   &quot;prog&quot;: 5077.5,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 3750.0,
+    &quot;Google Ads&quot;: 750.0,
+    &quot;Meta&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Machinery&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Howard \u2013 Slasher&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5500.0,
+   &quot;prog&quot;: 5025.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 3000.0,
+    &quot;Google Ads&quot;: 1000.0,
+    &quot;Meta&quot;: 1500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Mad Butcher&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 7500.0,
+   &quot;prog&quot;: 6507.5,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 4750.0,
+    &quot;Google Ads&quot;: 2750.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Southpac Truck&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5000.0,
+   &quot;prog&quot;: 4500.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 5000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Bad Boy Mower&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 4800.0,
+   &quot;prog&quot;: 4247.5,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2800.0,
+    &quot;Google Ads&quot;: 1000.0,
+    &quot;Meta&quot;: 1000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Bad Boy Mower&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Dealership&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 2000.0,
+   &quot;prog&quot;: 1650.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Meta&quot;: 2000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming AU | Versatile&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 5000.0,
+   &quot;prog&quot;: 4575.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2500.0,
+    &quot;Google Ads&quot;: 1250.0,
+    &quot;Meta&quot;: 1250.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;NZ Eggs&quot;,
+   &quot;sector&quot;: &quot;FMCG &amp; home&quot;,
+   &quot;name&quot;: &quot;Main campaign&quot;,
+   &quot;start&quot;: &quot;2026-09-11&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 50000.0,
+   &quot;prog&quot;: 42480.0,
+   &quot;actual&quot;: 17463.12,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 20000.0,
+    &quot;Google Ads&quot;: 5000.0,
+    &quot;Meta&quot;: 15000.0,
+    &quot;TikTok&quot;: 10000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;NZ Eggs&quot;,
+   &quot;sector&quot;: &quot;FMCG &amp; home&quot;,
+   &quot;name&quot;: &quot;World Egg Day&quot;,
+   &quot;start&quot;: &quot;2026-10-03&quot;,
+   &quot;end&quot;: &quot;2026-10-09&quot;,
+   &quot;budget&quot;: 15000.0,
+   &quot;prog&quot;: 10590.0,
+   &quot;actual&quot;: 7690.75,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 8000.0,
+    &quot;Meta&quot;: 3500.0,
+    &quot;TikTok&quot;: 3500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Southern Autos&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 2000.0,
+   &quot;prog&quot;: 1900.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;South Auckland Motors (Ford)&quot;,
+   &quot;sector&quot;: &quot;Automotive&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-10-12&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 3000.0,
+   &quot;prog&quot;: 2500.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 3000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Tourism Tahiti&quot;,
+   &quot;sector&quot;: &quot;Tourism &amp; leisure&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-09-30&quot;,
+   &quot;end&quot;: &quot;2026-11-15&quot;,
+   &quot;budget&quot;: 45000.0,
+   &quot;prog&quot;: 34615.38,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 45000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;AJ Hackett&quot;,
+   &quot;sector&quot;: &quot;Tourism &amp; leisure&quot;,
+   &quot;name&quot;: &quot;October allocation&quot;,
+   &quot;start&quot;: &quot;2026-10-01&quot;,
+   &quot;end&quot;: &quot;2026-10-31&quot;,
+   &quot;budget&quot;: 21500.0,
+   &quot;prog&quot;: 19350.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 10000.0,
+    &quot;Meta&quot;: 11500.0
+   }
+  }
+ ],
+ &quot;tbc&quot;: [
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;October LEGO Release&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 500.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Meta&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Labour Weekend&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 8000.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 4000.0,
+    &quot;Google Ads&quot;: 2000.0,
+    &quot;Meta&quot;: 2000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Instore Brickfest&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 1000.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 500.0,
+    &quot;Meta&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Favourite Toys Catalogue&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 5000.0,
+   &quot;prog&quot;: 0.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 2500.0,
+    &quot;Google Ads&quot;: 1250.0,
+    &quot;Meta&quot;: 1250.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Google&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 750.0,
+   &quot;prog&quot;: 620.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Google Ads&quot;: 750.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Power Farming NZ | Kioti&quot;,
+   &quot;sector&quot;: &quot;Power Farming&quot;,
+   &quot;name&quot;: &quot;Meta&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 1750.0,
+   &quot;prog&quot;: 1550.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;Meta&quot;: 1750.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;New Caledonia Tourism&quot;,
+   &quot;sector&quot;: &quot;Tourism &amp; leisure&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: null,
+   &quot;end&quot;: null,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 53846.15,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  }
+ ],
+ &quot;inactive&quot;: [
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;September School Holiday Cat&quot;,
+   &quot;start&quot;: &quot;2026-09-23&quot;,
+   &quot;end&quot;: &quot;2026-09-30&quot;,
+   &quot;budget&quot;: 2000.0,
+   &quot;prog&quot;: 1329.6,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1000.0,
+    &quot;Google Ads&quot;: 500.0,
+    &quot;Meta&quot;: 500.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;LEGO XF Boys Campaign&quot;,
+   &quot;start&quot;: &quot;2026-08-18&quot;,
+   &quot;end&quot;: &quot;2026-08-31&quot;,
+   &quot;budget&quot;: 1500.0,
+   &quot;prog&quot;: 1376.2,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 800.0,
+    &quot;Google Ads&quot;: 350.0,
+    &quot;Meta&quot;: 350.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Toyworld&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;Unnamed campaign&quot;,
+   &quot;start&quot;: &quot;2026-09-01&quot;,
+   &quot;end&quot;: &quot;2026-09-30&quot;,
+   &quot;budget&quot;: 3250.0,
+   &quot;prog&quot;: 2949.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 1650.0,
+    &quot;Google Ads&quot;: 800.0,
+    &quot;Meta&quot;: 800.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Super Liquor&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;C11&quot;,
+   &quot;start&quot;: &quot;2026-11-02&quot;,
+   &quot;end&quot;: &quot;2026-11-22&quot;,
+   &quot;budget&quot;: 10000.0,
+   &quot;prog&quot;: 7500.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 10000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Super Liquor&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;C12&quot;,
+   &quot;start&quot;: &quot;2026-11-23&quot;,
+   &quot;end&quot;: &quot;2026-12-13&quot;,
+   &quot;budget&quot;: 15000.0,
+   &quot;prog&quot;: 11500.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 15000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;Super Liquor&quot;,
+   &quot;sector&quot;: &quot;Retail&quot;,
+   &quot;name&quot;: &quot;C13&quot;,
+   &quot;start&quot;: &quot;2026-12-14&quot;,
+   &quot;end&quot;: &quot;2027-01-04&quot;,
+   &quot;budget&quot;: 20000.0,
+   &quot;prog&quot;: 15000.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {
+    &quot;DV360&quot;: 20000.0
+   }
+  },
+  {
+   &quot;client&quot;: &quot;30 Seconds&quot;,
+   &quot;sector&quot;: &quot;FMCG &amp; home&quot;,
+   &quot;name&quot;: &quot;Monthly budget&quot;,
+   &quot;start&quot;: &quot;2026-11-01&quot;,
+   &quot;end&quot;: &quot;2026-11-30&quot;,
+   &quot;budget&quot;: 0.0,
+   &quot;prog&quot;: 50232.0,
+   &quot;actual&quot;: 0.0,
+   &quot;platforms&quot;: {}
+  }
+ ],
+ &quot;nobudget&quot;: [
+  &quot;Auckland Rugby&quot;,
+  &quot;Epic Beer&quot;,
+  &quot;Manukau Motors&quot;,
+  &quot;Mitsubishi (Manukau Autos)&quot;,
+  &quot;Travel South - USA&quot;,
+  &quot;World Travellers&quot;
+ ],
+ &quot;source&quot;: &quot;Programmatica Client Budgets Tracker Oct 26.xlsx&quot;,
+ &quot;pulled&quot;: &quot;2026-10-14&quot;
+};
+const SECTORS=[[&quot;Retail&quot;,&quot;--s-retail&quot;],[&quot;Automotive&quot;,&quot;--s-auto&quot;],[&quot;Power Farming&quot;,&quot;--s-pf&quot;],[&quot;Tourism &amp; leisure&quot;,&quot;--s-tour&quot;],[&quot;FMCG &amp; home&quot;,&quot;--s-fmcg&quot;]];
+const SV=Object.fromEntries(SECTORS);
+const DAYS=31, Y=2026, MO=9, TODAY=14;
+const dow=d=&gt;new Date(Y,MO,d).getDay();
+const fmt=n=&gt;&quot;$&quot;+Math.round(n).toLocaleString(&quot;en-NZ&quot;);
+const fmtK=n=&gt;n&gt;=1000?&quot;$&quot;+(n/1000).toFixed(n%1000===0?0:1)+&quot;k&quot;:&quot;$&quot;+Math.round(n);
+const MN=[&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,&quot;Jul&quot;,&quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,&quot;Nov&quot;,&quot;Dec&quot;];
+const fd=s=&gt;{const [y,m,d]=s.split(&quot;-&quot;).map(Number);return d+&quot; &quot;+MN[m-1]+(y!==Y?&quot; &quot;+y:&quot;&quot;)};
+const esc=s=&gt;String(s).replace(/[&amp;&lt;&gt;&quot;]/g,c=&gt;({&quot;&amp;&quot;:&quot;&amp;amp;&quot;,&quot;&lt;&quot;:&quot;&amp;lt;&quot;,&quot;&gt;&quot;:&quot;&amp;gt;&quot;,&#x27;&quot;&#x27;:&quot;&amp;quot;&quot;}[c]));
+const state={sectors:new Set(SECTORS.map(s=&gt;s[0])),plat:&quot;&quot;,q:&quot;&quot;,zero:false,table:false};
+const amt=c=&gt;c.budget||c.prog||0;
+function clip(c){
+  const s=c.start&lt;&quot;2026-10-01&quot;?1:+c.start.slice(8), e=c.end&gt;&quot;2026-10-31&quot;?31:+c.end.slice(8);
+  return {s,e,contL:c.start&lt;&quot;2026-10-01&quot;,contR:c.end&gt;&quot;2026-10-31&quot;};
+}
+function filtered(){
+  const q=state.q.trim().toLowerCase();
+  return DATA.camps.filter(c=&gt;state.sectors.has(c.sector)
+    &amp;&amp;(!state.plat||c.platforms[state.plat])
+    &amp;&amp;(state.zero||amt(c)&gt;0)
+    &amp;&amp;(!q||(c.client+&quot; &quot;+c.name).toLowerCase().includes(q)));
+}
+function groups(list){
+  const order=SECTORS.map(s=&gt;s[0]); const m=new Map();
+  list.forEach(c=&gt;{if(!m.has(c.client))m.set(c.client,{client:c.client,sector:c.sector,items:[]});m.get(c.client).items.push(c)});
+  const g=[...m.values()];
+  g.forEach(x=&gt;{x.total=x.items.reduce((a,c)=&gt;a+c.budget,0);x.prog=x.items.reduce((a,c)=&gt;a+c.prog,0);
+    x.items.sort((a,b)=&gt;a.start.localeCompare(b.start)||amt(b)-amt(a))});
+  g.sort((a,b)=&gt;order.indexOf(a.sector)-order.indexOf(b.sector)||b.total-a.total);
+  return g;
+}
+function tiles(list){
+  const tot=list.reduce((a,c)=&gt;a+c.budget,0);
+  const p={DV360:0,&quot;Google Ads&quot;:0,Meta:0,TikTok:0};
+  list.forEach(c=&gt;Object.entries(c.platforms).forEach(([k,v])=&gt;p[k]+=v));
+  const live=list.filter(c=&gt;c.start&lt;=`2026-10-${String(TODAY).padStart(2,&quot;0&quot;)}`&amp;&amp;c.end&gt;=`2026-10-${String(TODAY).padStart(2,&quot;0&quot;)}`&amp;&amp;amt(c)&gt;0).length;
+  const clients=new Set(list.map(c=&gt;c.client)).size;
+  const t=[[&quot;Client budget (NZD)&quot;,fmt(tot),&quot;Official budgets of campaigns shown&quot;],[&quot;Campaigns&quot;,list.filter(c=&gt;amt(c)&gt;0).length,`${clients} clients · ${live} live today`]];
+  Object.entries(p).forEach(([k,v])=&gt;t.push([k,fmt(v),tot?Math.round(v/tot*100)+&quot;% of budget&quot;:&quot;&quot;]));
+  document.getElementById(&quot;tiles&quot;).innerHTML=t.map(x=&gt;`&lt;div class=&quot;tile&quot;&gt;&lt;div class=&quot;k&quot;&gt;${x[0]}&lt;/div&gt;&lt;div class=&quot;v&quot;&gt;${x[1]}&lt;/div&gt;&lt;div class=&quot;n&quot;&gt;${x[2]}&lt;/div&gt;&lt;/div&gt;`).join(&quot;&quot;);
+}
+function render(){
+  const list=filtered(); tiles(list);
+  const main=document.getElementById(&quot;main&quot;);
+  if(state.table){renderTable(list,main);return;}
+  const cols=`minmax(170px,240px) 100px repeat(${DAYS},minmax(22px,1fr))`;
+  let h=`&lt;div class=&quot;cal&quot; id=&quot;cal&quot; style=&quot;grid-template-columns:${cols}&quot;&gt;`;
+  h+=`&lt;div class=&quot;hd namecol&quot; style=&quot;z-index:4;justify-content:flex-start&quot;&gt;Client / campaign&lt;/div&gt;&lt;div class=&quot;hd&quot; style=&quot;text-align:right;padding-right:10px&quot;&gt;Budget&lt;/div&gt;`;
+  for(let d=1;d&lt;=DAYS;d++){const w=dow(d);h+=`&lt;div class=&quot;hd ${w%6===0?&quot;we&quot;:&quot;&quot;} ${d===TODAY?&quot;today&quot;:&quot;&quot;}&quot;&gt;${&quot;SMTWTFS&quot;[w]}&lt;b&gt;${d}&lt;/b&gt;${d===26?&#x27;&lt;span class=&quot;hol&quot; title=&quot;Labour Day&quot;&gt;Hol&lt;/span&gt;&#x27;:&quot;&quot;}&lt;/div&gt;`}
+  let row=2;
+  const G=groups(list);
+  if(!G.length) h+=`&lt;div style=&quot;grid-column:1/-1;padding:24px;color:var(--muted)&quot;&gt;No campaigns match these filters.&lt;/div&gt;`;
+  G.forEach(g=&gt;{
+    const col=`var(${SV[g.sector]})`;
+    h+=`&lt;div class=&quot;cell namecol&quot; style=&quot;grid-row:${row};grid-column:1;background:var(--group);font-weight:650;gap:8px&quot;&gt;&lt;span class=&quot;sw&quot; style=&quot;background:${col}&quot;&gt;&lt;/span&gt;&lt;span&gt;${esc(g.client)}&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cell budcol&quot; style=&quot;grid-row:${row};grid-column:2;background:var(--group);color:var(--ink);font-weight:650&quot;&gt;${fmt(g.total||g.prog)}&lt;/div&gt;&lt;div class=&quot;cell&quot; style=&quot;grid-row:${row};grid-column:3/-1;background:var(--group)&quot;&gt;&lt;/div&gt;`;
+    row++;
+    g.items.forEach(c=&gt;{
+      const k=clip(c), a=amt(c);
+      h+=`&lt;div class=&quot;cell namecol&quot; style=&quot;grid-row:${row};grid-column:1&quot; title=&quot;${esc(c.name)}&quot;&gt;&lt;span&gt;${esc(c.name)}&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cell budcol&quot; style=&quot;grid-row:${row};grid-column:2&quot;&gt;${c.budget?fmt(c.budget):c.prog?&#x27;&lt;span title=&quot;Prog budget only&quot;&gt;&#x27;+fmt(c.prog)+&#x27;*&lt;/span&gt;&#x27;:&quot;–&quot;}&lt;/div&gt;`;
+      for(let d=1;d&lt;=DAYS;d++){const w=dow(d);h+=`&lt;div class=&quot;cell daybg ${w%6===0?&quot;we&quot;:&quot;&quot;}&quot; style=&quot;grid-row:${row};grid-column:${d+2}&quot;&gt;&lt;/div&gt;`}
+      const lab=a?(c.budget?fmtK(c.budget):fmtK(c.prog)+&quot; prog&quot;):&quot;No budget&quot;;
+      h+=`&lt;div class=&quot;bar ${k.contL?&quot;contL&quot;:&quot;&quot;} ${k.contR?&quot;contR&quot;:&quot;&quot;} ${a?&quot;&quot;:&quot;zero&quot;}&quot; tabindex=&quot;0&quot; data-i=&quot;${DATA.camps.indexOf(c)}&quot; style=&quot;--c:${col};grid-row:${row};grid-column:${k.s+2}/${k.e+3}&quot;&gt;&lt;span&gt;${k.e-k.s&gt;=1||lab.length&lt;6?esc(lab):&quot;&quot;}&lt;/span&gt;&lt;/div&gt;`;
+      row++;
+    });
+  });
+  h+=`&lt;/div&gt;`;
+  main.innerHTML=h;
+  // today line
+  const cal=document.getElementById(&quot;cal&quot;); const hd=cal.querySelectorAll(&quot;.hd&quot;)[TODAY+1];
+  if(hd){const l=document.createElement(&quot;div&quot;);l.className=&quot;todayline&quot;;l.style.left=(hd.offsetLeft+hd.offsetWidth/2-1)+&quot;px&quot;;cal.appendChild(l)}
+  bindTips();
+}
+function renderTable(list,main){
+  const rows=groups(list).flatMap(g=&gt;g.items);
+  let h=`&lt;table class=&quot;tv&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Client&lt;/th&gt;&lt;th&gt;Campaign&lt;/th&gt;&lt;th&gt;Sector&lt;/th&gt;&lt;th&gt;Start&lt;/th&gt;&lt;th&gt;End&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Days in Oct&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Budget (NZD)&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Prog budget&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;DV360&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Google Ads&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Meta&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;TikTok&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;`;
+  rows.forEach(c=&gt;{const k=clip(c);const p=c.platforms;h+=`&lt;tr&gt;&lt;td&gt;${esc(c.client)}&lt;/td&gt;&lt;td&gt;${esc(c.name)}&lt;/td&gt;&lt;td&gt;${c.sector}&lt;/td&gt;&lt;td&gt;${fd(c.start)}&lt;/td&gt;&lt;td&gt;${fd(c.end)}&lt;/td&gt;&lt;td class=&quot;num&quot;&gt;${k.e-k.s+1}&lt;/td&gt;&lt;td class=&quot;num&quot;&gt;${fmt(c.budget)}&lt;/td&gt;&lt;td class=&quot;num&quot;&gt;${fmt(c.prog)}&lt;/td&gt;${[&quot;DV360&quot;,&quot;Google Ads&quot;,&quot;Meta&quot;,&quot;TikTok&quot;].map(x=&gt;`&lt;td class=&quot;num&quot;&gt;${p[x]?fmt(p[x]):&quot;–&quot;}&lt;/td&gt;`).join(&quot;&quot;)}&lt;/tr&gt;`});
+  h+=`&lt;/tbody&gt;&lt;/table&gt;`; main.innerHTML=h;
+}
+const tip=document.getElementById(&quot;tip&quot;);
+function showTip(el,ev){
+  const c=DATA.camps[+el.dataset.i]; const k=clip(c);
+  const pl=Object.entries(c.platforms).map(([p,v])=&gt;`&lt;tr&gt;&lt;td&gt;${p}&lt;/td&gt;&lt;td&gt;${fmt(v)}&lt;/td&gt;&lt;/tr&gt;`).join(&quot;&quot;);
+  tip.innerHTML=`&lt;h4&gt;${esc(c.name)}&lt;/h4&gt;&lt;div class=&quot;cl&quot;&gt;${esc(c.client)} · ${fd(c.start)} – ${fd(c.end)} (${k.e-k.s+1} days in Oct)&lt;/div&gt;&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;Client budget&lt;/td&gt;&lt;td&gt;&lt;b&gt;${c.budget?fmt(c.budget):&quot;–&quot;}&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Prog budget&lt;/td&gt;&lt;td&gt;${c.prog?fmt(c.prog):&quot;–&quot;}&lt;/td&gt;&lt;/tr&gt;${c.actual?`&lt;tr&gt;&lt;td&gt;Actual to date&lt;/td&gt;&lt;td&gt;${fmt(c.actual)}&lt;/td&gt;&lt;/tr&gt;`:&quot;&quot;}
+  ${pl?`&lt;tr class=&quot;sep&quot;&gt;&lt;td colspan=&quot;2&quot; style=&quot;color:var(--muted)&quot;&gt;Platform split&lt;/td&gt;&lt;/tr&gt;${pl}`:&quot;&quot;}&lt;/table&gt;`;
+  tip.style.display=&quot;block&quot;; place(ev||el);
+}
+function place(ev){
+  let x,y; if(ev.clientX!==undefined){x=ev.clientX;y=ev.clientY}else{const r=ev.getBoundingClientRect();x=r.left+r.width/2;y=r.bottom}
+  const w=tip.offsetWidth,hh=tip.offsetHeight;
+  let L=x+14,T=y+14; if(L+w&gt;innerWidth-8)L=x-w-14; if(T+hh&gt;innerHeight-8)T=y-hh-14;
+  tip.style.left=Math.max(8,L)+&quot;px&quot;; tip.style.top=Math.max(8,T)+&quot;px&quot;;
+}
+function bindTips(){
+  document.querySelectorAll(&quot;.bar&quot;).forEach(b=&gt;{
+    b.addEventListener(&quot;mouseenter&quot;,e=&gt;showTip(b,e));b.addEventListener(&quot;mousemove&quot;,place);
+    b.addEventListener(&quot;mouseleave&quot;,()=&gt;tip.style.display=&quot;none&quot;);
+    b.addEventListener(&quot;focus&quot;,()=&gt;showTip(b));b.addEventListener(&quot;blur&quot;,()=&gt;tip.style.display=&quot;none&quot;);
+  });
+}
+function lists(){
+  const li=(l,f)=&gt;l.length?`&lt;ul&gt;${l.map(f).join(&quot;&quot;)}&lt;/ul&gt;`:`&lt;p style=&quot;color:var(--muted);margin:0&quot;&gt;None&lt;/p&gt;`;
+  const up=DATA.inactive.filter(c=&gt;c.start&gt;&quot;2026-10-31&quot;).sort((a,b)=&gt;a.start.localeCompare(b.start));
+  document.getElementById(&quot;lists&quot;).innerHTML=`
+  &lt;div class=&quot;card&quot;&gt;&lt;h3&gt;Dates to confirm (${DATA.tbc.length})&lt;/h3&gt;${li(DATA.tbc,c=&gt;`&lt;li&gt;&lt;span&gt;${esc(c.client)} · ${esc(c.name)}&lt;/span&gt;&lt;span class=&quot;r&quot;&gt;${c.budget?fmt(c.budget):fmt(c.prog)+&quot; prog&quot;}&lt;/span&gt;&lt;/li&gt;`)}&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;h3&gt;Starting after October&lt;/h3&gt;${li(up,c=&gt;`&lt;li&gt;&lt;span&gt;${esc(c.client)} · ${esc(c.name)}&lt;/span&gt;&lt;span class=&quot;r&quot;&gt;${fd(c.start)} · ${c.budget?fmt(c.budget):fmt(c.prog)+&quot; prog&quot;}&lt;/span&gt;&lt;/li&gt;`)}&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;h3&gt;No October budget&lt;/h3&gt;${li(DATA.nobudget,c=&gt;`&lt;li&gt;&lt;span&gt;${esc(c)}&lt;/span&gt;&lt;/li&gt;`)}&lt;/div&gt;`;
+}
+function controls(){
+  document.getElementById(&quot;sectors&quot;).innerHTML=SECTORS.map(([s,v])=&gt;`&lt;button class=&quot;chip&quot; aria-pressed=&quot;true&quot; data-s=&quot;${s}&quot;&gt;&lt;span class=&quot;sw&quot; style=&quot;background:var(${v})&quot;&gt;&lt;/span&gt;${s}&lt;/button&gt;`).join(&quot;&quot;);
+  document.querySelectorAll(&quot;[data-s]&quot;).forEach(b=&gt;b.onclick=()=&gt;{const s=b.dataset.s;state.sectors.has(s)?state.sectors.delete(s):state.sectors.add(s);b.setAttribute(&quot;aria-pressed&quot;,state.sectors.has(s));render()});
+  plat.onchange=e=&gt;{state.plat=e.target.value;render()};
+  q.oninput=e=&gt;{state.q=e.target.value;render()};
+  zero.onchange=e=&gt;{state.zero=e.target.checked;render()};
+  view.onclick=()=&gt;{state.table=!state.table;view.textContent=state.table?&quot;Calendar view&quot;:&quot;Table view&quot;;render()};
+}
+document.getElementById(&quot;sub&quot;).textContent=`Source: ${DATA.source}, pulled ${fd(DATA.pulled)} 2026. All amounts NZD. Budgets are each campaign&#x27;s full flight budget, including campaigns that run outside October.`;
+document.getElementById(&quot;note&quot;).textContent=&quot;Client budget = the sheet&#x27;s Official Budget. Prog budget = the sheet&#x27;s Prog Budget column. * = no official budget set, prog budget shown. Dates entered in the sheet as d/m/yyyy are read as day/month. Clients without their own tab are shown from the Budget Tracker Oct 26 row. AJ Hackett shows its October allocation, not the full Jul–Mar budget.&quot;;
+controls(); lists(); render();
+addEventListener(&quot;resize&quot;,()=&gt;{if(!state.table)render()});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+  </div>
+  <!-- CAMPAIGN-CALENDAR:END -->
 </div><!-- /.card -->
 
 <div class="privacy-note">🔒 All processing happens locally in your browser — files are never uploaded</div>
@@ -871,9 +2417,20 @@ function showTab(id, btn) {
   btn.classList.add('active');
   // Toggle wide card for Ad Creative tab
   const card = document.querySelector('.card');
-  if (id === 'ad-creative') card.classList.add('wide');
+  if (id === 'ad-creative' || id === 'campaign-cal') card.classList.add('wide');
+  if (id === 'campaign-cal') ccFit();
   else card.classList.remove('wide');
 }
+
+// Campaign calendar iframe: size it to its content
+function ccFit() {
+  const f = document.getElementById('cc-frame');
+  if (!f || !f.contentDocument) return;
+  const fit = () => { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; };
+  fit();
+  if (!f._ro && window.ResizeObserver) { f._ro = new ResizeObserver(fit); f._ro.observe(f.contentDocument.body); }
+}
+document.getElementById('cc-frame')?.addEventListener('load', ccFit);
 
 function fmtB(b) {
   if (b < 1024) return b + ' B';
