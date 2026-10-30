@@ -232,7 +232,11 @@
     .acg-pos-pair > div { flex: 1; }
     /* Make the card wider when Ad Creative tab is active */
     .card.wide { max-width: 1200px; }
-  </style>
+  
+/* Layer (UTM Builder) */
+.code-ref{margin-top:14px}
+.code-ref select{width:100%}
+</style>
 </head>
 <body>
 
@@ -537,6 +541,17 @@
           <input class="utm-in" id="utm-trm" type="text" placeholder="e.g. keyword" oninput="utmBuild()">
         </div>
       </div>
+    </div>
+    <!-- Layer -->
+    <div class="code-ref">
+      <span class="s-label">Layer <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional, added to end of campaign)</span></span>
+      <select id="utm-layer" class="utm-in" onchange="utmBuild()">
+        <option value="">— none —</option>
+        <option value="AWR">AWR</option>
+        <option value="BRW">BRW</option>
+        <option value="CNV">CNV</option>
+        <option value="DBC">DBC</option>
+      </select>
     </div>
     <div id="utm-out-wrap" style="display:none;margin-top:18px">
       <span class="s-label">Generated URL</span>
@@ -2946,6 +2961,7 @@ function utmBuild() {
   const cmp  = document.getElementById('utm-cmp').value.trim();
   const cnt  = document.getElementById('utm-cnt').value.trim();
   const trm  = document.getElementById('utm-trm').value.trim();
+  const lay  = (document.getElementById('utm-layer') || {}).value || '';
 
   const outWrap = document.getElementById('utm-out-wrap');
   const hint    = document.getElementById('utm-hint');
@@ -2959,7 +2975,7 @@ function utmBuild() {
   const params = new URLSearchParams();
   if (src) params.set('utm_source', src);
   if (med) params.set('utm_medium', med);
-  if (cmp) params.set('utm_campaign', cmp);
+  if (cmp) params.set('utm_campaign', lay ? cmp + '_' + lay : cmp);
   if (cnt) params.set('utm_content', cnt);
   if (trm) params.set('utm_term', trm);
 
