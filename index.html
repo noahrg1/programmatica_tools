@@ -232,11 +232,70 @@
     .acg-pos-pair > div { flex: 1; }
     /* Make the card wider when Ad Creative tab is active */
     .card.wide { max-width: 1200px; }
-  
-/* Layer (UTM Builder) */
-.code-ref{margin-top:14px}
-.code-ref select{width:100%}
-</style>
+    /* ── Studio Brief ── */
+    .card.mid { max-width: 920px; }
+    .sb-intro { background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.25); border-radius: 10px; padding: 14px 16px; font-size: 0.86rem; line-height: 1.55; color: var(--fg); }
+    .sb-intro ol { margin: 8px 0 0 18px; color: var(--muted); }
+    .sb-sec { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border); }
+    .sb-sec h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .sb-sec h3 span { color: var(--accent); margin-right: 6px; }
+    .sb-sec .sb-help { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+    .sb-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sb-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 680px) { .sb-grid2, .sb-grid3 { grid-template-columns: 1fr; } }
+    .sb-field { margin-bottom: 12px; }
+    .sb-field textarea.utm-in { min-height: 70px; resize: vertical; }
+    .sb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sb-chip { border: 1px solid var(--border); background: var(--bg); color: var(--fg); border-radius: 99px; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .sb-chip:hover { border-color: #444; }
+    .sb-chip.on { border-color: var(--accent); background: rgba(108,99,255,0.15); }
+    .sb-chip small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+    .sb-fmt { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+    .sb-fmt .q-btn { text-align: left; padding: 10px 12px; }
+    .sb-sub { display: none; margin-top: 12px; padding: 14px; border: 1px dashed var(--border); border-radius: 10px; }
+    .sb-sub.show { display: block; }
+    .sb-sub > .s-label { color: var(--accent); }
+    .sb-row { display: grid; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .sb-row.frame { grid-template-columns: 70px 1fr 1fr 30px; }
+    .sb-row.colour { grid-template-columns: 1fr 44px 110px 30px; }
+    .sb-row.exit { grid-template-columns: 1fr 1.4fr 30px; }
+    @media (max-width: 680px) { .sb-row.frame, .sb-row.exit { grid-template-columns: 1fr; } }
+    .sb-row .sb-tag { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
+    .sb-cc { font-size: 0.7rem; color: var(--muted); text-align: right; margin-top: 2px; }
+    .sb-x { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; border-radius: 4px; padding: 4px; }
+    .sb-x:hover { color: var(--red); }
+    .sb-add { background: none; border: 1px dashed var(--border); color: var(--muted); border-radius: 8px; padding: 7px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+    .sb-add:hover { border-color: var(--accent); color: var(--fg); }
+    .sb-colour-in { width: 44px; height: 38px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); padding: 2px; cursor: pointer; }
+    .sb-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 680px) { .sb-zones { grid-template-columns: 1fr; } }
+    .sb-zone { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--bg); }
+    .sb-zone.hidden { display: none; }
+    .sb-zone h4 { font-size: 0.85rem; font-weight: 700; }
+    .sb-zone p { font-size: 0.74rem; color: var(--muted); margin: 3px 0 8px; line-height: 1.45; }
+    .sb-drop { border: 2px dashed var(--border); border-radius: 8px; padding: 14px; text-align: center; font-size: 0.8rem; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .sb-drop:hover, .sb-drop.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.06); color: var(--fg); }
+    .sb-files { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .sb-file { display: grid; grid-template-columns: 40px 1fr 24px; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 7px; padding: 6px 8px; }
+    .sb-file img, .sb-file .sb-ico { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: #0003; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .sb-file .n { font-size: 0.78rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sb-file .m { font-size: 0.7rem; color: var(--muted); }
+    .sb-file .w { font-size: 0.7rem; color: #f59e0b; margin-top: 2px; }
+    .sb-file .ok { font-size: 0.7rem; color: var(--green); margin-top: 2px; }
+    .sb-check { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 0.82rem; }
+    @media (max-width: 680px) { .sb-check { grid-template-columns: 1fr; } }
+    .sb-check li { display: flex; gap: 8px; align-items: flex-start; }
+    .sb-check li .i { width: 18px; flex-shrink: 0; }
+    .sb-check li.miss { color: var(--muted); }
+    .sb-check li.warn .i { color: #f59e0b; }
+    .sb-done { display: none; margin-top: 16px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3); border-radius: 10px; padding: 14px 16px; font-size: 0.85rem; line-height: 1.55; }
+    .sb-done.show { display: block; }
+    .sb-done b { color: var(--green); }
+    .sb-btn-row { display: flex; gap: 10px; margin-top: 18px; }
+    .sb-btn-row .action-btn { margin-top: 0; }
+    .sb-reset { flex: 0 0 auto; width: auto; padding: 13px 18px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); border-radius: 9px; font-weight: 600; cursor: pointer; }
+    .sb-reset:hover { color: var(--fg); border-color: #444; }
+  </style>
 </head>
 <body>
 
@@ -259,6 +318,7 @@
     <button class="tab-btn"         onclick="showTab('csv-join',this)"><i data-lucide="list"></i> List to CSV</button>
     <button class="tab-btn"         onclick="showTab('img-crop',this)"><i data-lucide="crop"></i> Image Cropper</button>
     <button class="tab-btn"         onclick="showTab('ad-creative',this)"><i data-lucide="sparkles"></i> Ad Creatives</button>
+    <button class="tab-btn"         onclick="showTab('studio-brief',this)"><i data-lucide="package"></i> Studio Brief</button>
     <button class="tab-btn"         onclick="showTab('campaign-cal',this)"><i data-lucide="calendar-days"></i> Campaign Calendar</button>
   </div>
 </div>
@@ -541,17 +601,6 @@
           <input class="utm-in" id="utm-trm" type="text" placeholder="e.g. keyword" oninput="utmBuild()">
         </div>
       </div>
-    </div>
-    <!-- Layer -->
-    <div class="code-ref">
-      <span class="s-label">Layer <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional, added to end of campaign)</span></span>
-      <select id="utm-layer" class="utm-in" onchange="utmBuild()">
-        <option value="">— none —</option>
-        <option value="AWR">AWR</option>
-        <option value="BRW">BRW</option>
-        <option value="CNV">CNV</option>
-        <option value="DBC">DBC</option>
-      </select>
     </div>
     <div id="utm-out-wrap" style="display:none;margin-top:18px">
       <span class="s-label">Generated URL</span>
@@ -858,6 +907,167 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 14 · STUDIO BRIEF (rich media build pack for Claude)
+  ══════════════════════════════════ -->
+  <div class="tab-panel" id="tab-studio-brief">
+    <div class="sb-intro">
+      <b>Studio Brief</b> packages everything needed to build CM360 / Studio HTML5 ads into one zip.
+      <ol>
+        <li>Fill in the campaign, formats, sizes and copy.</li>
+        <li>Drop in the assets: backgrounds, product cut-outs, logo, fonts, video.</li>
+        <li>Download the zip and upload it to the <b>CM360 Studio Ad Creator</b> Claude project.</li>
+      </ol>
+    </div>
+
+    <!-- 1 · Campaign -->
+    <div class="sb-sec">
+      <h3><span>1</span>Campaign</h3>
+      <div class="sb-help">Used to name the files and the creatives in Studio.</div>
+      <div class="sb-grid2">
+        <div class="sb-field"><span class="s-label">Client *</span><input class="utm-in sb-in" id="sb-client" type="text" placeholder="e.g. Acme Outdoors"></div>
+        <div class="sb-field"><span class="s-label">Campaign name *</span><input class="utm-in sb-in" id="sb-campaign" type="text" placeholder="e.g. Summer Sale 2026"></div>
+      </div>
+      <div class="sb-grid3">
+        <div class="sb-field"><span class="s-label">Flight start</span><input class="utm-in sb-in" id="sb-start" type="date"></div>
+        <div class="sb-field"><span class="s-label">Flight end</span><input class="utm-in sb-in" id="sb-end" type="date"></div>
+        <div class="sb-field"><span class="s-label">Creative due</span><input class="utm-in sb-in" id="sb-due" type="date"></div>
+      </div>
+      <div class="sb-field"><span class="s-label">Objective / key message</span><textarea class="utm-in sb-in" id="sb-message" placeholder="What should someone take away from the ad? Any product, offer or promo details."></textarea></div>
+    </div>
+
+    <!-- 2 · Format -->
+    <div class="sb-sec">
+      <h3><span>2</span>Format</h3>
+      <div class="sb-help">Pick one or more. Standard animated banners are the simplest place to start.</div>
+      <div class="sb-fmt" id="sb-formats">
+        <button class="q-btn" data-fmt="banner"><span class="qn">Animated banner</span><span class="qd">Standard HTML5, frame-based animation</span></button>
+        <button class="q-btn" data-fmt="expanding"><span class="qn">Expanding</span><span class="qd">Collapsed → expanded panel</span></button>
+        <button class="q-btn" data-fmt="interstitial"><span class="qn">Interstitial</span><span class="qd">Full-screen mobile, portrait / landscape</span></button>
+        <button class="q-btn" data-fmt="video"><span class="qn">In-banner video</span><span class="qd">Muted autoplay or click-to-play</span></button>
+        <button class="q-btn" data-fmt="dynamic"><span class="qn">Dynamic (feed)</span><span class="qd">Content swapped from a feed / profile</span></button>
+      </div>
+
+      <div class="sb-sub" id="sb-sub-expanding">
+        <span class="s-label">Expanding settings</span>
+        <div class="sb-grid3">
+          <div class="sb-field"><span class="s-label">Expanded size</span><input class="utm-in sb-in" id="sb-exp-size" type="text" placeholder="e.g. 600x250"></div>
+          <div class="sb-field"><span class="s-label">Direction</span>
+            <select class="utm-in sb-in" id="sb-exp-dir"><option>Down</option><option>Left</option><option>Right</option><option>Up</option><option>Left-down</option><option>Right-down</option><option>Multi-directional</option><option>Pushdown</option><option>Fullscreen / lightbox</option></select></div>
+          <div class="sb-field"><span class="s-label">Trigger</span>
+            <select class="utm-in sb-in" id="sb-exp-trigger"><option>Click / tap</option><option>Rollover (1s dwell)</option><option>Auto-expand once, then click</option></select></div>
+        </div>
+      </div>
+      <div class="sb-sub" id="sb-sub-interstitial">
+        <span class="s-label">Interstitial settings</span>
+        <div class="sb-grid2">
+          <div class="sb-field"><span class="s-label">Orientations</span>
+            <select class="utm-in sb-in" id="sb-int-orient"><option>Portrait and landscape</option><option>Portrait only</option><option>Landscape only</option></select></div>
+          <div class="sb-field"><span class="s-label">Environment</span>
+            <select class="utm-in sb-in" id="sb-int-env"><option>Mobile web and in-app</option><option>Mobile web only</option><option>In-app only</option></select></div>
+        </div>
+      </div>
+      <div class="sb-sub" id="sb-sub-video">
+        <span class="s-label">Video settings</span>
+        <div class="sb-grid2">
+          <div class="sb-field"><span class="s-label">Playback</span>
+            <select class="utm-in sb-in" id="sb-vid-play"><option>Muted autoplay</option><option>Click to play</option><option>Teaser (silent preview → full video on click)</option></select></div>
+          <div class="sb-field"><span class="s-label">Controls</span>
+            <select class="utm-in sb-in" id="sb-vid-controls"><option>Play / pause / mute</option><option>Mute only</option><option>None (auto loop)</option></select></div>
+        </div>
+      </div>
+      <div class="sb-sub" id="sb-sub-dynamic">
+        <span class="s-label">Dynamic settings</span>
+        <div class="sb-field"><span class="s-label">What changes per impression?</span><textarea class="utm-in sb-in" id="sb-dyn-elements" placeholder="e.g. headline, product image, price, CTA, landing URL — and what drives it (location, audience, weather)"></textarea></div>
+        <div class="sb-field"><span class="s-label">Studio generated code (Dynamic Content tab → Step 4 → HTML5)</span><textarea class="utm-in sb-in" id="sb-dyn-code" placeholder="Paste the generated setup code here if the Studio profile exists. Attach a sample feed in the assets section."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 3 · Sizes & specs -->
+    <div class="sb-sec">
+      <h3><span>3</span>Sizes &amp; specs</h3>
+      <div class="sb-help">Tap to select. Add any custom size below.</div>
+      <div class="sb-chips" id="sb-sizes"></div>
+      <div class="sb-grid3" style="margin-top:12px">
+        <div class="sb-field"><span class="s-label">Custom size</span><input class="utm-in" id="sb-custom-size" type="text" placeholder="e.g. 300x1050"></div>
+        <div class="sb-field" style="display:flex;align-items:flex-end"><button class="sb-add" onclick="sbAddCustomSize()" style="width:100%">+ Add size</button></div>
+        <div></div>
+      </div>
+      <div class="sb-grid2">
+        <div class="sb-field"><span class="s-label">Initial load limit (KB, gzipped)</span><input class="utm-in sb-in" id="sb-weight" type="number" value="150" min="20" step="10"></div>
+        <div class="sb-field"><span class="s-label">Max animation length (sec)</span><input class="utm-in sb-in" id="sb-anim-len" type="number" value="15" min="3" max="30"></div>
+      </div>
+      <div class="sb-field"><span class="s-label">Publisher specs / notes</span><textarea class="utm-in sb-in" id="sb-pub-notes" placeholder="Paste any publisher spec, weight limits, border or labelling rules. Leave blank to build to IAB defaults."></textarea></div>
+    </div>
+
+    <!-- 4 · Copy -->
+    <div class="sb-sec">
+      <h3><span>4</span>Copy</h3>
+      <div class="sb-help">One row per animation frame, in order. Keep headlines short — they have to fit a 320×50.</div>
+      <div id="sb-frames"></div>
+      <button class="sb-add" onclick="sbAddFrame()">+ Add frame</button>
+      <div class="sb-grid2" style="margin-top:14px">
+        <div class="sb-field"><span class="s-label">CTA text *</span><input class="utm-in sb-in" id="sb-cta" type="text" placeholder="e.g. Shop now"><div class="sb-cc" id="sb-cta-cc"></div></div>
+        <div class="sb-field"><span class="s-label">Legal / T&amp;Cs</span><input class="utm-in sb-in" id="sb-legal" type="text" placeholder="e.g. Offer ends 30 Nov. T&Cs apply."></div>
+      </div>
+    </div>
+
+    <!-- 5 · Brand -->
+    <div class="sb-sec">
+      <h3><span>5</span>Brand</h3>
+      <div class="sb-help">Hex colours and fonts. Upload font files in the assets section, or name a Google Font.</div>
+      <span class="s-label">Colours</span>
+      <div id="sb-colours"></div>
+      <button class="sb-add" onclick="sbAddColour()">+ Add colour</button>
+      <div class="sb-grid2" style="margin-top:14px">
+        <div class="sb-field"><span class="s-label">Google Font name (if no font files)</span><input class="utm-in sb-in" id="sb-gfont" type="text" placeholder="e.g. Montserrat"></div>
+        <div class="sb-field"><span class="s-label">Brand guidelines notes</span><input class="utm-in sb-in" id="sb-brand-notes" type="text" placeholder="e.g. logo always top-left, no drop shadows"></div>
+      </div>
+    </div>
+
+    <!-- 6 · Exits -->
+    <div class="sb-sec">
+      <h3><span>6</span>Exits (click-throughs)</h3>
+      <div class="sb-help">Exit names appear in CM360 reports. Landing URLs are set in Studio after upload, so they're optional here — add them if you have them.</div>
+      <div id="sb-exits"></div>
+      <button class="sb-add" onclick="sbAddExit()">+ Add exit</button>
+    </div>
+
+    <!-- 7 · Animation -->
+    <div class="sb-sec">
+      <h3><span>7</span>Animation direction</h3>
+      <div class="sb-grid3">
+        <div class="sb-field"><span class="s-label">Style</span>
+          <select class="utm-in sb-in" id="sb-anim-style"><option>Calm / premium</option><option>Fast / punchy</option><option>Minimal (subtle motion)</option><option>Product showcase</option><option>Claude to propose</option></select></div>
+        <div class="sb-field"><span class="s-label">Loops</span>
+          <select class="utm-in sb-in" id="sb-loops"><option value="0">Play once</option><option value="1">Loop once</option><option value="2" selected>Loop twice</option><option value="infinite">Loop forever (check spec)</option></select></div>
+        <div class="sb-field"><span class="s-label">End frame</span>
+          <select class="utm-in sb-in" id="sb-endframe"><option>Logo + CTA + headline</option><option>Logo + CTA</option><option>Product + CTA</option><option>Claude to propose</option></select></div>
+      </div>
+      <div class="sb-field"><span class="s-label">Storyboard / notes / reference links</span><textarea class="utm-in sb-in" id="sb-anim-notes" placeholder="Describe how it should move, or link to a reference ad you like. Upload storyboards in the assets section."></textarea></div>
+    </div>
+
+    <!-- 8 · Assets -->
+    <div class="sb-sec">
+      <h3><span>8</span>Assets</h3>
+      <div class="sb-help">Layered assets animate best: separate backgrounds, product cut-outs and logo, rather than one flattened image with text baked in. Supply rasters at 2× the ad size for retina screens — they'll be compressed in the build.</div>
+      <div class="sb-zones" id="sb-zones"></div>
+    </div>
+
+    <!-- 9 · Check & download -->
+    <div class="sb-sec">
+      <h3><span>9</span>Check &amp; download</h3>
+      <div class="sb-help">Missing items won't block the download, but they will slow the build down.</div>
+      <ul class="sb-check" id="sb-check"></ul>
+      <div class="sb-btn-row">
+        <button class="sb-reset" onclick="sbReset()">Reset</button>
+        <button class="action-btn" id="sb-go" onclick="sbBuild()">Download Studio brief (.zip)</button>
+      </div>
+      <div class="prog-wrap" id="sb-prog"><div class="prog-bg"><div class="prog-bar" id="sb-bar"></div></div><div class="prog-lbl" id="sb-lbl"></div></div>
+      <div class="sb-done" id="sb-done"></div>
     </div>
   </div>
 
@@ -2432,9 +2642,9 @@ function showTab(id, btn) {
   btn.classList.add('active');
   // Toggle wide card for Ad Creative tab
   const card = document.querySelector('.card');
-  if (id === 'ad-creative' || id === 'campaign-cal') card.classList.add('wide');
+  card.classList.toggle('wide', id === 'ad-creative' || id === 'campaign-cal');
+  card.classList.toggle('mid', id === 'studio-brief');
   if (id === 'campaign-cal') ccFit();
-  else card.classList.remove('wide');
 }
 
 // Campaign calendar iframe: size it to its content
@@ -2961,7 +3171,6 @@ function utmBuild() {
   const cmp  = document.getElementById('utm-cmp').value.trim();
   const cnt  = document.getElementById('utm-cnt').value.trim();
   const trm  = document.getElementById('utm-trm').value.trim();
-  const lay  = (document.getElementById('utm-layer') || {}).value || '';
 
   const outWrap = document.getElementById('utm-out-wrap');
   const hint    = document.getElementById('utm-hint');
@@ -2975,7 +3184,7 @@ function utmBuild() {
   const params = new URLSearchParams();
   if (src) params.set('utm_source', src);
   if (med) params.set('utm_medium', med);
-  if (cmp) params.set('utm_campaign', lay ? cmp + '_' + lay : cmp);
+  if (cmp) params.set('utm_campaign', cmp);
   if (cnt) params.set('utm_content', cnt);
   if (trm) params.set('utm_term', trm);
 
@@ -3889,6 +4098,411 @@ function acgDownload(canvas, fmt) {
   a.href = dlCanvas.toDataURL('image/png');
   a.click();
 }
+
+// ─────────────────────────────────────
+// TAB 14 · STUDIO BRIEF
+// Packages a rich media build brief + assets into one zip for the
+// "CM360 Studio Ad Creator" Claude project.
+// ─────────────────────────────────────
+
+const SB_SIZES = [
+  ['300x250', 'MREC'], ['300x600', 'Half page'], ['728x90', 'Leaderboard'],
+  ['970x250', 'Billboard'], ['160x600', 'Skyscraper'], ['320x50', 'Mobile'],
+  ['300x50', 'Mobile'], ['320x480', 'Mobile interstitial'], ['480x320', 'Mobile interstitial L'],
+  ['970x90', 'Super leaderboard'], ['336x280', 'Large rect'], ['468x60', 'Banner']
+];
+
+const SB_ZONES = [
+  { cat: 'backgrounds', title: 'Backgrounds', icon: '🖼️', accept: '.jpg,.jpeg,.png,.webp', raster: true,
+    help: 'JPG or PNG, ideally 2× the largest size. Text-free versions preferred.' },
+  { cat: 'products', title: 'Product / hero cut-outs', icon: '📦', accept: '.png,.webp,.svg', raster: false,
+    help: 'Transparent PNG or SVG. Separate layers animate independently.' },
+  { cat: 'logo', title: 'Logo', icon: '🏷️', accept: '.svg,.png', raster: false,
+    help: 'SVG preferred. Large transparent PNG otherwise. Include light / dark versions if both exist.' },
+  { cat: 'fonts', title: 'Fonts', icon: '🔤', accept: '.woff2,.woff,.ttf,.otf', raster: false,
+    help: 'WOFF2 / WOFF best. Confirm the licence covers digital advertising.' },
+  { cat: 'video', title: 'Video', icon: '🎬', accept: '.mp4,.mov,.webm', raster: false,
+    help: 'Highest-quality MP4 you have. Studio transcodes it. 15–30s max for autoplay.' },
+  { cat: 'reference', title: 'Storyboard / references', icon: '📝', accept: 'image/*,.pdf', raster: false,
+    help: 'Storyboards, mock-ups, brand guidelines, or screenshots of ads you like.' },
+  { cat: 'feed', title: 'Dynamic feed sample', icon: '📊', accept: '.csv,.xlsx,.xls,.json', raster: false, dynamicOnly: true,
+    help: 'A sample of the feed or spreadsheet that drives the dynamic content.' }
+];
+
+const sb = {
+  formats: new Set(['banner']),
+  sizes: new Set(['300x250', '300x600', '728x90', '320x50']),
+  customSizes: [],
+  frames: [{ h: '', s: '' }, { h: '', s: '' }, { h: '', s: '' }],
+  colours: [{ name: 'Primary', hex: '#000000' }, { name: 'Secondary', hex: '#ffffff' }, { name: 'CTA', hex: '#6c63ff' }],
+  exits: [{ name: 'Background Exit', url: '' }, { name: 'CTA Exit', url: '' }],
+  files: {}
+};
+SB_ZONES.forEach(z => sb.files[z.cat] = []);
+
+function sbEsc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function sbVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function sbSlug(s) { return (s || '').trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'untitled'; }
+function sbParseSize(s) { const m = String(s).toLowerCase().replace(/\s/g, '').match(/^(\d{2,4})[x×*](\d{2,4})$/); return m ? [+m[1], +m[2]] : null; }
+
+/* ── Formats ── */
+function sbRenderFormats() {
+  document.querySelectorAll('#sb-formats .q-btn').forEach(b => {
+    b.classList.toggle('active', sb.formats.has(b.dataset.fmt));
+  });
+  ['expanding', 'interstitial', 'video', 'dynamic'].forEach(f => {
+    document.getElementById('sb-sub-' + f).classList.toggle('show', sb.formats.has(f));
+  });
+  document.querySelectorAll('.sb-zone[data-dyn="1"]').forEach(z => z.classList.toggle('hidden', !sb.formats.has('dynamic')));
+}
+
+/* ── Sizes ── */
+function sbRenderSizes() {
+  const wrap = document.getElementById('sb-sizes');
+  const all = [...SB_SIZES.map(s => s[0]), ...sb.customSizes];
+  const labels = Object.fromEntries(SB_SIZES);
+  wrap.innerHTML = all.map(s =>
+    `<button class="sb-chip ${sb.sizes.has(s) ? 'on' : ''}" data-size="${s}">${s}<small>${sbEsc(labels[s] || 'Custom')}</small></button>`
+  ).join('');
+  wrap.querySelectorAll('.sb-chip').forEach(c => c.onclick = () => {
+    const s = c.dataset.size;
+    sb.sizes.has(s) ? sb.sizes.delete(s) : sb.sizes.add(s);
+    sbRenderSizes(); sbRefreshFiles(); sbCheck();
+  });
+}
+function sbAddCustomSize() {
+  const inp = document.getElementById('sb-custom-size');
+  const p = sbParseSize(inp.value);
+  if (!p) { inp.style.borderColor = 'var(--red)'; return; }
+  inp.style.borderColor = '';
+  const s = p[0] + 'x' + p[1];
+  if (!sb.customSizes.includes(s) && !SB_SIZES.some(x => x[0] === s)) sb.customSizes.push(s);
+  sb.sizes.add(s); inp.value = '';
+  sbRenderSizes(); sbRefreshFiles(); sbCheck();
+}
+
+/* ── Frames ── */
+function sbRenderFrames() {
+  const wrap = document.getElementById('sb-frames');
+  wrap.innerHTML = sb.frames.map((f, i) => `
+    <div class="sb-row frame">
+      <span class="sb-tag">${i === sb.frames.length - 1 && i > 0 ? 'End frame' : 'Frame ' + (i + 1)}</span>
+      <div><input class="utm-in" data-fi="${i}" data-fk="h" type="text" placeholder="Headline${i === 0 ? ' *' : ''}" value="${sbEsc(f.h)}"><div class="sb-cc">${f.h.length} chars</div></div>
+      <div><input class="utm-in" data-fi="${i}" data-fk="s" type="text" placeholder="Sub-line (optional)" value="${sbEsc(f.s)}"><div class="sb-cc">${f.s.length} chars</div></div>
+      <button class="sb-x" title="Remove" onclick="sbRemoveFrame(${i})" ${sb.frames.length < 2 ? 'disabled' : ''}>✕</button>
+    </div>`).join('');
+  wrap.querySelectorAll('input').forEach(inp => inp.oninput = () => {
+    sb.frames[+inp.dataset.fi][inp.dataset.fk] = inp.value;
+    inp.nextElementSibling.textContent = inp.value.length + ' chars';
+    sbCheck();
+  });
+}
+function sbAddFrame() { if (sb.frames.length < 8) { sb.frames.push({ h: '', s: '' }); sbRenderFrames(); } }
+function sbRemoveFrame(i) { sb.frames.splice(i, 1); sbRenderFrames(); sbCheck(); }
+
+/* ── Colours ── */
+function sbRenderColours() {
+  const wrap = document.getElementById('sb-colours');
+  wrap.innerHTML = sb.colours.map((c, i) => `
+    <div class="sb-row colour">
+      <input class="utm-in" data-ci="${i}" data-ck="name" type="text" placeholder="Use (e.g. Background)" value="${sbEsc(c.name)}">
+      <input class="sb-colour-in" data-ci="${i}" data-ck="pick" type="color" value="${c.hex}">
+      <input class="utm-in" data-ci="${i}" data-ck="hex" type="text" value="${c.hex}" maxlength="7">
+      <button class="sb-x" title="Remove" onclick="sbRemoveColour(${i})">✕</button>
+    </div>`).join('');
+  wrap.querySelectorAll('input').forEach(inp => inp.oninput = () => {
+    const c = sb.colours[+inp.dataset.ci], k = inp.dataset.ck;
+    if (k === 'name') c.name = inp.value;
+    if (k === 'pick') { c.hex = inp.value; inp.nextElementSibling.value = inp.value; }
+    if (k === 'hex' && /^#[0-9a-f]{6}$/i.test(inp.value)) { c.hex = inp.value.toLowerCase(); inp.previousElementSibling.value = c.hex; }
+  });
+}
+function sbAddColour() { sb.colours.push({ name: '', hex: '#888888' }); sbRenderColours(); }
+function sbRemoveColour(i) { sb.colours.splice(i, 1); sbRenderColours(); }
+
+/* ── Exits ── */
+function sbRenderExits() {
+  const wrap = document.getElementById('sb-exits');
+  wrap.innerHTML = sb.exits.map((e, i) => `
+    <div class="sb-row exit">
+      <input class="utm-in" data-ei="${i}" data-ek="name" type="text" placeholder="Exit name (e.g. CTA Exit)" value="${sbEsc(e.name)}">
+      <input class="utm-in" data-ei="${i}" data-ek="url" type="url" placeholder="Landing URL (optional)" value="${sbEsc(e.url)}">
+      <button class="sb-x" title="Remove" onclick="sbRemoveExit(${i})" ${sb.exits.length < 2 ? 'disabled' : ''}>✕</button>
+    </div>`).join('');
+  wrap.querySelectorAll('input').forEach(inp => inp.oninput = () => {
+    sb.exits[+inp.dataset.ei][inp.dataset.ek] = inp.value; sbCheck();
+  });
+}
+function sbAddExit() { sb.exits.push({ name: '', url: '' }); sbRenderExits(); }
+function sbRemoveExit(i) { sb.exits.splice(i, 1); sbRenderExits(); sbCheck(); }
+
+/* ── Asset zones ── */
+function sbRenderZones() {
+  const wrap = document.getElementById('sb-zones');
+  wrap.innerHTML = SB_ZONES.map(z => `
+    <div class="sb-zone ${z.dynamicOnly && !sb.formats.has('dynamic') ? 'hidden' : ''}" data-cat="${z.cat}" ${z.dynamicOnly ? 'data-dyn="1"' : ''}>
+      <h4>${z.icon} ${z.title}</h4>
+      <p>${z.help}</p>
+      <div class="sb-drop">Drop files or click to add</div>
+      <input type="file" multiple accept="${z.accept}" hidden>
+      <div class="sb-files"></div>
+    </div>`).join('');
+  wrap.querySelectorAll('.sb-zone').forEach(zone => {
+    const cat = zone.dataset.cat, drop = zone.querySelector('.sb-drop'), inp = zone.querySelector('input');
+    drop.onclick = () => inp.click();
+    inp.onchange = () => { sbAddFiles(cat, inp.files); inp.value = ''; };
+    drop.ondragover = e => { e.preventDefault(); drop.classList.add('drag-over'); };
+    drop.ondragleave = () => drop.classList.remove('drag-over');
+    drop.ondrop = e => { e.preventDefault(); drop.classList.remove('drag-over'); sbAddFiles(cat, e.dataTransfer.files); };
+  });
+}
+
+function sbReadMeta(file) {
+  return new Promise(res => {
+    const meta = { w: null, h: null, dur: null, thumb: null };
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { meta.w = img.naturalWidth || null; meta.h = img.naturalHeight || null; meta.thumb = url; res(meta); };
+      img.onerror = () => res(meta);
+      img.src = url;
+    } else if (file.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(file.name)) {
+      const url = URL.createObjectURL(file);
+      const v = document.createElement('video');
+      v.preload = 'metadata';
+      v.onloadedmetadata = () => { meta.w = v.videoWidth; meta.h = v.videoHeight; meta.dur = v.duration; URL.revokeObjectURL(url); res(meta); };
+      v.onerror = () => { URL.revokeObjectURL(url); res(meta); };
+      v.src = url;
+    } else res(meta);
+  });
+}
+
+async function sbAddFiles(cat, fileList) {
+  for (const f of Array.from(fileList)) {
+    if (sb.files[cat].some(x => x.file.name === f.name && x.file.size === f.size)) continue;
+    const meta = await sbReadMeta(f);
+    sb.files[cat].push({ file: f, ...meta });
+  }
+  sbRefreshFiles(); sbCheck();
+}
+function sbRemoveFile(cat, i) { sb.files[cat].splice(i, 1); sbRefreshFiles(); sbCheck(); }
+
+function sbSizeList() { return [...sb.sizes].map(sbParseSize).filter(Boolean); }
+
+// Warnings / notes for one file
+function sbFileNotes(cat, item) {
+  const notes = [], f = item.file, isSvg = /\.svg$/i.test(f.name);
+  const zone = SB_ZONES.find(z => z.cat === cat);
+  if (zone.raster && item.w && !isSvg) {
+    // Image covers a size at 2× if it can be scaled down (cover-fit) to 2× that size
+    const short = sbSizeList().filter(([w, h]) => Math.max((2 * w) / item.w, (2 * h) / item.h) > 1)
+      .map(([w, h]) => w + 'x' + h);
+    if (short.length) notes.push({ t: 'w', m: 'Below 2× for ' + short.join(', ') + ' — may look soft on retina' });
+    else if (sb.sizes.size) notes.push({ t: 'ok', m: '2× or larger for all selected sizes' });
+  }
+  if (cat === 'logo' && !isSvg) notes.push({ t: 'w', m: 'SVG preferred — PNG works if large and transparent' });
+  if (cat === 'logo' && /\.jpe?g$/i.test(f.name)) notes.push({ t: 'w', m: 'JPG has no transparency' });
+  if (cat === 'products' && /\.jpe?g$/i.test(f.name)) notes.push({ t: 'w', m: 'Cut-outs need transparency (PNG/SVG)' });
+  if (cat === 'fonts' && /\.(ttf|otf)$/i.test(f.name)) notes.push({ t: 'w', m: 'Will be converted to WOFF2 in the build' });
+  if (cat === 'video' && item.dur) {
+    if (item.dur > 30) notes.push({ t: 'w', m: Math.round(item.dur) + 's — autoplay max is 15–30s' });
+    else notes.push({ t: 'ok', m: Math.round(item.dur) + 's' });
+  }
+  if (f.size > 50 * 1048576) notes.push({ t: 'w', m: 'Very large file — may not upload to Claude' });
+  return notes;
+}
+
+function sbRefreshFiles() {
+  document.querySelectorAll('#sb-zones .sb-zone').forEach(zone => {
+    const cat = zone.dataset.cat, zdef = SB_ZONES.find(z => z.cat === cat);
+    zone.querySelector('.sb-files').innerHTML = sb.files[cat].map((it, i) => {
+      const dims = it.w ? `${it.w}×${it.h}` : '';
+      const notes = sbFileNotes(cat, it).map(n => `<div class="${n.t === 'w' ? 'w' : 'ok'}">${n.t === 'w' ? '⚠ ' : '✓ '}${sbEsc(n.m)}</div>`).join('');
+      return `<div class="sb-file">
+        ${it.thumb ? `<img src="${it.thumb}" alt="">` : `<div class="sb-ico">${zdef.icon}</div>`}
+        <div style="min-width:0"><div class="n">${sbEsc(it.file.name)}</div><div class="m">${[dims, fmtB(it.file.size)].filter(Boolean).join(' · ')}</div>${notes}</div>
+        <button class="sb-x" title="Remove" onclick="sbRemoveFile('${cat}',${i})">✕</button>
+      </div>`;
+    }).join('');
+  });
+}
+
+/* ── Readiness checklist ── */
+function sbChecks() {
+  const has = c => sb.files[c].length > 0;
+  const fontOk = has('fonts') || sbVal('sb-gfont');
+  const exitsOk = sb.exits.some(e => e.name.trim());
+  const c = [
+    { ok: !!sbVal('sb-client') && !!sbVal('sb-campaign'), m: 'Client and campaign name', req: true },
+    { ok: sb.formats.size > 0, m: 'At least one format', req: true },
+    { ok: sb.sizes.size > 0, m: 'At least one size', req: true },
+    { ok: !!sb.frames[0]?.h.trim(), m: 'Frame 1 headline', req: true },
+    { ok: !!sbVal('sb-cta'), m: 'CTA text', req: true },
+    { ok: exitsOk, m: 'At least one exit name', req: true },
+    { ok: has('backgrounds') || has('products'), m: 'Background or product imagery', req: true },
+    { ok: has('logo'), m: 'Logo', req: true },
+    { ok: fontOk, m: fontOk ? 'Font supplied' : 'No font — system fallback will be used', req: false },
+    { ok: has('reference') || !!sbVal('sb-anim-notes') || sbVal('sb-anim-style') === 'Claude to propose', m: 'Animation direction or references', req: false }
+  ];
+  if (sb.formats.has('expanding')) c.push({ ok: !!sbParseSize(sbVal('sb-exp-size')), m: 'Expanded size', req: true });
+  if (sb.formats.has('video')) c.push({ ok: has('video'), m: 'Video file', req: true });
+  if (sb.formats.has('dynamic')) c.push({ ok: has('feed') || !!sbVal('sb-dyn-code'), m: 'Feed sample or Studio generated code', req: true });
+  return c;
+}
+function sbCheck() {
+  const list = sbChecks();
+  document.getElementById('sb-check').innerHTML = list.map(c =>
+    `<li class="${c.ok ? '' : (c.req ? 'miss' : 'warn')}"><span class="i">${c.ok ? '✅' : (c.req ? '⬜' : '⚠️')}</span>${sbEsc(c.m)}</li>`
+  ).join('');
+  const ctaLen = sbVal('sb-cta').length;
+  document.getElementById('sb-cta-cc').textContent = ctaLen ? ctaLen + ' chars' : '';
+}
+
+/* ── Build the zip ── */
+function sbCollect() {
+  const fmtNames = { banner: 'Animated banner', expanding: 'Expanding', interstitial: 'Interstitial', video: 'In-banner video', dynamic: 'Dynamic (feed)' };
+  const data = {
+    schema: 'programmatica-studio-brief/1',
+    created: new Date().toISOString(),
+    buildReference: 'Studio_Build_Reference.md (CM360 Studio Ad Creator project files)',
+    campaign: {
+      client: sbVal('sb-client'), name: sbVal('sb-campaign'),
+      flightStart: sbVal('sb-start'), flightEnd: sbVal('sb-end'), creativeDue: sbVal('sb-due'),
+      message: sbVal('sb-message')
+    },
+    formats: [...sb.formats].map(f => fmtNames[f]),
+    sizes: [...sb.sizes].sort((a, b) => { const A = sbParseSize(a), B = sbParseSize(b); return B[0] * B[1] - A[0] * A[1]; }),
+    specs: { initialLoadKB: +sbVal('sb-weight') || 150, maxAnimationSec: +sbVal('sb-anim-len') || 15, publisherNotes: sbVal('sb-pub-notes') },
+    copy: {
+      frames: sb.frames.filter(f => f.h.trim() || f.s.trim()).map((f, i) => ({ frame: i + 1, headline: f.h.trim(), subline: f.s.trim() })),
+      cta: sbVal('sb-cta'), legal: sbVal('sb-legal')
+    },
+    brand: {
+      colours: sb.colours.filter(c => c.hex).map(c => ({ use: c.name.trim(), hex: c.hex })),
+      googleFont: sbVal('sb-gfont'), notes: sbVal('sb-brand-notes')
+    },
+    exits: sb.exits.filter(e => e.name.trim()).map(e => ({ name: e.name.trim(), url: e.url.trim() })),
+    animation: {
+      style: sbVal('sb-anim-style'), loops: document.getElementById('sb-loops').selectedOptions[0].text, endFrame: sbVal('sb-endframe'), notes: sbVal('sb-anim-notes')
+    },
+    assets: []
+  };
+  if (sb.formats.has('expanding')) data.expanding = { expandedSize: sbVal('sb-exp-size'), direction: sbVal('sb-exp-dir'), trigger: sbVal('sb-exp-trigger') };
+  if (sb.formats.has('interstitial')) data.interstitial = { orientations: sbVal('sb-int-orient'), environment: sbVal('sb-int-env') };
+  if (sb.formats.has('video')) data.video = { playback: sbVal('sb-vid-play'), controls: sbVal('sb-vid-controls') };
+  if (sb.formats.has('dynamic')) data.dynamic = { elements: sbVal('sb-dyn-elements'), studioGeneratedCode: sbVal('sb-dyn-code') };
+  return data;
+}
+
+function sbMarkdown(d) {
+  const L = [];
+  const line = (k, v) => { if (v) L.push(`- **${k}:** ${v}`); };
+  L.push(`# Studio Brief — ${d.campaign.client || 'Client'} · ${d.campaign.name || 'Campaign'}`, '');
+  L.push(`Build CM360 / Studio HTML5 creatives from this brief, following Studio_Build_Reference.md. Machine-readable version: brief.json. Assets are in /assets.`, '');
+  L.push('## Campaign');
+  line('Client', d.campaign.client); line('Campaign', d.campaign.name);
+  line('Flight', [d.campaign.flightStart, d.campaign.flightEnd].filter(Boolean).join(' → '));
+  line('Creative due', d.campaign.creativeDue); line('Message', d.campaign.message);
+  L.push('', '## Formats & sizes');
+  line('Formats', d.formats.join(', ')); line('Sizes', d.sizes.join(', '));
+  if (d.expanding) line('Expanding', `${d.expanding.expandedSize} · ${d.expanding.direction} · ${d.expanding.trigger}`);
+  if (d.interstitial) line('Interstitial', `${d.interstitial.orientations} · ${d.interstitial.environment}`);
+  if (d.video) line('Video', `${d.video.playback} · controls: ${d.video.controls}`);
+  if (d.dynamic) { line('Dynamic elements', d.dynamic.elements); if (d.dynamic.studioGeneratedCode) L.push('', '```js', d.dynamic.studioGeneratedCode, '```'); }
+  line('Initial load limit', d.specs.initialLoadKB + ' KB gzipped'); line('Max animation', d.specs.maxAnimationSec + ' s');
+  line('Publisher notes', d.specs.publisherNotes);
+  L.push('', '## Copy');
+  d.copy.frames.forEach((f, i) => L.push(`${i + 1}. ${f.headline}${f.subline ? ' — ' + f.subline : ''}`));
+  line('CTA', d.copy.cta); line('Legal', d.copy.legal);
+  L.push('', '## Brand');
+  d.brand.colours.forEach(c => L.push(`- ${c.use || 'Colour'}: \`${c.hex}\``));
+  line('Google Font', d.brand.googleFont); line('Notes', d.brand.notes);
+  L.push('', '## Exits');
+  d.exits.forEach(e => L.push(`- ${e.name}${e.url ? ' → ' + e.url : ''}`));
+  L.push('', '## Animation');
+  line('Style', d.animation.style); line('Loops', d.animation.loops); line('End frame', d.animation.endFrame); line('Notes', d.animation.notes);
+  L.push('', '## Assets');
+  if (!d.assets.length) L.push('- None supplied');
+  d.assets.forEach(a => L.push(`- \`${a.path}\` — ${a.category}${a.width ? `, ${a.width}×${a.height}` : ''}${a.durationSec ? `, ${a.durationSec}s` : ''}, ${a.size}${a.warnings.length ? ' — ⚠ ' + a.warnings.join('; ') : ''}`));
+  const missing = sbChecks().filter(c => !c.ok);
+  if (missing.length) { L.push('', '## Missing at export'); missing.forEach(c => L.push(`- ${c.m}`)); }
+  return L.join('\n') + '\n';
+}
+
+async function sbBuild() {
+  if (typeof JSZip === 'undefined') { alert('Zip library failed to load — check your connection and refresh.'); return; }
+  const btn = document.getElementById('sb-go'), prog = document.getElementById('sb-prog'), done = document.getElementById('sb-done');
+  btn.disabled = true; prog.style.display = 'block'; done.classList.remove('show');
+  setProg('sb-bar', 'sb-lbl', 5, 'Collecting brief…');
+  try {
+    const data = sbCollect(), zip = new JSZip(), used = new Set();
+    for (const z of SB_ZONES) {
+      for (const it of sb.files[z.cat]) {
+        let name = it.file.name.replace(/[^\w.\-]+/g, '_'), base = name, n = 2;
+        while (used.has(z.cat + '/' + name)) name = base.replace(/(\.[^.]+)?$/, `_${n++}$1`);
+        used.add(z.cat + '/' + name);
+        const path = `assets/${z.cat}/${name}`;
+        zip.file(path, it.file);
+        data.assets.push({
+          category: z.cat, path, original: it.file.name, bytes: it.file.size, size: fmtB(it.file.size), type: it.file.type || '',
+          width: it.w || null, height: it.h || null, durationSec: it.dur ? Math.round(it.dur * 10) / 10 : null,
+          warnings: sbFileNotes(z.cat, it).filter(n => n.t === 'w').map(n => n.m)
+        });
+      }
+    }
+    zip.file('brief.json', JSON.stringify(data, null, 2));
+    zip.file('BRIEF.md', sbMarkdown(data));
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } },
+      m => setProg('sb-bar', 'sb-lbl', 10 + m.percent * 0.9, 'Zipping… ' + Math.round(m.percent) + '%'));
+    const d = new Date(), stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    const fname = `Studio-Brief_${sbSlug(data.campaign.client)}_${sbSlug(data.campaign.name)}_${stamp}.zip`;
+    triggerDownload(blob, fname);
+    setProg('sb-bar', 'sb-lbl', 100, 'Done');
+    const missing = sbChecks().filter(c => !c.ok && c.req).length;
+    done.innerHTML = `<b>✓ Downloaded ${sbEsc(fname)}</b> (${fmtB(blob.size)}, ${data.assets.length} asset${data.assets.length === 1 ? '' : 's'}).<br>
+      Upload it to the <b>CM360 Studio Ad Creator</b> Claude project and ask for the build.` +
+      (missing ? `<br>⚠ ${missing} required item${missing === 1 ? ' is' : 's are'} missing — listed in BRIEF.md.` : '') +
+      (blob.size > 25 * 1048576 ? `<br>⚠ The zip is large. If the upload is rejected, take the video out of the brief and add it to the project files separately.` : '');
+    done.classList.add('show');
+  } catch (err) {
+    console.error(err);
+    setProg('sb-bar', 'sb-lbl', 0, 'Something went wrong: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    setTimeout(() => { prog.style.display = 'none'; }, 1500);
+  }
+}
+
+function sbReset() {
+  if (!confirm('Clear the whole brief?')) return;
+  document.querySelectorAll('#tab-studio-brief .sb-in').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = el.id === 'sb-loops' ? 2 : 0;
+    else el.value = el.id === 'sb-weight' ? '150' : el.id === 'sb-anim-len' ? '15' : '';
+  });
+  sb.formats = new Set(['banner']);
+  sb.sizes = new Set(['300x250', '300x600', '728x90', '320x50']);
+  sb.customSizes = [];
+  sb.frames = [{ h: '', s: '' }, { h: '', s: '' }, { h: '', s: '' }];
+  sb.colours = [{ name: 'Primary', hex: '#000000' }, { name: 'Secondary', hex: '#ffffff' }, { name: 'CTA', hex: '#6c63ff' }];
+  sb.exits = [{ name: 'Background Exit', url: '' }, { name: 'CTA Exit', url: '' }];
+  SB_ZONES.forEach(z => sb.files[z.cat] = []);
+  document.getElementById('sb-done').classList.remove('show');
+  sbInit();
+}
+
+function sbInit() {
+  document.querySelectorAll('#sb-formats .q-btn').forEach(b => b.onclick = () => {
+    const f = b.dataset.fmt;
+    sb.formats.has(f) ? sb.formats.delete(f) : sb.formats.add(f);
+    sbRenderFormats(); sbCheck();
+  });
+  document.querySelectorAll('#tab-studio-brief .sb-in').forEach(el => {
+    el.oninput = sbCheck; el.onchange = sbCheck;
+  });
+  document.getElementById('sb-custom-size').onkeydown = e => { if (e.key === 'Enter') sbAddCustomSize(); };
+  sbRenderZones(); sbRenderFormats(); sbRenderSizes(); sbRenderFrames(); sbRenderColours(); sbRenderExits(); sbRefreshFiles(); sbCheck();
+}
+sbInit();
 
 </script>
 </body>
