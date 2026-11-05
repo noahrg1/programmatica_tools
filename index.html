@@ -931,10 +931,6 @@
         <div class="sb-field"><span class="s-label">Client *</span><input class="utm-in sb-in" id="sb-client" type="text" placeholder="e.g. Acme Outdoors"></div>
         <div class="sb-field"><span class="s-label">Campaign name *</span><input class="utm-in sb-in" id="sb-campaign" type="text" placeholder="e.g. Summer Sale 2026"></div>
       </div>
-      <div class="sb-grid2">
-        <div class="sb-field"><span class="s-label">Creative due</span><input class="utm-in sb-in" id="sb-due" type="date"></div>
-        <div></div>
-      </div>
       <div class="sb-field"><span class="s-label">Objective / key message</span><textarea class="utm-in sb-in" id="sb-message" placeholder="What should someone take away from the ad? Any product, offer or promo details."></textarea></div>
     </div>
 
@@ -4366,7 +4362,6 @@ function sbCollect() {
     buildReference: 'Studio_Build_Reference.md (CM360 Studio Ad Creator project files)',
     campaign: {
       client: sbVal('sb-client'), name: sbVal('sb-campaign'),
-      creativeDue: sbVal('sb-due'),
       message: sbVal('sb-message')
     },
     formats: [...sb.formats].map(f => fmtNames[f]),
@@ -4400,7 +4395,7 @@ function sbMarkdown(d) {
   L.push(`Build CM360 / Studio HTML5 creatives from this brief, following Studio_Build_Reference.md. Machine-readable version: brief.json. Assets are in /assets.`, '');
   L.push('## Campaign');
   line('Client', d.campaign.client); line('Campaign', d.campaign.name);
-  line('Creative due', d.campaign.creativeDue); line('Message', d.campaign.message);
+  line('Message', d.campaign.message);
   L.push('', '## Formats & sizes');
   line('Formats', d.formats.join(', ')); line('Sizes', d.sizes.join(', '));
   if (d.expanding) line('Expanding', `${d.expanding.expandedSize} · ${d.expanding.direction} · ${d.expanding.trigger}`);
