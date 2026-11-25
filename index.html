@@ -295,6 +295,14 @@
     .sb-btn-row .action-btn { margin-top: 0; }
     .sb-reset { flex: 0 0 auto; width: auto; padding: 13px 18px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); border-radius: 9px; font-weight: 600; cursor: pointer; }
     .sb-reset:hover { color: var(--fg); border-color: #444; }
+    .sb-cv-block { display: none; margin-top: 6px; }
+    .sb-cv-block.show { display: block; }
+    .sb-tile { border: 1px solid var(--border); border-radius: 10px; padding: 10px 10px 4px; margin-bottom: 8px; background: var(--bg); }
+    .sb-tile .sb-row { margin-bottom: 6px; }
+    .sb-row.tile1 { grid-template-columns: 56px 1fr 1fr 30px; align-items: start; }
+    .sb-row.tile1 .sb-tag { padding-top: 11px; }
+    .sb-row.tile2 { grid-template-columns: 56px 1.5fr 1fr 80px 80px 30px; }
+    @media (max-width: 680px) { .sb-row.tile1, .sb-row.tile2 { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -914,7 +922,7 @@
   ══════════════════════════════════ -->
   <div class="tab-panel" id="tab-studio-brief">
     <div class="sb-intro">
-      <b>Studio Brief</b> packages everything needed to build CM360 / Studio HTML5 ads into one zip.
+      <b>Studio Brief</b> packages everything needed to build CM360 / Studio HTML5 ads, including clickable video delivered as VAST tags, into one zip.
       <ol>
         <li>Fill in the campaign, formats, sizes and copy.</li>
         <li>Drop in the assets: backgrounds, product cut-outs, logo, fonts, video.</li>
@@ -943,6 +951,7 @@
         <button class="q-btn" data-fmt="interstitial"><span class="qn">Interstitial</span><span class="qd">Full-screen mobile, portrait / landscape</span></button>
         <button class="q-btn" data-fmt="video"><span class="qn">In-banner video</span><span class="qd">Muted autoplay or click-to-play</span></button>
         <button class="q-btn" data-fmt="dynamic"><span class="qn">Dynamic (feed)</span><span class="qd">Content swapped from a feed / profile</span></button>
+        <button class="q-btn" data-fmt="vast"><span class="qn">Clickable video (VAST)</span><span class="qd">In-stream video with clickable tiles, VAST 3 / 4 tags</span></button>
       </div>
 
       <div class="sb-sub" id="sb-sub-expanding">
@@ -978,12 +987,65 @@
         <div class="sb-field"><span class="s-label">What changes per impression?</span><textarea class="utm-in sb-in" id="sb-dyn-elements" placeholder="e.g. headline, product image, price, CTA, landing URL — and what drives it (location, audience, weather)"></textarea></div>
         <div class="sb-field"><span class="s-label">Studio generated code (Dynamic Content tab → Step 4 → HTML5)</span><textarea class="utm-in sb-in" id="sb-dyn-code" placeholder="Paste the generated setup code here if the Studio profile exists. Attach a sample feed in the assets section."></textarea></div>
       </div>
+      <div class="sb-sub" id="sb-sub-vast">
+        <span class="s-label">Clickable video settings</span>
+        <div class="sb-help" style="margin-top:4px">Built as a Studio VPAID linear creative and trafficked on a CM360 in-stream placement, which exports the VAST tags. Players that can't run VPAID (YouTube, most CTV, many apps) play the backup video without the tiles.</div>
+        <div class="sb-field"><span class="s-label">VAST tags needed *</span><div class="sb-chips" id="sb-cv-versions"></div></div>
+        <div class="sb-grid3">
+          <div class="sb-field"><span class="s-label">Aspect ratio</span>
+            <select class="utm-in sb-in" id="sb-cv-ratio"><option value="16:9">16:9 landscape</option><option value="9:16">9:16 vertical</option><option value="1:1">1:1 square</option><option value="4:5">4:5 portrait</option></select></div>
+          <div class="sb-field"><span class="s-label">Tile layout</span>
+            <select class="utm-in sb-in" id="sb-cv-layout"><option>Side panel, right (stacked tiles)</option><option>Side panel, left (stacked tiles)</option><option>Bottom strip</option><option>Split: video + tile grid</option><option>End card grid</option><option>Claude to propose</option></select></div>
+          <div class="sb-field"><span class="s-label">Tile content</span>
+            <select class="utm-in sb-in" id="sb-cv-source"><option value="manual">Set tiles manually</option><option value="feed">Product feed (e.g. GMC)</option></select></div>
+        </div>
+        <div class="sb-grid2">
+          <div class="sb-field"><span class="s-label">Prompt label (optional)</span><input class="utm-in sb-in" id="sb-cv-label" type="text" placeholder="e.g. This video is interactive. Click around!"></div>
+          <div class="sb-field"><span class="s-label">Video click-through URL</span><input class="utm-in sb-in" id="sb-cv-bg-url" type="url" placeholder="Landing page when the video itself is clicked"></div>
+        </div>
+        <div class="sb-grid2">
+          <div class="sb-field"><span class="s-label">Player controls</span><div class="sb-chips" id="sb-cv-controls"></div></div>
+          <div class="sb-field"><span class="s-label">Companion banner</span>
+            <select class="utm-in sb-in" id="sb-cv-companion"><option>None</option><option>300x250</option><option>728x90</option><option>300x250 + 728x90</option></select></div>
+        </div>
+
+        <div class="sb-cv-block" id="sb-cv-manual">
+          <span class="s-label">Tiles</span>
+          <div class="sb-help" style="margin:2px 0 8px">Up to 8. Leave the times blank to show a tile for the whole video. Upload tile images in the assets section; they're matched in order unless you pick one.</div>
+          <div id="sb-cv-tiles"></div>
+          <button class="sb-add" onclick="sbAddTile()">+ Add tile</button>
+        </div>
+
+        <div class="sb-cv-block" id="sb-cv-feed">
+          <span class="s-label">Product feed</span>
+          <div class="sb-help" style="margin:2px 0 8px">GMC fields used: title, image_link, price, sale_price, link. Attach a sample of the feed in the assets section.</div>
+          <div class="sb-grid3">
+            <div class="sb-field"><span class="s-label">Feed source</span>
+              <select class="utm-in sb-in" id="sb-cv-feed-src"><option>GMC product file (CSV / XML / Sheet)</option><option>Google Sheet</option><option>Other CSV / XML</option></select></div>
+            <div class="sb-field"><span class="s-label">Product selection</span>
+              <select class="utm-in sb-in" id="sb-cv-feed-mode"><option value="rules">Rules / filters (same for everyone)</option><option value="remarketing">Dynamic remarketing (Merchant Center ID)</option></select></div>
+            <div class="sb-field"><span class="s-label">Tiles on screen</span>
+              <select class="utm-in sb-in" id="sb-cv-feed-count"><option>3, with paging</option><option selected>4, with paging</option><option>6, with paging</option><option>8, with paging</option></select></div>
+          </div>
+          <div class="sb-grid2">
+            <div class="sb-field"><span class="s-label">Feed URL</span><input class="utm-in sb-in" id="sb-cv-feed-url" type="url" placeholder="Public URL of the CSV / XML / Sheet"></div>
+            <div class="sb-field"><span class="s-label">Merchant Center ID</span><input class="utm-in sb-in" id="sb-cv-gmc-id" type="text" placeholder="For dynamic remarketing"></div>
+          </div>
+          <div class="sb-grid2">
+            <div class="sb-field"><span class="s-label">Products to show</span><input class="utm-in sb-in" id="sb-cv-feed-filter" type="text" placeholder="e.g. sale items only, watches category"></div>
+            <div class="sb-field"><span class="s-label">Price display</span>
+              <select class="utm-in sb-in" id="sb-cv-price"><option>Price, plus struck-through RRP when on sale</option><option>Price only</option><option>No price</option></select></div>
+          </div>
+        </div>
+
+        <div class="sb-field" style="margin-top:10px"><span class="s-label">Reference ads (VAST tags or preview links)</span><textarea class="utm-in sb-in" id="sb-cv-refs" placeholder="Paste VAST tags or preview links of interactive video ads to use as a style reference."></textarea></div>
+      </div>
     </div>
 
     <!-- 3 · Sizes & specs -->
     <div class="sb-sec">
       <h3><span>3</span>Sizes &amp; specs</h3>
-      <div class="sb-help">Tap to select. Add any custom size below.</div>
+      <div class="sb-help">Tap to select display sizes. Clickable video doesn't need these; it scales to the player.</div>
       <div class="sb-chips" id="sb-sizes"></div>
       <div class="sb-grid3" style="margin-top:12px">
         <div class="sb-field"><span class="s-label">Custom size</span><input class="utm-in" id="sb-custom-size" type="text" placeholder="e.g. 300x1050"></div>
@@ -1000,7 +1062,7 @@
     <!-- 4 · Copy -->
     <div class="sb-sec">
       <h3><span>4</span>Copy</h3>
-      <div class="sb-help">One row per animation frame, in order. Keep headlines short — they have to fit a 320×50.</div>
+      <div class="sb-help">One row per animation frame, in order. Keep headlines short — they have to fit a 320×50. Clickable video only needs copy for text overlays or an end card.</div>
       <div id="sb-frames"></div>
       <button class="sb-add" onclick="sbAddFrame()">+ Add frame</button>
       <div class="sb-grid2" style="margin-top:14px">
@@ -2559,11 +2621,15 @@ const SB_ZONES = [
   { cat: 'fonts', title: 'Fonts', icon: '🔤', accept: '.woff2,.woff,.ttf,.otf', raster: false,
     help: 'WOFF2 / WOFF best. Confirm the licence covers digital advertising.' },
   { cat: 'video', title: 'Video', icon: '🎬', accept: '.mp4,.mov,.webm', raster: false,
-    help: 'Highest-quality MP4 you have. Studio transcodes it. 15–30s max for autoplay.' },
+    help: 'Highest-quality MP4 you have. Studio transcodes it. 15–30s max for autoplay. For clickable video, 1080p at the chosen aspect ratio.' },
+  { cat: 'tiles', title: 'Tile images', icon: '🔲', accept: '.jpg,.jpeg,.png,.webp', raster: false,
+    show: () => sb.formats.has('vast') && sbVal('sb-cv-source') !== 'feed',
+    help: 'One image per clickable tile, square, at least 400×400. Upload in tile order.' },
   { cat: 'reference', title: 'Storyboard / references', icon: '📝', accept: 'image/*,.pdf', raster: false,
     help: 'Storyboards, mock-ups, brand guidelines, or screenshots of ads you like.' },
-  { cat: 'feed', title: 'Dynamic feed sample', icon: '📊', accept: '.csv,.xlsx,.xls,.json', raster: false, dynamicOnly: true,
-    help: 'A sample of the feed or spreadsheet that drives the dynamic content.' }
+  { cat: 'feed', title: 'Feed sample', icon: '📊', accept: '.csv,.xlsx,.xls,.xml,.json', raster: false,
+    show: () => sb.formats.has('dynamic') || (sb.formats.has('vast') && sbVal('sb-cv-source') === 'feed'),
+    help: 'A sample of the feed or spreadsheet that drives the dynamic content or product tiles.' }
 ];
 
 const sb = {
@@ -2573,8 +2639,16 @@ const sb = {
   frames: [{ h: '', s: '' }, { h: '', s: '' }, { h: '', s: '' }],
   colours: [{ name: 'Primary', hex: '#000000' }, { name: 'Secondary', hex: '#ffffff' }, { name: 'CTA', hex: '#6c63ff' }],
   exits: [{ name: 'Background Exit', url: '' }, { name: 'CTA Exit', url: '' }],
+  cv: null,
   files: {}
 };
+const SB_CV_VERSIONS = ['VAST 3.0', 'VAST 4.0'];
+const SB_CV_CONTROLS = ['Hide-overlay button', 'Play / pause', 'Progress bar', 'Mute'];
+function sbCvTile() { return { t: '', s: '', url: '', from: '', to: '', img: '' }; }
+function sbCvDefault() {
+  return { versions: new Set(SB_CV_VERSIONS), controls: new Set(SB_CV_CONTROLS), tiles: [sbCvTile(), sbCvTile(), sbCvTile()] };
+}
+sb.cv = sbCvDefault();
 SB_ZONES.forEach(z => sb.files[z.cat] = []);
 
 function sbEsc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -2587,10 +2661,63 @@ function sbRenderFormats() {
   document.querySelectorAll('#sb-formats .q-btn').forEach(b => {
     b.classList.toggle('active', sb.formats.has(b.dataset.fmt));
   });
-  ['expanding', 'interstitial', 'video', 'dynamic'].forEach(f => {
+  ['expanding', 'interstitial', 'video', 'dynamic', 'vast'].forEach(f => {
     document.getElementById('sb-sub-' + f).classList.toggle('show', sb.formats.has(f));
   });
-  document.querySelectorAll('.sb-zone[data-dyn="1"]').forEach(z => z.classList.toggle('hidden', !sb.formats.has('dynamic')));
+  const feed = sbVal('sb-cv-source') === 'feed';
+  document.getElementById('sb-cv-manual').classList.toggle('show', !feed);
+  document.getElementById('sb-cv-feed').classList.toggle('show', feed);
+  document.querySelectorAll('#sb-zones .sb-zone').forEach(el => {
+    const z = SB_ZONES.find(x => x.cat === el.dataset.cat);
+    el.classList.toggle('hidden', !!z.show && !z.show());
+  });
+}
+
+/* ── Clickable video ── */
+function sbRenderChipSet(id, all, set) {
+  const wrap = document.getElementById(id);
+  wrap.innerHTML = all.map(v => `<button class="sb-chip ${set.has(v) ? 'on' : ''}" data-v="${sbEsc(v)}">${sbEsc(v)}</button>`).join('');
+  wrap.querySelectorAll('.sb-chip').forEach(c => c.onclick = () => {
+    const v = c.dataset.v;
+    set.has(v) ? set.delete(v) : set.add(v);
+    sbRenderChipSet(id, all, set); sbCheck();
+  });
+}
+function sbRenderTiles() {
+  const wrap = document.getElementById('sb-cv-tiles'), imgs = sb.files.tiles || [];
+  wrap.innerHTML = sb.cv.tiles.map((t, i) => `
+    <div class="sb-tile">
+      <div class="sb-row tile1">
+        <span class="sb-tag">Tile ${i + 1}</span>
+        <div><input class="utm-in" data-ti="${i}" data-tk="t" type="text" placeholder="Title${i === 0 ? ' *' : ''}" value="${sbEsc(t.t)}"><div class="sb-cc">${t.t.length} chars</div></div>
+        <div><input class="utm-in" data-ti="${i}" data-tk="s" type="text" placeholder="Sub-line (optional)" value="${sbEsc(t.s)}"><div class="sb-cc">${t.s.length} chars</div></div>
+        <button class="sb-x" title="Remove" onclick="sbRemoveTile(${i})" ${sb.cv.tiles.length < 2 ? 'disabled' : ''}>✕</button>
+      </div>
+      <div class="sb-row tile2">
+        <span></span>
+        <input class="utm-in" data-ti="${i}" data-tk="url" type="url" placeholder="Landing URL${i === 0 ? ' *' : ''}" value="${sbEsc(t.url)}">
+        <select class="utm-in" data-ti="${i}" data-tk="img">
+          <option value="">${imgs[i] ? 'Image: ' + sbEsc(imgs[i].file.name) : 'Image: none yet'}</option>
+          ${imgs.map(f => `<option value="${sbEsc(f.file.name)}" ${t.img === f.file.name ? 'selected' : ''}>${sbEsc(f.file.name)}</option>`).join('')}
+        </select>
+        <input class="utm-in" data-ti="${i}" data-tk="from" type="number" min="0" step="0.5" placeholder="From (s)" value="${sbEsc(t.from)}">
+        <input class="utm-in" data-ti="${i}" data-tk="to" type="number" min="0" step="0.5" placeholder="To (s)" value="${sbEsc(t.to)}">
+        <span></span>
+      </div>
+    </div>`).join('');
+  wrap.querySelectorAll('input, select').forEach(el => el.oninput = el.onchange = () => {
+    const k = el.dataset.tk;
+    sb.cv.tiles[+el.dataset.ti][k] = el.value;
+    if (k === 't' || k === 's') el.nextElementSibling.textContent = el.value.length + ' chars';
+    sbCheck();
+  });
+}
+function sbAddTile() { if (sb.cv.tiles.length < 8) { sb.cv.tiles.push(sbCvTile()); sbRenderTiles(); sbCheck(); } }
+function sbRemoveTile(i) { sb.cv.tiles.splice(i, 1); sbRenderTiles(); sbCheck(); }
+function sbTileImage(t, i) {
+  const imgs = sb.files.tiles || [];
+  if (t.img && imgs.some(f => f.file.name === t.img)) return t.img;
+  return imgs[i] ? imgs[i].file.name : null;
 }
 
 /* ── Sizes ── */
@@ -2677,7 +2804,7 @@ function sbRemoveExit(i) { sb.exits.splice(i, 1); sbRenderExits(); sbCheck(); }
 function sbRenderZones() {
   const wrap = document.getElementById('sb-zones');
   wrap.innerHTML = SB_ZONES.map(z => `
-    <div class="sb-zone ${z.dynamicOnly && !sb.formats.has('dynamic') ? 'hidden' : ''}" data-cat="${z.cat}" ${z.dynamicOnly ? 'data-dyn="1"' : ''}>
+    <div class="sb-zone ${z.show && !z.show() ? 'hidden' : ''}" data-cat="${z.cat}">
       <h4>${z.icon} ${z.title}</h4>
       <p>${z.help}</p>
       <div class="sb-drop">Drop files or click to add</div>
@@ -2742,9 +2869,15 @@ function sbFileNotes(cat, item) {
   if (cat === 'products' && /\.jpe?g$/i.test(f.name)) notes.push({ t: 'w', m: 'Cut-outs need transparency (PNG/SVG)' });
   if (cat === 'fonts' && /\.(ttf|otf)$/i.test(f.name)) notes.push({ t: 'w', m: 'Will be converted to WOFF2 in the build' });
   if (cat === 'video' && item.dur) {
-    if (item.dur > 30) notes.push({ t: 'w', m: Math.round(item.dur) + 's — autoplay max is 15–30s' });
+    if (item.dur > 30) notes.push({ t: 'w', m: Math.round(item.dur) + 's — ' + (sb.formats.has('video') ? 'autoplay max is 15–30s' : 'in-stream is usually 15–30s') });
     else notes.push({ t: 'ok', m: Math.round(item.dur) + 's' });
   }
+  if (cat === 'video' && sb.formats.has('vast') && item.w) {
+    const ratio = sbVal('sb-cv-ratio'), want = { '16:9': 16 / 9, '9:16': 9 / 16, '1:1': 1, '4:5': 0.8 }[ratio];
+    if (want && Math.abs(item.w / item.h - want) > 0.02) notes.push({ t: 'w', m: `${item.w}×${item.h} doesn't match ${ratio}` });
+    if (Math.min(item.w, item.h) < 720) notes.push({ t: 'w', m: 'Below 720p — supply 1080p if you have it' });
+  }
+  if (cat === 'tiles' && item.w && Math.min(item.w, item.h) < 400) notes.push({ t: 'w', m: 'Small — at least 400×400 recommended' });
   if (f.size > 50 * 1048576) notes.push({ t: 'w', m: 'Very large file — may not upload to Claude' });
   return notes;
 }
@@ -2762,6 +2895,7 @@ function sbRefreshFiles() {
       </div>`;
     }).join('');
   });
+  sbRenderTiles();
 }
 
 /* ── Readiness checklist ── */
@@ -2769,20 +2903,36 @@ function sbChecks() {
   const has = c => sb.files[c].length > 0;
   const fontOk = has('fonts') || sbVal('sb-gfont');
   const exitsOk = sb.exits.some(e => e.name.trim());
+  const hasDisplay = [...sb.formats].some(f => f !== 'vast'), vast = sb.formats.has('vast');
   const c = [
     { ok: !!sbVal('sb-client') && !!sbVal('sb-campaign'), m: 'Client and campaign name', req: true },
-    { ok: sb.formats.size > 0, m: 'At least one format', req: true },
+    { ok: sb.formats.size > 0, m: 'At least one format', req: true }
+  ];
+  if (hasDisplay) c.push(
     { ok: sb.sizes.size > 0, m: 'At least one size', req: true },
     { ok: !!sb.frames[0]?.h.trim(), m: 'Frame 1 headline', req: true },
     { ok: !!sbVal('sb-cta'), m: 'CTA text', req: true },
     { ok: exitsOk, m: 'At least one exit name', req: true },
-    { ok: has('backgrounds') || has('products'), m: 'Background or product imagery', req: true },
-    { ok: has('logo'), m: 'Logo', req: true },
-    { ok: fontOk, m: fontOk ? 'Font supplied' : 'No font — system fallback will be used', req: false },
-    { ok: has('reference') || !!sbVal('sb-anim-notes') || sbVal('sb-anim-style') === 'Claude to propose', m: 'Animation direction or references', req: false }
-  ];
+    { ok: has('backgrounds') || has('products'), m: 'Background or product imagery', req: true }
+  );
+  c.push(
+    { ok: has('logo'), m: 'Logo', req: hasDisplay },
+    { ok: fontOk, m: fontOk ? 'Font supplied' : 'No font — system fallback will be used', req: false }
+  );
+  if (hasDisplay) c.push({ ok: has('reference') || !!sbVal('sb-anim-notes') || sbVal('sb-anim-style') === 'Claude to propose', m: 'Animation direction or references', req: false });
   if (sb.formats.has('expanding')) c.push({ ok: !!sbParseSize(sbVal('sb-exp-size')), m: 'Expanded size', req: true });
-  if (sb.formats.has('video')) c.push({ ok: has('video'), m: 'Video file', req: true });
+  if (sb.formats.has('video') || vast) c.push({ ok: has('video'), m: 'Video file', req: true });
+  if (vast) {
+    c.push({ ok: sb.cv.versions.size > 0, m: 'VAST version', req: true });
+    if (sbVal('sb-cv-source') === 'feed') {
+      const gmc = sbVal('sb-cv-feed-mode') === 'remarketing' && !!sbVal('sb-cv-gmc-id');
+      c.push({ ok: has('feed') || !!sbVal('sb-cv-feed-url') || gmc, m: 'Feed sample, feed URL or Merchant Center ID', req: true });
+    } else {
+      const named = sb.cv.tiles.filter(t => t.t.trim()).length;
+      c.push({ ok: sb.cv.tiles.some(t => t.t.trim() && t.url.trim()), m: 'At least one tile with a title and landing URL', req: true });
+      c.push({ ok: named > 0 && sb.cv.tiles.every((t, i) => !t.t.trim() || sbTileImage(t, i)), m: 'An image for each tile', req: false });
+    }
+  }
   if (sb.formats.has('dynamic')) c.push({ ok: has('feed') || !!sbVal('sb-dyn-code'), m: 'Feed sample or Studio generated code', req: true });
   return c;
 }
@@ -2797,17 +2947,19 @@ function sbCheck() {
 
 /* ── Build the zip ── */
 function sbCollect() {
-  const fmtNames = { banner: 'Animated banner', expanding: 'Expanding', interstitial: 'Interstitial', video: 'In-banner video', dynamic: 'Dynamic (feed)' };
+  const fmtNames = { banner: 'Animated banner', expanding: 'Expanding', interstitial: 'Interstitial', video: 'In-banner video', dynamic: 'Dynamic (feed)', vast: 'Clickable video (VAST)' };
+  const hasDisplay = [...sb.formats].some(f => f !== 'vast');
   const data = {
     schema: 'programmatica-studio-brief/1',
     created: new Date().toISOString(),
     buildReference: 'Studio_Build_Reference.md (CM360 Studio Ad Creator project files)',
+    hasDisplay,
     campaign: {
       client: sbVal('sb-client'), name: sbVal('sb-campaign'),
       message: sbVal('sb-message')
     },
     formats: [...sb.formats].map(f => fmtNames[f]),
-    sizes: [...sb.sizes].sort((a, b) => { const A = sbParseSize(a), B = sbParseSize(b); return B[0] * B[1] - A[0] * A[1]; }),
+    sizes: !hasDisplay ? [] : [...sb.sizes].sort((a, b) => { const A = sbParseSize(a), B = sbParseSize(b); return B[0] * B[1] - A[0] * A[1]; }),
     specs: { initialLoadKB: +sbVal('sb-weight') || 150, maxAnimationSec: +sbVal('sb-anim-len') || 15, publisherNotes: sbVal('sb-pub-notes') },
     copy: {
       frames: sb.frames.filter(f => f.h.trim() || f.s.trim()).map((f, i) => ({ frame: i + 1, headline: f.h.trim(), subline: f.s.trim() })),
@@ -2827,6 +2979,30 @@ function sbCollect() {
   if (sb.formats.has('interstitial')) data.interstitial = { orientations: sbVal('sb-int-orient'), environment: sbVal('sb-int-env') };
   if (sb.formats.has('video')) data.video = { playback: sbVal('sb-vid-play'), controls: sbVal('sb-vid-controls') };
   if (sb.formats.has('dynamic')) data.dynamic = { elements: sbVal('sb-dyn-elements'), studioGeneratedCode: sbVal('sb-dyn-code') };
+  if (sb.formats.has('vast')) {
+    const feed = sbVal('sb-cv-source') === 'feed';
+    const v = data.clickableVideo = {
+      build: 'Studio VPAID linear (HTML5) creative, pushed to CM360, assigned to an in-stream placement, VAST tags exported from CM360. The backup MP4 plays in players without VPAID support.',
+      vastVersions: SB_CV_VERSIONS.filter(x => sb.cv.versions.has(x)),
+      aspectRatio: sbVal('sb-cv-ratio'), tileLayout: sbVal('sb-cv-layout'),
+      tileSource: feed ? 'Product feed' : 'Manual',
+      promptLabel: sbVal('sb-cv-label'), videoClickUrl: sbVal('sb-cv-bg-url'),
+      playerControls: SB_CV_CONTROLS.filter(x => sb.cv.controls.has(x)),
+      companion: sbVal('sb-cv-companion'), referenceAds: sbVal('sb-cv-refs')
+    };
+    if (feed) v.feed = {
+      source: sbVal('sb-cv-feed-src'),
+      selection: document.getElementById('sb-cv-feed-mode').selectedOptions[0].text,
+      feedUrl: sbVal('sb-cv-feed-url'), merchantCenterId: sbVal('sb-cv-gmc-id'),
+      productsToShow: sbVal('sb-cv-feed-filter'), tilesOnScreen: sbVal('sb-cv-feed-count'),
+      priceDisplay: sbVal('sb-cv-price'), fieldsUsed: ['title', 'image_link', 'price', 'sale_price', 'link']
+    };
+    else v.tiles = sb.cv.tiles.map((t, i) => ({ t, i })).filter(({ t }) => t.t.trim() || t.url.trim()).map(({ t, i }, n) => ({
+      tile: n + 1, title: t.t.trim(), subline: t.s.trim(), url: t.url.trim(), exitName: `Tile ${n + 1} Exit`,
+      showFromSec: t.from === '' ? null : +t.from, showToSec: t.to === '' ? null : +t.to,
+      imageFile: sbTileImage(t, i)
+    }));
+  }
   return data;
 }
 
@@ -2844,18 +3020,43 @@ function sbMarkdown(d) {
   if (d.interstitial) line('Interstitial', `${d.interstitial.orientations} · ${d.interstitial.environment}`);
   if (d.video) line('Video', `${d.video.playback} · controls: ${d.video.controls}`);
   if (d.dynamic) { line('Dynamic elements', d.dynamic.elements); if (d.dynamic.studioGeneratedCode) L.push('', '```js', d.dynamic.studioGeneratedCode, '```'); }
-  line('Initial load limit', d.specs.initialLoadKB + ' KB gzipped'); line('Max animation', d.specs.maxAnimationSec + ' s');
+  if (d.hasDisplay) { line('Initial load limit', d.specs.initialLoadKB + ' KB gzipped'); line('Max animation', d.specs.maxAnimationSec + ' s'); }
   line('Publisher notes', d.specs.publisherNotes);
+  if (d.clickableVideo) {
+    const v = d.clickableVideo;
+    L.push('', '## Clickable video (VAST)');
+    line('Build', v.build); line('VAST tags', v.vastVersions.join(', ')); line('Aspect ratio', v.aspectRatio);
+    line('Tile layout', v.tileLayout); line('Tile content', v.tileSource); line('Prompt label', v.promptLabel);
+    line('Video click-through', v.videoClickUrl); line('Player controls', v.playerControls.join(', ') || 'None');
+    line('Companion banner', v.companion);
+    if (v.tiles) {
+      L.push('', '### Tiles');
+      if (!v.tiles.length) L.push('- None supplied');
+      v.tiles.forEach(t => {
+        const when = (t.showFromSec != null || t.showToSec != null) ? `, shows ${t.showFromSec ?? 0}s to ${t.showToSec != null ? t.showToSec + 's' : 'end'}` : ', shows for whole video';
+        L.push(`${t.tile}. ${t.title}${t.subline ? ' — ' + t.subline : ''}${t.url ? ' → ' + t.url : ''} (exit: ${t.exitName}${when}${t.image ? ', image: `' + t.image + '`' : ', no image'})`);
+      });
+    }
+    if (v.feed) {
+      L.push('', '### Product feed');
+      line('Source', v.feed.source); line('Selection', v.feed.selection); line('Feed URL', v.feed.feedUrl);
+      line('Merchant Center ID', v.feed.merchantCenterId); line('Products to show', v.feed.productsToShow);
+      line('Tiles on screen', v.feed.tilesOnScreen); line('Price display', v.feed.priceDisplay); line('Fields used', v.feed.fieldsUsed.join(', '));
+    }
+    if (v.referenceAds) L.push('', '### Reference ads', '```', v.referenceAds, '```');
+  }
   L.push('', '## Copy');
   d.copy.frames.forEach((f, i) => L.push(`${i + 1}. ${f.headline}${f.subline ? ' — ' + f.subline : ''}`));
   line('CTA', d.copy.cta); line('Legal', d.copy.legal);
   L.push('', '## Brand');
   d.brand.colours.forEach(c => L.push(`- ${c.use || 'Colour'}: \`${c.hex}\``));
   line('Google Font', d.brand.googleFont); line('Notes', d.brand.notes);
-  L.push('', '## Exits');
-  d.exits.forEach(e => L.push(`- ${e.name}${e.url ? ' → ' + e.url : ''}`));
-  L.push('', '## Animation');
-  line('Style', d.animation.style); line('Loops', d.animation.loops); line('End frame', d.animation.endFrame); line('Notes', d.animation.notes);
+  if (d.hasDisplay) {
+    L.push('', '## Exits');
+    d.exits.forEach(e => L.push(`- ${e.name}${e.url ? ' → ' + e.url : ''}`));
+    L.push('', '## Animation');
+    line('Style', d.animation.style); line('Loops', d.animation.loops); line('End frame', d.animation.endFrame); line('Notes', d.animation.notes);
+  }
   L.push('', '## Assets');
   if (!d.assets.length) L.push('- None supplied');
   d.assets.forEach(a => L.push(`- \`${a.path}\` — ${a.category}${a.width ? `, ${a.width}×${a.height}` : ''}${a.durationSec ? `, ${a.durationSec}s` : ''}, ${a.size}${a.warnings.length ? ' — ⚠ ' + a.warnings.join('; ') : ''}`));
@@ -2885,6 +3086,10 @@ async function sbBuild() {
         });
       }
     }
+    if (data.clickableVideo?.tiles) data.clickableVideo.tiles.forEach(t => {
+      const a = data.assets.find(x => x.category === 'tiles' && x.original === t.imageFile);
+      t.image = a ? a.path : null; delete t.imageFile;
+    });
     zip.file('brief.json', JSON.stringify(data, null, 2));
     zip.file('BRIEF.md', sbMarkdown(data));
     const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } },
@@ -2911,7 +3116,7 @@ async function sbBuild() {
 function sbReset() {
   if (!confirm('Clear the whole brief?')) return;
   document.querySelectorAll('#tab-studio-brief .sb-in').forEach(el => {
-    if (el.tagName === 'SELECT') el.selectedIndex = el.id === 'sb-loops' ? 2 : 0;
+    if (el.tagName === 'SELECT') el.selectedIndex = el.id === 'sb-loops' ? 2 : el.id === 'sb-cv-feed-count' ? 1 : 0;
     else el.value = el.id === 'sb-weight' ? '150' : el.id === 'sb-anim-len' ? '15' : '';
   });
   sb.formats = new Set(['banner']);
@@ -2920,6 +3125,7 @@ function sbReset() {
   sb.frames = [{ h: '', s: '' }, { h: '', s: '' }, { h: '', s: '' }];
   sb.colours = [{ name: 'Primary', hex: '#000000' }, { name: 'Secondary', hex: '#ffffff' }, { name: 'CTA', hex: '#6c63ff' }];
   sb.exits = [{ name: 'Background Exit', url: '' }, { name: 'CTA Exit', url: '' }];
+  sb.cv = sbCvDefault();
   SB_ZONES.forEach(z => sb.files[z.cat] = []);
   document.getElementById('sb-done').classList.remove('show');
   sbInit();
@@ -2929,12 +3135,16 @@ function sbInit() {
   document.querySelectorAll('#sb-formats .q-btn').forEach(b => b.onclick = () => {
     const f = b.dataset.fmt;
     sb.formats.has(f) ? sb.formats.delete(f) : sb.formats.add(f);
-    sbRenderFormats(); sbCheck();
+    sbRenderFormats(); sbRefreshFiles(); sbCheck();
   });
   document.querySelectorAll('#tab-studio-brief .sb-in').forEach(el => {
     el.oninput = sbCheck; el.onchange = sbCheck;
   });
+  document.getElementById('sb-cv-source').onchange = () => { sbRenderFormats(); sbRefreshFiles(); sbCheck(); };
+  document.getElementById('sb-cv-ratio').onchange = () => { sbRefreshFiles(); sbCheck(); };
   document.getElementById('sb-custom-size').onkeydown = e => { if (e.key === 'Enter') sbAddCustomSize(); };
+  sbRenderChipSet('sb-cv-versions', SB_CV_VERSIONS, sb.cv.versions);
+  sbRenderChipSet('sb-cv-controls', SB_CV_CONTROLS, sb.cv.controls);
   sbRenderZones(); sbRenderFormats(); sbRenderSizes(); sbRenderFrames(); sbRenderColours(); sbRenderExits(); sbRefreshFiles(); sbCheck();
 }
 sbInit();
